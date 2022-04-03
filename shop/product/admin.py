@@ -2,23 +2,21 @@ from django.contrib import admin
 from .models import Department, Category, Product, ProductImage
 
 
-# admin.site.register(Department) # Регистрируем модель в админке
-# admin.site.register(Category) # Регистрируем модель в админке
-# admin.site.register(Product) # Регистрируем модель в админке
-
 # Класс для отображения Фотографий на странице каждого Товара
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
-    extra = 0
+    extra = 0  # Количество пустых Фотографий в списке готовых для заполнения
+
 
 # Класс для отображения Категорий на странице каждого Раздела
 class CategoryInline(admin.TabularInline):
     model = Category
-    extra = 0
+    extra = 0  # Количество пустых Категорий в списке готовых для заполнения
+
 
 # Настройка Админки для Отделов
 class DepartmentAdmin(admin.ModelAdmin):
-    inlines = [CategoryInline] # Отображать Категории на странице каждого Отделов
+    inlines = [CategoryInline]  # Отображать Категории на странице каждого Отделов
     list_display = [field.name for field in Department._meta.fields]  # Модель в виде таблицы
 
 
@@ -36,7 +34,7 @@ admin.site.register(Category, CategoryAdmin)  # Регистрируем мод�
 
 # Настройка Админки для Продуктов
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductImageInline] # Отображать фотографии на странице каждого Товара
+    inlines = [ProductImageInline]  # Отображать фотографии на странице каждого Товара
     list_display = [field.name for field in Product._meta.fields]  # Модель в виде таблицы
     list_filter = ('category', 'category__department',)  # Фильтры
     search_fields = ('name',)  # Поиск

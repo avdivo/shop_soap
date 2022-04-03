@@ -130,3 +130,11 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Собственные настройки магазина для доступа импортировать этот модуль
+# from django.conf import settings
+
+# Номер Заказа
+# Шаблон, на правые позиции которого записывается id заказа, затирая их
+ORDER_PREFIX = '0000000'
