@@ -32,8 +32,8 @@ class DeliveryMethod(models.Model):
 class Order(models.Model):
     status = models.ForeignKey(StatusOrder, on_delete=models.PROTECT, default=1,
                                verbose_name=u'Статус')  # Связь с таблицей статусов
-    # delivery_method = models.ForeignKey(DeliveryMethod, on_delete=models.PROTECT, default=0,
-    #                            verbose_name=u'Статус')  # Связь с таблицей статусов
+    delivery_method = models.ForeignKey(DeliveryMethod, on_delete=models.PROTECT, default=1,
+                                        verbose_name=u'Метод доставки')  # Связь с таблицей статусов
     price_product = models.IntegerField(default=0,
                                         verbose_name=u'Цена товаров')  # Цена за товар, рассчитывается автоматически
     price_total = models.IntegerField(default=0,
