@@ -41,6 +41,7 @@ class ProductInOrder(models.Model):
     order = models.ForeignKey(Order, blank=True, null=True, default=None,
                               on_delete=models.SET_DEFAULT)  # Связь с Заказом
     quantity = models.IntegerField(default=1)  # Количество товара
+    price_selling = models.IntegerField(default=1)  # Цена товара на момент покупки
 
     def __str__(self):
         return '%s единиц товара %s в заказе %s' % (self.quantity, self.product, self.order)
@@ -49,3 +50,9 @@ class ProductInOrder(models.Model):
     class Meta:
         verbose_name = 'Товар в заказе'
         verbose_name_plural = 'Товары в заказах'
+
+    # Переопроеделение метода Save для рассчета суммы перед сохранением
+    # def save(self, *args, **kwargs):
+    #     self.price_selling = self.product.price
+    #     self
+    #     super(ProductInOrder, self).save(*args, **kwargs)

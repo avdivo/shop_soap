@@ -31,7 +31,13 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=128) # Название товара
     category = models.ForeignKey(Category, on_delete=models.PROTECT) # К какой категории относится товар
+    description = models.TextField(blank=True)  # Описание товара
+    price = models.IntegerField(default=0)  # Цена за единицу
+    quantity = models.IntegerField(default=0)  # Остаток на складе
+    discount = models.IntegerField(default=0)  # Скидка (сумма скидки, не %)
     active = models.BooleanField(default=True)  # Товар Активен
+    article = models.CharField(max_length=8, blank=True)  # Артикль (получается с применением префикса PRODUCT_PREFIX)
+    # Фотографии в модели ниже
 
     def __str__(self):
         return self.name
