@@ -16,15 +16,31 @@ class StatusOrder(models.Model):
         verbose_name = 'Статус заказа'
         verbose_name_plural = 'Статусы заказов'
 
+# Способ доставки
+class DeliveryMethod(models.Model):
+    name = models.CharField(max_length=32, blank=True, null=True)  # Способ доставки
+
+    def __str__(self):
+        return self.name
+
+    # Как писать назнвние в единственном и множественном числе
+    class Meta:
+        verbose_name = 'Метод доставки'
+        verbose_name_plural = 'Методы доставки'
 
 # Заказы
 class Order(models.Model):
-    status = models.ForeignKey(StatusOrder, on_delete=models.PROTECT, default=1)  # Связь с таблицей статусов
-    price_product = models.IntegerField(default=0)  # Цена за товар, рассчитывается автоматически
-    price_total = models.IntegerField(default=0)  # Итоговая цена заказа Цена товара + цена доставки
+    status = models.ForeignKey(StatusOrder, on_delete=models.PROTECT, default=1,
+                               verbose_name=u'Статус')  # Связь с таблицей статусов
+    # delivery_method = models.ForeignKey(DeliveryMethod, on_delete=models.PROTECT, default=0,
+    #                            verbose_name=u'Статус')  # Связь с таблицей статусов
+    price_product = models.IntegerField(default=0,
+                                        verbose_name=u'Цена товаров')  # Цена за товар, рассчитывается автоматически
+    price_total = models.IntegerField(default=0,
+                                      verbose_name=u'Итоговая цена')  # Итоговая цена заказа Цена товара + цена доставки
     created = models.DateTimeField(auto_now_add=True, auto_now=False)  # Давта создания заказа
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)  # Давта изменения заказа
-    number = models.CharField(max_length=8, blank=True, default=None)  # Номер заказа
+    number = models.CharField(max_length=8, blank=True, default=None, verbose_name=u'Номер заказа')  # Номер заказа
 
     def __str__(self):
         return str(self.id)
@@ -51,9 +67,9 @@ post_save.connect(post_save_Order, sender=Order)  # Сигнал после со
 # Товары в заказах
 class ProductInOrder(models.Model):
     product = models.ForeignKey(Product, blank=True, null=True, default=None,
-                                on_delete=models.SET_DEFAULT)  # Связь с Товаром
+                                on_delete=models.PROTECT)  # Связь с Товаром
     order = models.ForeignKey(Order, blank=True, null=True, default=None,
-                              on_delete=models.SET_DEFAULT)  # Связь с Заказом
+                              on_delete=models.PROTECT)  # Связь с Заказом
     quantity = models.IntegerField(default=1)  # Количество товара
     price_selling = models.IntegerField(default=0)  # Цена товара на момент покупки
 
@@ -68,7 +84,8 @@ class ProductInOrder(models.Model):
     # Переопроеделение метода Save для рассчета суммы перед сохранением
     def save(self, *args, **kwargs):
         print(self.order.price_product)
-        self.price_selling = self.product.price * self.quantity  # Цена всех единиц одного товара в заказе
+        self.price_selling = (self.product.price - self.product.discount) * \
+                             self.quantity  # Цена всех единиц одного товара в заказе
         super(ProductInOrder, self).save(*args, **kwargs)
 
 
