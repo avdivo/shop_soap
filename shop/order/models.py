@@ -5,7 +5,7 @@ from product.models import Product
 
 # Статусы заказов
 class StatusOrder(models.Model):
-    name = models.CharField(max_length=64, blank=False, unique=True)  # Название статуса
+    name = models.CharField(max_length=32, blank=True, null=True)  # Название статуса
 
     def __str__(self):
         return self.name
@@ -19,8 +19,7 @@ class StatusOrder(models.Model):
 # Заказы
 class Order(models.Model):
     # number_order = models.CharField(max_length=8)  # Номер заказа
-    # status = models.OneToOneField(StatusOrder, blank=True, null=True, default=None,
-    #                            on_delete=models.PROTECT)  # Связь с таблицей статусов
+    status = models.ForeignKey(StatusOrder, on_delete=models.PROTECT, default=1)  # Связь с таблицей статусов
     price_product = models.IntegerField(default=0)  # Цена за товар, рассцитывается автоматически
     price_total = models.IntegerField(default=0)  # Итоговая цена заказа Цена товара + цена доставки
     created = models.DateTimeField(auto_now_add=True, auto_now=False)  # Давта создания заказа
