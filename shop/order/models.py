@@ -83,7 +83,7 @@ class ProductInOrder(models.Model):
 
     # Переопроеделение метода Save для рассчета суммы перед сохранением
     def save(self, *args, **kwargs):
-        print(self.order.price_product)
+
         self.price_selling = (self.product.price - self.product.discount) * \
                              self.quantity  # Цена всех единиц одного товара в заказе
         super(ProductInOrder, self).save(*args, **kwargs)

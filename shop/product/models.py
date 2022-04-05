@@ -47,7 +47,10 @@ class Product(models.Model):
     # Фотографии в модели ниже
 
     def __str__(self):
-        return '%s - %s' % (self.price, self.name)
+        out = '%s - %s' % (self.price, self.name)
+        if self.discount:
+            out = '%s (скидка %s) - %s' % (self.price, self.discount, self.name)
+        return out
 
     # Как писать назнвние в единственном и множественном числе
     class Meta:
