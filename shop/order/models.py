@@ -16,6 +16,7 @@ class StatusOrder(models.Model):
         verbose_name = 'Статус заказа'
         verbose_name_plural = 'Статусы заказов'
 
+
 # Способ доставки
 class DeliveryMethod(models.Model):
     name = models.CharField(max_length=32, blank=True, null=True)  # Способ доставки
@@ -28,19 +29,27 @@ class DeliveryMethod(models.Model):
         verbose_name = 'Метод доставки'
         verbose_name_plural = 'Методы доставки'
 
+
 # Заказы
 class Order(models.Model):
+    number = models.CharField(max_length=8, blank=True, default=None, verbose_name=u'Номер заказа')  # Номер заказа
+    price_delivery = models.IntegerField(default=0,
+                                         verbose_name=u'Цена доставки')  # Цена доставки
+    price_individual = models.IntegerField(default=0,
+                                           verbose_name=u'Индивидуальная цена')  # Устанавливается продавцом и принимается за окончательную
     status = models.ForeignKey(StatusOrder, on_delete=models.PROTECT, default=1,
                                verbose_name=u'Статус')  # Связь с таблицей статусов
     delivery_method = models.ForeignKey(DeliveryMethod, on_delete=models.PROTECT, default=1,
                                         verbose_name=u'Метод доставки')  # Связь с таблицей статусов
+    address_delivery = models.CharField(max_length=256, blank=True, default=None, null=True,
+                                        verbose_name=u'Адрес доставки')  # Адрес доставки
     price_product = models.IntegerField(default=0,
                                         verbose_name=u'Цена товаров')  # Цена за товар, рассчитывается автоматически
     price_total = models.IntegerField(default=0,
                                       verbose_name=u'Итоговая цена')  # Итоговая цена заказа Цена товара + цена доставки
+    description = models.TextField(blank=True, null=True, verbose_name=u'Комментарий')  # Комментарий
     created = models.DateTimeField(auto_now_add=True, auto_now=False)  # Давта создания заказа
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)  # Давта изменения заказа
-    number = models.CharField(max_length=8, blank=True, default=None, verbose_name=u'Номер заказа')  # Номер заказа
 
     def __str__(self):
         return str(self.id)
@@ -49,6 +58,13 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+
+    # Переопроеделение метода Save Заказов для рассчета Итоговой цены заказа
+    # Она состоит из цены товаров и доставки, если индивидуальная цена не 0, то меняется на нее
+    def save(self, *args, **kwargs):
+        self.price_total = self.price_product + self.price_delivery
+        if self.price_individual: self.price_total = self.price_individual
+        super(Order, self).save(*args, **kwargs)
 
 
 # Обработка сигнала оохранения Заказа для формирования и записи Номера заказа
@@ -60,7 +76,7 @@ def post_save_Order(sender, instance, **kwargs):
     instance.save(force_update=True)
 
 
-# Для модели Товаров
+# Для модели заказов
 post_save.connect(post_save_Order, sender=Order)  # Сигнал после сохранения
 
 
@@ -83,7 +99,6 @@ class ProductInOrder(models.Model):
 
     # Переопроеделение метода Save для рассчета суммы перед сохранением
     def save(self, *args, **kwargs):
-
         self.price_selling = (self.product.price - self.product.discount) * \
                              self.quantity  # Цена всех единиц одного товара в заказе
         super(ProductInOrder, self).save(*args, **kwargs)

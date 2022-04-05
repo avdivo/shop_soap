@@ -78,9 +78,6 @@ class ProductImage(models.Model):
     image = models.ImageField(upload_to='product_image/')  # Ссылка на фотографию товара
     active = models.BooleanField(default=True)  # Отображать фотографию
 
-    # def __str__(self):
-    #     return self.name
-
     # Как писать назнвние в единственном и множественном числе
     class Meta:
         verbose_name = 'Фотография'
