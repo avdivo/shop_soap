@@ -85,7 +85,7 @@ class ProductInOrder(models.Model):
     product = models.ForeignKey(Product, blank=True, null=True, default=None,
                                 on_delete=models.PROTECT)  # Связь с Товаром
     order = models.ForeignKey(Order, blank=True, null=True, default=None,
-                              on_delete=models.PROTECT)  # Связь с Заказом
+                              on_delete=models.CASCADE)  # Связь с Заказом
     quantity = models.IntegerField(default=1)  # Количество товара
     price_selling = models.IntegerField(default=0)  # Цена товара на момент покупки
 
@@ -106,9 +106,11 @@ class ProductInOrder(models.Model):
 
 # Функция запускается сигналами и рассчитывает общую сумму заказа по таблице (модели) товаров в заказе
 def post_save_ProductInOrder(sender, instance, **kwargs):
-    instance.order.price_product = sum(map(lambda x: x.price_selling, sender.objects.filter(order=instance.order)))
-    instance.order.save(force_update=True)
-
+    try:
+        instance.order.price_product = sum(map(lambda x: x.price_selling, sender.objects.filter(order=instance.order)))
+        instance.order.save(force_update=True)
+    except:
+        return  # Ошибка возникает если удалять Заказ
 
 # Для модели товаров в заказе
 post_save.connect(post_save_ProductInOrder, sender=ProductInOrder)  # Сигнал после сохранения
