@@ -8,11 +8,12 @@ class ProductInOrderInline(admin.TabularInline):
     extra = 0  # Количество пустых Категорий в списке готовых для заполнения
 
 
-# Регистрация заказов в админке
+# Регистрация Заказов в админке
 class OrderAdmin(admin.ModelAdmin):
     inlines = [ProductInOrderInline]  # Отображать Товары и Статусы на странице каждого Заказа
-    list_display = ['id', 'price_product']  # Модель в виде таблицы
-
+    list_display = ['number', 'status', 'delivery_method', 'price_product', 'price_total']  # Модель в виде таблицы
+    list_filter = ('status', 'delivery_method',)  # Фильтры
+    search_fields = ('number',)  # Поиск
 
 admin.site.register(Order, OrderAdmin)  # Регистрируем модель в админке
 
