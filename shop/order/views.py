@@ -1,3 +1,8 @@
 from django.shortcuts import render
 
-# Create your views here.
+from .models import Order
+
+
+def index(request):
+    ord = {'orders':Order.objects.all()}
+    return render(request, 'index.html', ord)
