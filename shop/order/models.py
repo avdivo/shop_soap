@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.conf import settings
 from product.models import Product
+from django.utils.timezone import now
 
 
 # Статусы заказов
@@ -48,8 +49,10 @@ class Order(models.Model):
     price_total = models.IntegerField(default=0,
                                       verbose_name=u'Итоговая цена')  # Итоговая цена заказа Цена товара + цена доставки
     description = models.TextField(blank=True, null=True, verbose_name=u'Комментарий')  # Комментарий
-    created = models.DateTimeField(auto_now_add=True, auto_now=False)  # Давта создания заказа
-    updated = models.DateTimeField(auto_now_add=False, auto_now=True)  # Давта изменения заказа
+    created = models.DateTimeField(default=now,
+                                   verbose_name=u'Дата создания')  # Давта создания заказа
+    updated = models.DateTimeField(default=now,
+                                   verbose_name=u'Дата изменения')  # Давта изменения заказа
 
     def __str__(self):
         return str(self.id)
@@ -62,9 +65,11 @@ class Order(models.Model):
     # Переопроеделение метода Save Заказов для рассчета Итоговой цены заказа
     # Она состоит из цены товаров и доставки, если индивидуальная цена не 0, то меняется на нее
     def save(self, *args, **kwargs):
+        self.updated = now()
         self.price_total = self.price_product + self.price_delivery
         if self.price_individual: self.price_total = self.price_individual
         super(Order, self).save(*args, **kwargs)
+
 
 
 # Обработка сигнала оохранения Заказа для формирования и записи Номера заказа
@@ -111,6 +116,7 @@ def post_save_ProductInOrder(sender, instance, **kwargs):
         instance.order.save(force_update=True)
     except:
         return  # Ошибка возникает если удалять Заказ
+
 
 # Для модели товаров в заказе
 post_save.connect(post_save_ProductInOrder, sender=ProductInOrder)  # Сигнал после сохранения
