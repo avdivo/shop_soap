@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .models import Order
+from order.models import Order
 
 
 def index(request):
