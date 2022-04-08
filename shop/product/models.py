@@ -2,6 +2,19 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.conf import settings
 
+# Праздники (некоторые товары создаются для некоторых праздникоа)
+class Holiday(models.Model):
+    name = models.CharField(max_length=64, verbose_name=u'Праздник')  # Название категории
+    date = models.DateField(default=None, blank=True, null=True, verbose_name=u'Дата')
+
+    def __str__(self):
+        return self.name
+
+    # Как писать назнвние в единственном и множественном числе
+    class Meta:
+        verbose_name = 'Праздеик'
+        verbose_name_plural = 'Праздники'
+
 
 # Отдел магазина содержит категории товаров
 class Department(models.Model):
@@ -35,6 +48,8 @@ class Product(models.Model):
     name = models.CharField(max_length=128, verbose_name=u'Название')  # Название товара
     category = models.ForeignKey(Category, on_delete=models.PROTECT,
                                  verbose_name=u'Категория')  # К какой категории относится товар
+    holiday = models.ManyToManyField(Holiday, default=1, blank=False,
+                                 verbose_name=u'Праздник')  # К какому празднику подходит товар
     description = models.TextField(blank=True, verbose_name=u'Описание')  # Описание товара
     price = models.IntegerField(default=0, verbose_name=u'Цена')  # Цена за единицу
     quantity = models.IntegerField(default=0, verbose_name=u'Остаток')  # Остаток на складе

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Department, Category, Product, ProductImage
+from .models import *
 
 
 # Класс для отображения Фотографий на странице каждого Товара
@@ -32,11 +32,11 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)  # Регистрируем модель в админке
 
 
-# Настройка Админки для Продуктов
+# Настройка Админки для Товаров
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]  # Отображать фотографии на странице каждого Товара
     list_display = [field.name for field in Product._meta.fields]  # Модель в виде таблицы
-    list_filter = ('category', 'category__department',)  # Фильтры
+    list_filter = ('category', 'category__department', 'holiday')  # Фильтры
     search_fields = ('name',)  # Поиск
 
     # exclude = [] # Исключить поля, когда зашел в запись
@@ -52,3 +52,10 @@ class ProductImageAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ProductImage, ProductImageAdmin)  # Регистрируем модель в админке
+
+# Настройка Админки для Праздников
+class HolidayAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Holiday._meta.fields]  # Модель в виде таблицы
+
+
+admin.site.register(Holiday, HolidayAdmin)  # Регистрируем модель в админке
