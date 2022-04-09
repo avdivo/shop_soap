@@ -18,10 +18,11 @@ def shop(request):
     # В category передается категория которую нужно обобразить
     # В holiday Праздник, товары для которого нужно отобразить
     # В sort Тип сортировки
-    print(request.GET.get('q'))
-    department = Department.objects.all()
+    # print(request.GET.get('q'))
+    select_category = dict()  # Словарь с ключами Отделами и данными - списком категорий для меню выбора
+    for department in Department.objects.all():
+        select_category .update({department.name: Category.objects.filter(department_id=department.id)})
 
-    select = {'Мыло': ['Мыло 1', 'Мыло 2', 'Мыло 3'], 'Спа': ['Спа 1', 'Спа 2'], 'Праздник': ['ДР', 'НГ']}
     return render(request, 'shop.html', locals())
 
 # Контакты
