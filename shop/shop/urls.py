@@ -24,7 +24,7 @@ urlpatterns = [
     path('', index, name='index'),
     path('about/', about, name='about'),
     path('shop/', shop, name='shop'),  # Магазин без передачи параметров
-    path('shop/<str:productid>/', shop, name='shop'),  # Магазин с передачей параметров
+    path('shop/<str:value>/', shop, name='shop'),  # Магазин с передачей параметров
     path('contact/', contact, name='contact'),
     path('shop-single/', shop_single, name='shop-single'),
 ]

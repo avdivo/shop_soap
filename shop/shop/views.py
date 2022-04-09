@@ -14,7 +14,7 @@ def about(request):
     return render(request, 'about.html', locals())
 
 # Магазин (выбор товара)
-def shop(request, prod=None):
+def shop(request, value=None):
     # В category передается категория которую нужно обобразить
     # В holiday Праздник, товары для которого нужно отобразить
     # В sort Тип сортировки
