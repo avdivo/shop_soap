@@ -18,16 +18,22 @@ def shop(request, value=None):
     # В category передается категория которую нужно обобразить
     # В holiday Праздник, товары для которого нужно отобразить
     # В sort Тип сортировки
-    # print(request.GET.get('q'))
 
     select_category = dict()  # Словарь с ключами Отделами и данными - списком категорий для меню выбора (объекты)
     select_holiday = dict()  # Словарь с ключом 'Праздники' и данными - объектами праздников
 
     for department in Department.objects.all():
-        select_category.update({department.name: Category.objects.filter(department_id=department.id)})
+        select_category.update({department: Category.objects.filter(department_id=department.id)})
 
-    for department in Department.objects.all():
-        select_holiday.update({'Праздники': Holiday.objects.order_by("date")})
+    select_holiday.update({'Праздники': Holiday.objects.order_by("date")})
+
+    page_obj = dict()
+    for product in Product.objects.all():
+        photo = ProductImage.objects.filter(product_id=product.id, active=True, main=True) # Выбираем главную фотографию для товара
+        if photo == None:
+            print('Нет фотографии')
+        page_obj.update({product: photo[0].image.url})
+
 
 
     return render(request, 'shop.html', locals())

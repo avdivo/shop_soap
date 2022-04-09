@@ -116,6 +116,7 @@ class ProductImage(models.Model):
                                 on_delete=models.SET_DEFAULT)  # Связь с товаром
     image = models.ImageField(upload_to='product_image/')  # Ссылка на фотографию товара
     active = models.BooleanField(default=True)  # Отображать фотографию
+    main = models.BooleanField(default=False, verbose_name=u'Главная')  # Главная фотография
 
     # Как писать назнвние в единственном и множественном числе
     class Meta:
