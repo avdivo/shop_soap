@@ -18,7 +18,7 @@
             <div class="col-lg-3">
                 <h1 class="h2 pb-4">Категории</h1>
                 <ul class="list-unstyled templatemo-accordion">
-                    {% for department, categoryes in select_category.items %}
+<!-- Категории -->  {% for department, categoryes in select_category.items %}
                         <li class="pb-3">
                             <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
                                 {{ department }}
@@ -26,11 +26,25 @@
                             </a>
                             <ul class="collapse show list-unstyled pl-3">
                                 {% for category in categoryes %}
-                                    <li><a class="text-decoration-none" href="#">{{ category }}</a></li>
+                                    <li><a class="text-decoration-none" href="{% url 'shop' %}?category={{ category.id }}">{{ category }}</a></li>
                                 {% endfor %}
                             </ul>
                         </li>
                     {% endfor %}
+<!-- Праздники -->  {% for name, holidays in select_holiday.items %}
+                        <li class="pb-3">
+                            <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
+                                {{ name }}
+                                <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
+                            </a>
+                            <ul class="collapse show list-unstyled pl-3">
+                                {% for holiday in holidays %}
+                                    <li><a class="text-decoration-none" href="{% url 'shop' %}?holiday={{ holiday.id }}">{{ holiday }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+
                 </ul>
             </div>
 
