@@ -68,11 +68,12 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT,
                                  verbose_name=u'Категория')  # К какой категории относится товар
     alias = models.CharField(max_length=64, blank=False, unique=True, default='!!!', verbose_name=u'Псевдоним')  # Псевдоним поля
-    holiday = models.ManyToManyField(Holiday, default=1, blank=False,
+    holiday = models.ManyToManyField(Holiday, default='1', blank=False,
                                  verbose_name=u'Праздник')  # К какому празднику подходит товар
     description = models.TextField(blank=True, verbose_name=u'Описание')  # Описание товара
     price = models.IntegerField(default=0, verbose_name=u'Цена')  # Цена за единицу
     quantity = models.IntegerField(default=0, verbose_name=u'Остаток')  # Остаток на складе
+    popular = models.IntegerField(default=0, verbose_name=u'Популярность')  # Популярность товара
     discount = models.IntegerField(default=0, verbose_name=u'Скидка')  # Скидка (сумма скидки, не %)
     active = models.BooleanField(default=True, verbose_name=u'Активен')  # Товар Активен
     article = models.CharField(max_length=8,
@@ -97,7 +98,7 @@ class Product(models.Model):
         if re.match(r"^[a-z0-9_-]{3,20}$", self.alias) == None:
             raise ValidationError('Псевдоним должен быть длиной от 3 до 20 символов, состоять из букв a-z, тире и символа подчеркивания')
 
-# Обработка сигнала оохранения товара для формирования и записи Артикля
+# Обработка сигнала сохранения товара для формирования и записи Артикля
 # Срабатывает только если Артикль еще не заполнялся = None
 def post_save_Product(sender, instance, **kwargs):
     if instance.article: return

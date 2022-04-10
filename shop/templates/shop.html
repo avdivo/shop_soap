@@ -65,22 +65,24 @@
                     </div>
                     <div class="col-md-6 pb-4">
                         <div class="d-flex">
-                            <select class="form-control">
-                                <option>Featured</option>
-                                <option>A to Z</option>
-                                <option>Item</option>
-                            </select>
+                            <form method="post" id="sorted" action="{% url 'shop' %}">
+                                <select class="form-control" name="sort">
+                                    <option value="-popular">По популярности</option>
+                                    <option value="price">По цене (по возрастанию)</option>
+                                    <option value="-discount">По скидкам</option>
+                                </select>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <div class="row">
 
 
-                    {% for product, photo in page_obj.items %}
+                    {% for product in page_obj %}
                     <div class="col-md-4">
                         <div class="card mb-4 product-wap rounded-0">
                             <div class="card rounded-0">
-                                <img class="card-img rounded-0 img-fluid" src="{{ photo }}">
+                                <img class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
                                 <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                     <ul class="list-unstyled">
                                         <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="far fa-eye"></i></a></li>
@@ -219,4 +221,13 @@
         </div>
     </section>
     <!--End Brands-->
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+$("select").change(function(){
+	alert ('Результат: ' + $(this).val());
+	$("#sorted").submit();
+});
+</script>
 {% endblock content %}
