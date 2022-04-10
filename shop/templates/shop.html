@@ -53,23 +53,25 @@
                     <div class="col-md-6">
                         <ul class="list-inline shop-top-menu pb-3 pt-1">
                             <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none mr-3" href="#">All</a>
+                                <a class="h3 text-dark text-decoration-none mr-3" href="{% url 'shop' %}">Все</a>
                             </li>
+                            {% for department in select_category.keys %}
                             <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none mr-3" href="#">Men's</a>
+                                <a class="h3 text-dark text-decoration-none mr-3" href="{% url 'shop' department.alias %}">{{ department }}</a>
                             </li>
-                            <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none" href="#">Women's</a>
-                            </li>
+                            {% endfor %}
                         </ul>
                     </div>
                     <div class="col-md-6 pb-4">
                         <div class="d-flex">
-                            <form method="post" id="sorted" action="{% url 'shop' %}">
+                            <form method="post" id="sorted" action="{% url 'shop' filter %}">
+
+                                {% csrf_token %}
+
                                 <select class="form-control" name="sort">
-                                    <option value="-popular">По популярности</option>
-                                    <option value="price">По цене (по возрастанию)</option>
-                                    <option value="-discount">По скидкам</option>
+                                    <option {% if sort == "-popular" %} selected {% endif %} value="-popular">По популярности</option>
+                                    <option {% if sort == "price" %} selected {% endif %} value="price">По цене (по возрастанию)</option>
+                                    <option {% if sort == "-discount" %} selected {% endif %} value="-discount">По скидкам</option>
                                 </select>
                             </form>
                         </div>
@@ -77,11 +79,9 @@
                 </div>
                 <div class="row">
 
-
                     {% for product in page_obj %}
                     <div class="col-md-4">
-                        <div class="card mb-4 product-wap rounded-0">
-                            <div class="card rounded-0">
+                        <div class="card mb-4 product-wap rounded-0"><div class="card rounded-0">
                                 <img class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
                                 <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                     <ul class="list-unstyled">
@@ -226,8 +226,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
 $("select").change(function(){
-	alert ('Результат: ' + $(this).val());
+	// alert ('Результат: ' + $(this).val());
 	$("#sorted").submit();
+
 });
 </script>
 {% endblock content %}
