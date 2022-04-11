@@ -64,10 +64,8 @@
                     </div>
                     <div class="col-md-6 pb-4">
                         <div class="d-flex">
-                            <form method="post" id="sorted" action="{% url 'shop' filter %}">
-
+                            <form method="post" id="sorted" action="{% if filter %} {% url 'shop' filter %} {% else %}{% url 'shop' %}{% endif %}">
                                 {% csrf_token %}
-
                                 <select class="form-control" name="sort">
                                     <option {% if sort == "-popular" %} selected {% endif %} value="-popular">По популярности</option>
                                     <option {% if sort == "price" %} selected {% endif %} value="price">По цене (по возрастанию)</option>
