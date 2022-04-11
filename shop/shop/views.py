@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.conf import settings
 from order.models import Order
@@ -75,8 +76,12 @@ def shop(request, filter=None):
         else:
             products = Product.objects.filter(active=True).order_by(sort)
 
+    # Пагинация
+    paginator = Paginator(products, 15)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
     # Выбор главной фотографии для каждого товара
-    page_obj = []
     for product in products:
         photo = ProductImage.objects.filter(product_id=product.id, active=True,
                                             main=True)  # Выбираем главную фотографию для товара
@@ -84,7 +89,6 @@ def shop(request, filter=None):
         product.photo = settings.NO_PHOTO
         if len(photo):
             product.photo = photo[0].image.url
-        page_obj.append(product)
 
     # sort и filter передаются в шаблон
     return render(request, 'shop.html', locals())
