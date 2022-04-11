@@ -4,6 +4,7 @@ from order.models import Order
 from product.models import *
 from django.db.models import Q
 
+
 # Главная страница
 def index(request):
     ord = {'orders': Order.objects.all()}
@@ -56,12 +57,10 @@ def shop(request, filter=None):
         # Получение данных о поиске методом POST, проверка на недопустимые символы и поиск
         search = request.POST['search']
         if re.search(r"[<>%\$]$", search) == None:
-            # products = Product.objects.filter(article__icontains=search)Q(name__icontains=search)Q
-            # (description__icontains=search).order_by(sort)
-            # products = Product.objects.annotate(search = SearchVector('article', 'name', 'description_')).filter(active=True)
-            # products = Product.objects.filter(Q(article__contains=search) | Q(name__contains=search))
-            products = Product.objects.filter(name__icontains=search, active=True).order_by(sort)
-
+            # Регистронезависимый поиск не работает в SQLite с русским языком
+            products = Product.objects.filter(
+                Q(article__icontains=search) | Q(name__icontains=search) | Q(description__icontains=search),
+                active=True).order_by(sort)
     else:
         if filter != None and re.search(r"[<>%\$]$", filter) == None:
             # Параметр есть и он допустимый

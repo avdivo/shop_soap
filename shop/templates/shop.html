@@ -77,6 +77,7 @@
                 </div>
                 <div class="row">
 
+                    {% if product %}
                     {% for product in page_obj %}
                     <div class="col-md-4">
                         <div class="card mb-4 product-wap rounded-0"><div class="card rounded-0">
@@ -95,6 +96,9 @@
                         </div>
                     </div>
                     {% endfor %}
+                    {% else %}
+                    Нет товаров для отображения
+                    {% endif %}
                 </div>
 
                 <div div="row">
