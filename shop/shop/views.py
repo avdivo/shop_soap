@@ -4,6 +4,7 @@ from django.conf import settings
 from order.models import Order
 from product.models import *
 from django.db.models import Q
+from django.shortcuts import redirect
 
 
 # Главная страница
@@ -93,12 +94,30 @@ def shop(request, filter=None):
     # sort и filter передаются в шаблон
     return render(request, 'shop.html', locals())
 
-
 # Контакты
 def contact(request):
     return render(request, 'contact.html', locals())
 
 
-# Отдельный товар
-def shop_single(request):
+# Карточка товара
+def shop_single(request, product=None):
+    # Вход на страницу без параметра не возможен, происходит перенаправление на магазин
+    if product == None:
+        return redirect('shop')
+    # Указанный товар отсутствует или он не активен происходит перенаправление на магазин
+    try:
+        product = Product.objects.get(alias=product, active=True)
+    except:
+        return redirect('shop')
+    images = product.productimage_set.filter(active=True)
+    # Выбираем главную фотографию если она есть, если нет, назначаем первую или заглушку если их нет вообще
+    if len(images):
+        main_image =images[0].image.url
+    else:
+        main_image = settings.NO_PHOTO
+    for image in images:
+        if image.main:
+            main_image = image.image.url
+            break
+    print(main_image)
     return render(request, 'shop-single.html', locals())

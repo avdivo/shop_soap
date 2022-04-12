@@ -87,13 +87,13 @@
                                 <img class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
                                 <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                     <ul class="list-unstyled">
-                                        <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="far fa-eye"></i></a></li>
+                                        <li><a class="btn btn-success text-white mt-2" href="{% url 'shop-single' product.alias %}"><i class="far fa-eye"></i></a></li>
                                         <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="fas fa-cart-plus"></i></a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <a href="shop-single.html" class="h3 text-decoration-none">{{ product.name }}</a>
+                                <a href="{% url 'shop-single' product.alias %}" class="h3 text-decoration-none">{{ product.name }}</a>
                                 <p class="text-center mb-0">{{ product.price }}</p>
                             </div>
                         </div>
