@@ -119,5 +119,6 @@ def shop_single(request, product=None):
         if image.main:
             main_image = image.image.url
             break
-    print(main_image)
+    images = [images[i:i+3] for i in range(0,len(images),3)] # Разбиваем список картинок по 3
+
     return render(request, 'shop-single.html', locals())
