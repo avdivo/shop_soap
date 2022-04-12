@@ -120,5 +120,6 @@ def shop_single(request, product=None):
             main_image = image.image.url
             break
     images = [images[i:i+3] for i in range(0,len(images),3)] # Разбиваем список картинок по 3
+    discount_price = product.price - product.discount if product.discount else 0
 
     return render(request, 'shop-single.html', locals())
