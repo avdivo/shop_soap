@@ -126,8 +126,9 @@ def shop_single(request, product=None):
     return render(request, 'shop-single.html', locals())
 
 
-# Контакты
+# Работа с Корзиной
 def add_to_basket(request):
+    request.session.modified = True
 
     if request.method != "POST":
         return False
@@ -145,15 +146,18 @@ def add_to_basket(request):
             request.session['basket'] = {id: quantity}
         else:
             try:
-                print(request.session['basket'], '--------------------------------------')
                 if not id in request.session['basket']:
-                    print(id)
+                    # Такого товара еще нет в корзине
                     request.session['basket'][id] = quantity
                 else:
-                    request.session['basket'][id] = request.session['basket'][id] + 100
-                    print(request.session['basket'][id] )
+                    # Такой товар есть в корзине
+                    request.session['basket'][id] = request.session['basket'][id] + quantity
+                    print(request.session['basket'][id])
             except:
+                # Ситуация, если session['basket'] содержит неправильные данные
                 del(request.session['basket'])
-                # request.session['basket'] = {id: quantity}
+                request.session['basket'] = {id: quantity}
+                products = sum(x for x in request.session['basket'].values())  # Считаем количество товаров в корзине
+                print(request.session['basket'], '--------------------------------------')
 
-    return JsonResponse({'dates': 'Ok from Django'})
+    return JsonResponse({'products': products})

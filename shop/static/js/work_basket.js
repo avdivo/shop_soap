@@ -20,8 +20,9 @@ function update_basket(product_id, quantity){
              data: data,
              cache: true,
              success: function (data) {
-                 console.log("OK");
-                 console.log(data);
+                 console.log(data.products);
+                 $('#quantity_in_basket').text(data.products);
+                 console.log($('#quantity_in_basket').text());
              },
              error: function(){
                  console.log("error")
