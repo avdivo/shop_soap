@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.conf import settings
+from users.models import *
 from order.models import Order
 from product.models import *
 from django.db.models import Q
@@ -9,6 +10,9 @@ from django.http import JsonResponse
 
 
 # Главная страница
+from users.models import UserBasket
+
+
 def index(request):
     ord = {'orders': Order.objects.all()}
     return render(request, 'index.html', locals())
@@ -135,10 +139,31 @@ def add_to_basket(request):
     id = request.POST['id']
     quantity = int(request.POST['quantity'])
 
+    user = 1  # Пример номера зарегистрированного и авторизованного пользователя
+
     # Проверяем, зарегистрирован ли пользователь
-    if False: # Для проверки
+    if user:  # Для проверки
         # Пользователь зарегистрирован
-        pass
+        try:
+            products = UserBasket.objects.get(user=user).basket
+        except:
+            us = User(id=1)
+            ass = us()
+            # print(us.userbasket)
+            ass.basket = '1' #'{id: quantity}'
+            ass.save()
+
+        print(products)
+        if isinstance(products, dict):
+            if id in products:
+                products[id] += quantity
+                # AutoOneToOneModel
+                # Такого товара еще нет в корзине
+                request.session['basket'][id] = quantity
+            else:
+                # Такой товар есть в корзине
+                request.session['basket'][id] = request.session['basket'][id] + quantity
+                print(request.session['basket'][id])
 
     else:
         # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
