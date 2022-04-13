@@ -5,6 +5,7 @@ from order.models import Order
 from product.models import *
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.http import JsonResponse
 
 
 # Главная страница
@@ -123,3 +124,36 @@ def shop_single(request, product=None):
     discount_price = product.price - product.discount if product.discount else 0
 
     return render(request, 'shop-single.html', locals())
+
+
+# Контакты
+def add_to_basket(request):
+
+    if request.method != "POST":
+        return False
+    id = request.POST['id']
+    quantity = int(request.POST['quantity'])
+
+    # Проверяем, зарегистрирован ли пользователь
+    if False: # Для проверки
+        # Пользователь зарегистрирован
+        pass
+
+    else:
+        # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
+        if not 'basket' in request.session:
+            request.session['basket'] = {id: quantity}
+        else:
+            try:
+                print(request.session['basket'], '--------------------------------------')
+                if not id in request.session['basket']:
+                    print(id)
+                    request.session['basket'][id] = quantity
+                else:
+                    request.session['basket'][id] = request.session['basket'][id] + 100
+                    print(request.session['basket'][id] )
+            except:
+                del(request.session['basket'])
+                # request.session['basket'] = {id: quantity}
+
+    return JsonResponse({'dates': 'Ok from Django'})

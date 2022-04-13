@@ -227,11 +227,10 @@
     <script src="{% static '/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static '/js/templatemo.js' %}"></script>
     <script src="{% static '/js/custom.js' %}"></script>
+
+    {% block script_plus %}
+    {% endblock script_plus %}
     <!-- End Script -->
-
-{% block script_plus %}
-{% endblock script_plus %}
-
 </body>
 
 </html>

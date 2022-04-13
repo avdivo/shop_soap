@@ -5,8 +5,8 @@
 
 {% block head_plus %}
     <!-- Slick -->
-    <link rel="stylesheet" type="text/css" href="../static/css/slick.min.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/slick-theme.css">
+<!--    <link rel="stylesheet" type="text/css" href="../static/css/slick.min.css">-->
+<!--    <link rel="stylesheet" type="text/css" href="../static/css/slick-theme.css">-->
 {% endblock head_plus %}
 
 {% block content %}
@@ -78,14 +78,14 @@
                             <h6>Описание:</h6>
                             <p>{{ product.description|safe|linebreaks }}</p>
 
-                            <form action="" method="GET">
-                                <input type="hidden" name="product-title" value="Activewear">
+                            <form action="{% url 'add_to_basket' %}" method="post" id="form_work_basket">
+                                {% csrf_token %}
+                                <input type="hidden" id="product_id" value="{{ product.id }}">
                                 <div class="row">
                                     <div class="col-auto">
                                         <ul class="list-inline pb-3">
                                             <li class="list-inline-item text-right">
                                                 Количество
-                                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">
                                             </li>
                                             <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>
                                             <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
@@ -95,7 +95,7 @@
                                 </div>
                                 <div class="row pb-3">
                                     <div class="col d-grid">
-                                        <button type="submit" class="btn btn-success btn-lg" name="submit" value="addtocard">Add To Cart</button>
+                                        <button type="submit" class="btn btn-success btn-lg" name="submit">Добавить в корзину</button>
                                     </div>
                                 </div>
                             </form>
@@ -111,38 +111,5 @@
 {% endblock content %}
 
 {% block script_plus %}
-    <!-- Start Slider Script -->
-    <script src="../static/js/slick.min.js"></script>
-    <script>
-        $('#carousel-related-product').slick({
-            infinite: true,
-            arrows: false,
-            slidesToShow: 4,
-            slidesToScroll: 3,
-            dots: true,
-            responsive: [{
-                    breakpoint: 1024,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 3
-                    }
-                },
-                {
-                    breakpoint: 600,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 3
-                    }
-                },
-                {
-                    breakpoint: 480,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 3
-                    }
-                }
-            ]
-        });
-    </script>
-    <!-- End Slider Script -->
+    <script src="{% static '/js/work_basket.js' %}"></script>
 {% endblock script_plus %}
