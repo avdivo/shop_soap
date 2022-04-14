@@ -45,4 +45,5 @@ function update_basket(product_id, quantity){
 
 
 
+
 });

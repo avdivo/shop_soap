@@ -139,7 +139,7 @@ def add_to_basket(request):
     id = request.POST['id']
     quantity = int(request.POST['quantity'])
 
-    user = 1  # Пример номера зарегистрированного и авторизованного пользователя
+    user = settings.USER  # Пример номера зарегистрированного и авторизованного пользователя
 
     # Проверяем, зарегистрирован ли пользователь
     try:

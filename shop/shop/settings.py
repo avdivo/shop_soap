@@ -152,3 +152,6 @@ PRODUCT_PREFIX = '0000000'
 
 # Фото для товара у которого нет своей фотографии или она не активна
 NO_PHOTO = os.path.join(MEDIA_URL, 'product_image/no_photo.png')
+
+# Временно для тестов номер пользователя
+USER = 3
