@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 
 
 # Пользователи
@@ -11,12 +12,12 @@ class User(models.Model):
         verbose_name_plural = 'Пользователи'
 
 # # Обработка сигнала добавления пользователя, для создания записи о его корзине
-# def post_save_User(sender, instance, **kwargs):
-#     UserBasket
-#     instance.save(force_update=True)
-#
-# # Для модели Товаров
-# post_save.connect(post_save_User, sender=User)  # Сигнал после сохранения
+def post_save_User(sender, instance, **kwargs):
+    UserBasket(user=instance).save()
+
+# Для модели User
+post_save.connect(post_save_User, sender=User)  # Сигнал после сохранения
+
 
 # Корзины пользователей
 class UserBasket(models.Model):

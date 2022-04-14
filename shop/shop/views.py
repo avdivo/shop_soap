@@ -132,7 +132,7 @@ def shop_single(request, product=None):
 
 # Работа с Корзиной
 def add_to_basket(request):
-    request.session.modified = True
+    request.session.modified = True  # Без этого сессии с Ajax не сохраняются
 
     if request.method != "POST":
         return False
@@ -146,58 +146,32 @@ def add_to_basket(request):
         if user:  # Для проверки
             # Пользователь зарегистрирован
             user = User.objects.get(id=user)
-            products = UserBasket.objects.get(user=user).basket
+            basket = UserBasket.objects.get(user=user).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
             if 'basket' in request.session:
-                products = request.session['basket']
+                basket = request.session['basket']
+
             else:
-                ra
-        if isinstance(products, dict):
-            if id in products:
-                # Такой товар есть в корзине
-                products[id] += quantity
-            else:
-                # Такого товара еще нет в корзине
-                products[id] = quantity
+                raise
+        if not isinstance(basket, dict):
+            basket = eval(basket)
+            # Правильный ли формат корзины, должен быть словарь
+        if id in basket:
+            # Такой товар есть в корзине
+            basket[id] += quantity
         else:
-            # В корзине не словарь
-            raise
+            # Такого товара еще нет в корзине
+            basket[id] = quantity
     except:
-        # Если у него нет корзины, создадим ее
-        products = {id: quantity}
-    UserBasket(user=user, basket=products).save()
+        # Если нет корзины или в ней не словарь, создадим ее
+        basket = {id: quantity}
 
-        if isinstance(products, dict):
-            if id in products:
-                products[id] += quantity
-                # AutoOneToOneModel
-                # Такого товара еще нет в корзине
-                request.session['basket'][id] = quantity
-            else:
-                # Такой товар есть в корзине
-                request.session['basket'][id] = request.session['basket'][id] + quantity
-                print(request.session['basket'][id])
+    # Сохраняем корзину
+    if user:
+        UserBasket(user=user, basket=basket).save()
+    request.session['basket'] = basket
 
-    else:
-        # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
-        if not 'basket' in request.session:
-            request.session['basket'] = {id: quantity}
-        else:
-            try:
-                if isinstance(products, dict):
-                if not id in request.session['basket']:
-                    # Такого товара еще нет в корзине
-                    request.session['basket'][id] = quantity
-                else:
-                    # Такой товар есть в корзине
-                    request.session['basket'][id] = request.session['basket'][id] + quantity
-                    print(request.session['basket'][id])
-            except:
-                # Ситуация, если session['basket'] содержит неправильные данные
-                del(request.session['basket'])
-                request.session['basket'] = {id: quantity}
-                products = sum(x for x in request.session['basket'].values())  # Считаем количество товаров в корзине
-                print(request.session['basket'], '--------------------------------------')
+    products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
 
     return JsonResponse({'products': products})
