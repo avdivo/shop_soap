@@ -10,6 +10,14 @@ class User(models.Model):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
+# # Обработка сигнала добавления пользователя, для создания записи о его корзине
+# def post_save_User(sender, instance, **kwargs):
+#     UserBasket
+#     instance.save(force_update=True)
+#
+# # Для модели Товаров
+# post_save.connect(post_save_User, sender=User)  # Сигнал после сохранения
+
 # Корзины пользователей
 class UserBasket(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)

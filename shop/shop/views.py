@@ -142,18 +142,32 @@ def add_to_basket(request):
     user = 1  # Пример номера зарегистрированного и авторизованного пользователя
 
     # Проверяем, зарегистрирован ли пользователь
-    if user:  # Для проверки
-        # Пользователь зарегистрирован
-        try:
+    try:
+        if user:  # Для проверки
+            # Пользователь зарегистрирован
+            user = User.objects.get(id=user)
             products = UserBasket.objects.get(user=user).basket
-        except:
-            us = User(id=1)
-            ass = us()
-            # print(us.userbasket)
-            ass.basket = '1' #'{id: quantity}'
-            ass.save()
+        else:
+            # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
+            if 'basket' in request.session:
+                products = request.session['basket']
+            else:
+                ra
+        if isinstance(products, dict):
+            if id in products:
+                # Такой товар есть в корзине
+                products[id] += quantity
+            else:
+                # Такого товара еще нет в корзине
+                products[id] = quantity
+        else:
+            # В корзине не словарь
+            raise
+    except:
+        # Если у него нет корзины, создадим ее
+        products = {id: quantity}
+    UserBasket(user=user, basket=products).save()
 
-        print(products)
         if isinstance(products, dict):
             if id in products:
                 products[id] += quantity
@@ -171,6 +185,7 @@ def add_to_basket(request):
             request.session['basket'] = {id: quantity}
         else:
             try:
+                if isinstance(products, dict):
                 if not id in request.session['basket']:
                     # Такого товара еще нет в корзине
                     request.session['basket'][id] = quantity
