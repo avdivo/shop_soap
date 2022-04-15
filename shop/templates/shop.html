@@ -80,16 +80,21 @@
                 </div>
                 <div class="row">
 
+                    <form action="{% url 'add_to_basket' %}" method="post" id="form_work_basket" name="add">
+                        {% csrf_token %}
+                        <input type="hidden" id="product_id" value="{{ product.id }}">
+                    </form>
+
                     {% if product %}
                     {% for product in products %}
                     <div class="col-md-4">
                         <div class="card mb-4 product-wap rounded-0"><div class="card rounded-0">
-                                <img class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
-                                <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
-                                    <ul class="list-unstyled">
-                                        <li><a class="btn btn-success text-white mt-2" href="{% url 'shop-single' product.alias %}"><i class="far fa-eye"></i></a></li>
-                                        <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="fas fa-cart-plus"></i></a></li>
-                                    </ul>
+                            <img class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
+                            <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
+                                <ul class="list-unstyled">
+                                    <li><a class="btn btn-success text-white mt-2" href="{% url 'shop-single' product.alias %}"><i class="far fa-eye"></i></a></li>
+                                    <li><a class="btn btn-success text-white mt-2" href="#" id={{ product.id }} name="add"><i class="fas fa-cart-plus"></i></a></li>
+                                </ul>
                                 </div>
                             </div>
                             <div class="card-body">

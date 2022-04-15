@@ -32,18 +32,27 @@ function update_basket(product_id, quantity){
     }
 
 
-    // Отправка формы
+    // Отправка формы на странице shop-single.html
     form.on('submit', function(e){
         e.preventDefault(); // Отмена стандартного поведения Submit
 
-        var quantity = $('#var-value').text();
         var product_id = $('#product_id').val();
+        var quantity = $('#var-value').text();
 
         update_basket(product_id, quantity)
 
     });
 
 
+    // Отправка формы для страницы shop по ссылке
+    $('.btn').on('click', function(e){
+        if ($(this).attr('name') == 'add'){
+
+            var product_id = $(this).attr('id');
+            update_basket(product_id, 1)
+        }
+
+    });
 
 
 });
