@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакты{% endblock title %}
+
+{% block head_plus %}
+ <link rel="stylesheet" href="{% static '/css/custom.css' %}">
+{% endblock head_plus %}
+
+
+{% block content %}
+    <!-- Start Contact -->
+<div class="all bg-light">
+
+
+    <div class="container-fluid py-5">
+        <div class="row">
+            <div class="col-md-6 m-auto text-center">
+                <h1 class="h1">Корзина</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="table">
+        <div class="container">
+            <div class="row justify-content-end">
+                <div class="col-md-4 text-center" style="background-color: #dddddd">
+                    <li class="list-inline-item">
+                        <a class="h6 text-dark text-decoration-none mr-3" href="#">Выделить</a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="h6 text-dark text-decoration-none mr-3" href="#">Снять</a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="h6 text-dark text-decoration-none mr-3" href="#">Удалить</a>
+                    </li>
+                </div>
+            </div>
+
+
+            <div class="row" >
+                <div class="col-md-1 m-auto text-center">
+                    <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
+                </div>
+                <div class="col-md-4 m-auto">
+                    Красная роза
+                </div>
+                <div class="col-md-1 m-auto">
+                    300 р
+                </div>
+                <div class="col-md-2 m-auto text-center">
+                    <div class="">
+                        <ul class="list-inline pb-3">
+                            <li>
+                                <p>Количество</p>
+                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">
+                            </li>
+                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>
+                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-1 m-auto">
+                    300 р
+                </div>
+                <div class="col-md-1 m-auto">
+                    <div align="right"><a class="text-decoration-none" href="#"> &#10006; </a></div>
+                    <input type="checkbox" id="scales" name="scales" checked>
+                </div>
+            </div>
+
+            <div class="row" style="background-color: #dddddd">
+                <div class="col-md-1 m-auto text-center">
+                    <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
+                </div>
+                <div class="col-md-4 m-auto">
+                    Красная роза
+                </div>
+                <div class="col-md-1 m-auto">
+                    300 р
+                </div>
+                <div class="col-md-2 m-auto text-center">
+                    <div class="">
+                        <ul class="list-inline pb-3">
+                            <li>
+                                <p>Количество</p>
+                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">
+                            </li>
+                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>
+                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-1 m-auto">
+                    300 р
+                </div>
+                <div class="col-md-1 m-auto">
+                        <div align="right"><a class="text-decoration-none" href="#"> &#10006; </a></div>
+                        <input type="checkbox" id="scales" name="scales" checked>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 m-auto text-center">
+                    <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
+                </div>
+                <div class="col-md-4 m-auto">
+                    Красная роза
+                </div>
+                <div class="col-md-1 m-auto">
+                    300 р
+                </div>
+                <div class="col-md-2 m-auto text-center">
+                    <div class="">
+                        <ul class="list-inline pb-3">
+                            <li>
+                                <p>Количество</p>
+                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">
+                            </li>
+                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>
+                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-1 m-auto">
+                    300 р
+                </div>
+                <div class="col-md-1 m-auto">
+                    <div align="right"><a class="text-decoration-none" href="#"> &#10006; </a></div>
+                    <input type="checkbox" id="scales" name="scales" checked>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-md-4 text-center" style="background-color: #dddddd">
+                    <li class="list-inline-item">
+                        <span class="h3">Сумма:</span>
+                    </li>
+                    <li class="list-inline-item">
+                        <span class="h3">500 р</span>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="btn btn-success">Оформить заказ</a>
+                    </li>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<!--        <div class="row">-->
+<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
+<!--                <h5 class="h5">Фотография</h5>-->
+<!--            </div>-->
+<!--            <div class="col-md-4 m-auto text-center" style="background-color: #aeaeae;">-->
+<!--                <h6 class="h6">Название</h6>-->
+<!--            </div>-->
+<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
+<!--                <h6 class="h6">Цена</h6>-->
+<!--            </div>-->
+<!--            <div class="col-md-2 m-auto text-center" style="background-color: #aeaeae;">-->
+<!--                <h6 class="h6">Количество</h6>-->
+<!--            </div>-->
+<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
+<!--                <h6 class="h6">Сумма</h6>-->
+<!--            </div>-->
+<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
+<!--                <h6 class="h6">Управление</h6>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <br>-->
+<!--        <div class="row align-items-center">-->
+<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
+<!--                <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">-->
+<!--            </div>-->
+<!--            <div class="col-md-4 my-auto text-center align-self-center" style="background-color: #aeaeae;">-->
+<!--                Название-->
+<!--            </div>-->
+<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
+<!--                <h6 class="h6">Цена</h6>-->
+<!--            </div>-->
+<!--            <div class="col-md-2 m-auto text-center" style="background-color: #aeaeae;">-->
+<!--                <div class="parent_quan">-->
+<!--                    <div class="ch_quan">-->
+<!--                        <ul class="list-inline pb-3">-->
+<!--                            <li class="list-inline-item text-right">-->
+<!--                                Quantity-->
+<!--                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">-->
+<!--                            </li>-->
+<!--                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>-->
+<!--                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>-->
+<!--                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--            </div>-->
+<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
+<!--                <h6 class="h6">Сумма</h6>-->
+<!--            </div>-->
+<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
+<!--                <h6 class="h6">Управление</h6>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+
+
+    <!-- End Contact -->
+{% endblock content %}

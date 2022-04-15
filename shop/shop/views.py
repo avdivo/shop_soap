@@ -23,9 +23,7 @@ def about(request):
     return render(request, 'about.html', locals())
 
 
-# Магазин (выбор товара)
-
-
+# Магазин (выбор товара) ---------------------------------------------------------
 def shop(request, filter=None):
     # Сортировка проверяется в сессии и применяется при каждом выводе товаров
     # По умолчанию производится сортировка по Популярности товаров
@@ -99,12 +97,13 @@ def shop(request, filter=None):
     # sort и filter передаются в шаблон
     return render(request, 'shop.html', locals())
 
-# Контакты
+
+# Контакты --------------------------------------------------------------
 def contact(request):
     return render(request, 'contact.html', locals())
 
 
-# Карточка товара
+# Карточка товара ------------------------------------------------------
 def shop_single(request, product=None):
     # Вход на страницу без параметра не возможен, происходит перенаправление на магазин
     if product == None:
@@ -130,7 +129,7 @@ def shop_single(request, product=None):
     return render(request, 'shop-single.html', locals())
 
 
-# Работа с Корзиной
+# Работа с Корзиной ------------------------------------------------
 def add_to_basket(request):
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
 
@@ -175,3 +174,9 @@ def add_to_basket(request):
     products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
 
     return JsonResponse({'products': products})
+
+
+# Корзина --------------------------------------------------------------
+def basket(request):
+
+    return render(request, 'basket.html', locals())
