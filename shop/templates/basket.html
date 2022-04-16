@@ -38,11 +38,12 @@
             </div>
 
 
-            <div class="row" >
+            <div class="row">
                 <div class="col-md-1 m-auto text-center">
                     <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
                 </div>
                 <div class="col-md-4 m-auto">
+                    <input type="hidden" form="form_work_basket" name="products" value="{{ product.id }}">
                     Красная роза
                 </div>
                 <div class="col-md-1 m-auto">
@@ -53,11 +54,10 @@
                         <ul class="list-inline pb-3">
                             <li>
                                 <p>Количество</p>
-                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">
                             </li>
-                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>
-                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
-                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" name="btn-minus" id="2">-</span></li>
+                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value_2">1</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" name="btn-plus" id="2">+</span></li>
                         </ul>
                     </div>
                 </div>
@@ -66,7 +66,9 @@
                 </div>
                 <div class="col-md-1 m-auto">
                     <div align="right"><a class="text-decoration-none manag" href="#"> &#10006; </a></div>
-                    <input type="checkbox" class="ch" id="scales" name="scales" checked>
+                    <div class="form-switch">
+                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                    </div>
                 </div>
             </div>
 
@@ -87,9 +89,9 @@
                                 <p>Количество</p>
                                 <input type="hidden" name="product-quanity" id="product-quanity" value="1">
                             </li>
-                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>
-                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
-                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" name="btn-minus" id="3">-</span></li>
+                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value_3">1</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" name="btn-plus" id="3">+</span></li>
                         </ul>
                     </div>
                 </div>
@@ -97,8 +99,10 @@
                     300 р
                 </div>
                 <div class="col-md-1 m-auto">
-                        <div align="right"><a class="text-decoration-none" href="#"> &#10006; </a></div>
-                        <input type="checkbox" id="scales" name="scales" checked>
+                    <div align="right"><a class="text-decoration-none manag" href="#"> &#10006; </a></div>
+                    <div class="form-switch">
+                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                    </div>
                 </div>
             </div>
 
@@ -119,9 +123,9 @@
                                 <p>Количество</p>
                                 <input type="hidden" name="product-quanity" id="product-quanity" value="1">
                             </li>
-                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>
-                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
-                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" name="btn-minus" id="4">-</span></li>
+                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value_4">1</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" name="btn-plus" id="4">+</span></li>
                         </ul>
                     </div>
                 </div>
@@ -129,8 +133,10 @@
                     300 р
                 </div>
                 <div class="col-md-1 m-auto">
-                    <div align="right"><a class="text-decoration-none" href="#"> &#10006; </a></div>
-                    <input type="checkbox" id="scales" name="scales" checked>
+                    <div align="right"><a class="text-decoration-none manag" href="#"> &#10006; </a></div>
+                    <div class="form-switch">
+                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                    </div>
                 </div>
             </div>
 
@@ -143,11 +149,14 @@
                         <span class="h3">500 р</span>
                     </li>
                     <li class="list-inline-item">
-                        <a class="btn btn-success">Оформить заказ</a>
+                        <a class="btn btn-success" name="send">Оформить заказ</a>
                     </li>
                 </div>
             </div>
 
+            <form action="{% url 'add_to_basket' %}" method="post" id="form_work_basket">
+                {% csrf_token %}
+            </form>
 
         </div>
     </div>
@@ -155,65 +164,9 @@
 
 </div>
 
-
-<!--        <div class="row">-->
-<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
-<!--                <h5 class="h5">Фотография</h5>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 m-auto text-center" style="background-color: #aeaeae;">-->
-<!--                <h6 class="h6">Название</h6>-->
-<!--            </div>-->
-<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
-<!--                <h6 class="h6">Цена</h6>-->
-<!--            </div>-->
-<!--            <div class="col-md-2 m-auto text-center" style="background-color: #aeaeae;">-->
-<!--                <h6 class="h6">Количество</h6>-->
-<!--            </div>-->
-<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
-<!--                <h6 class="h6">Сумма</h6>-->
-<!--            </div>-->
-<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
-<!--                <h6 class="h6">Управление</h6>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <br>-->
-<!--        <div class="row align-items-center">-->
-<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
-<!--                <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">-->
-<!--            </div>-->
-<!--            <div class="col-md-4 my-auto text-center align-self-center" style="background-color: #aeaeae;">-->
-<!--                Название-->
-<!--            </div>-->
-<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
-<!--                <h6 class="h6">Цена</h6>-->
-<!--            </div>-->
-<!--            <div class="col-md-2 m-auto text-center" style="background-color: #aeaeae;">-->
-<!--                <div class="parent_quan">-->
-<!--                    <div class="ch_quan">-->
-<!--                        <ul class="list-inline pb-3">-->
-<!--                            <li class="list-inline-item text-right">-->
-<!--                                Quantity-->
-<!--                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">-->
-<!--                            </li>-->
-<!--                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>-->
-<!--                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>-->
-<!--                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--            </div>-->
-<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
-<!--                <h6 class="h6">Сумма</h6>-->
-<!--            </div>-->
-<!--            <div class="col-md-1 m-auto text-center" style="background-color: #e3e3e3;">-->
-<!--                <h6 class="h6">Управление</h6>-->
-<!--            </div>-->
-<!--        </div>-->
-
-<!--    </div>-->
-<!--</div>-->
-
-
     <!-- End Contact -->
 {% endblock content %}
+
+{% block script_plus %}
+    <script src="{% static '/js/basket_and_order.js' %}"></script>
+{% endblock script_plus %}

@@ -46,13 +46,43 @@ function update_basket(product_id, quantity){
 
     // Отправка формы для страницы shop по ссылке
     $('.btn').on('click', function(e){
-        if ($(this).attr('name') == 'add'){
 
+        if ($(this).attr('name') == 'add'){
+            e.preventDefault(); // Отмена стандартного поведения
             var product_id = $(this).attr('id');
             update_basket(product_id, 1)
         }
 
     });
 
+
+    // Увеличить/уменьшить количество товаров
+    $('#btn-minus').click(function(){
+      var val = $("#var-value").html();
+      val = (val=='1')?val:val-1;
+      $("#var-value").html(val);
+      $("#product-quanity").val(val);
+      return false;
+    });
+    $('#btn-plus').click(function(){
+      var val = $("#var-value").html();
+      val++;
+      $("#var-value").html(val);
+      $("#product-quanity").val(val);
+      return false;
+    });
+
+    // Accordion Меню выбора категорий
+    var all_panels = $('.templatemo-accordion > li > ul').hide();
+
+    $('.templatemo-accordion > li > a').click(function() {
+        var target =  $(this).next();
+        if(!target.hasClass('active')){
+            all_panels.removeClass('active').slideUp();
+            target.addClass('active').slideDown();
+        }
+      return false;
+    });
+    // End accordion
 
 });
