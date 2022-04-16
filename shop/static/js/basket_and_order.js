@@ -2,32 +2,41 @@
 $(document).ready(function(){
     var form = $('#form_work_basket');
 
-// Ajax правление информации об обновлении корзины
-function update_basket(product_id, quantity){
-        var csrf_token = $('#form_work_basket [name="csrfmiddlewaretoken"]').val();
-        var data = {
-            'id': product_id,
-            'quantity': quantity,
-            'csrfmiddlewaretoken': csrf_token
-        }
+    // Ajax оправление информации об обновлении корзины
+    // с заданной задержкой в мс
+    var timeOut;
+    function sendCanges(change, product, timer){
+        if(timeOut)
+            clearTimeout(timeOut);
+        timeOut = setTimeout(function() {
+            var csrf_token = $('#form_work_basket [name="csrfmiddlewaretoken"]').val();
+            var url = form.attr("action");
+            var data = {
+                'change': change,
+                'product': product,
+                'csrfmiddlewaretoken': csrf_token
+            }
+            $data = $("#filter_form").serialize();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: data,
+                cache: true,
+                success: function (data) {
+                    if (change == 'delete'){
+                        $('#row_' + product).remove();
+                    }
+                    updatePage();
+                },
+                error: function(){
+                    console.log(change, product);
+                    $('#var-value_' + product).html($('#sum_' + product).html() / $('#price_' + product).html());
+                    alert('Ошибка передачи данных!');
+                    updatePage();
+                }
 
-        var url = form.attr("action");
-
-        console.log(data)
-         $.ajax({
-             url: url,
-             type: 'POST',
-             data: data,
-             cache: true,
-             success: function (data) {
-                 console.log(data.products);
-                 $('#quantity_in_basket').text(data.products);
-                 console.log($('#quantity_in_basket').text());
-             },
-             error: function(){
-                 console.log("error")
-             }
-         })
+            });
+        }, timer);
 
     }
 
@@ -62,35 +71,82 @@ function update_basket(product_id, quantity){
             value++;
         }
         $(var_value).html(value);
+        var change = 'cange'
+        var product = $(this).attr('id')
+        var timer = 500
+        sendCanges(change, product, timer)
 
-
-      // var val = $("#var-value").html();
-      // val = (val=='1')?val:val-1;
-      // $("#var-value").html(val);
-      // $("#product-quanity").val(val);
-      // return false;
-    });
-    // $('#btn-plus').click(function(){
-    //   var val = $("#var-value").html();
-    //   val++;
-    //   $("#var-value").html(val);
-    //   $("#product-quanity").val(val);
-    //   return false;
-    // });
-
-
-
-
-    // Отправка формы для страницы shop по ссылке
-    $('.btn').on('click', function(e){
-
-        if ($(this).attr('name') == 'add'){
-            e.preventDefault(); // Отмена стандартного поведения
-            var product_id = $(this).attr('id');
-            update_basket(product_id, 1)
-        }
 
     });
 
+
+    // Удаление товара из корзины
+    $('.manag').on('click', function(e){
+        e.preventDefault(); // Отмена стандартного поведения перехода по ссылке
+        var change = 'delete';
+        var product = $(this).attr('id');
+        var timer = 0;
+        sendCanges(change, product, timer);
+    });
+
+
+    // Обновление страницы, рассчет сумм
+    function updatePage(){
+        var all = $(".form-check-input") // Находим все товары по чекбоксам
+        var total_sum = 0; // Общая стоимость выделеных товаров
+        $.each(all,function(id, obj) {
+            var sel_price = '#price_' + obj.name // id цены товара
+            var sel_quanity = '#var-value_' + obj.name // id количества товара
+            var sel_sum = '#sum_' + obj.name // id суммы товара
+            var sum = $(sel_price).html() * $(sel_quanity).html()
+            $(sel_sum).html(sum)
+            if (obj.checked) {
+                total_sum += sum // Включаем в итоговую сумму, если товар выбран
+            }
+        });
+        $('#total_sum').html(total_sum) // Обновляем общую сумму
+        if ($(".form-check-input").length == 0) $(".table").remove();
+    };
+
+
+    // Выбрать все товары
+    $('#select').on('click', function(e){
+        e.preventDefault(); // Отмена стандартного поведения перехода по ссылке
+        var all = $(".form-check-input") // Находим все товары по чекбоксам
+        $.each(all,function(id, obj) {
+            obj.checked = 'checked';
+        });
+        updatePage();
+    });
+
+    // Снять выбор со всех товаров
+    $('#clear').on('click', function(e){
+        e.preventDefault(); // Отмена стандартного поведения перехода по ссылке
+        var all = $(".form-check-input") // Находим все товары по чекбоксам
+        $.each(all,function(id, obj) {
+            obj.checked = '';
+        });
+        updatePage();
+    });
+
+    // Удалить выбранные товары
+    $('#delete').on('click', function(e){
+        e.preventDefault(); // Отмена стандартного поведения перехода по ссылке
+        var all = $(".form-check-input") // Находим все товары по чекбоксам
+        $.each(all,function(id, obj) {
+            if (obj.checked) {
+                var change = 'delete';
+                var product = obj.name;
+                var timer = 0;
+                sendCanges(change, product, timer);
+            }
+        });
+    });
+
+
+    // Пересчет сумм при выборе или снятии выбора товаров
+    $(".form-check-input").on('change', function(){
+        updatePage()
+    });
 
 });

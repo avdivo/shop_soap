@@ -26,28 +26,27 @@
             <div class="row justify-content-end">
                 <div class="col-md-4 text-center" style="background-color: #dddddd">
                     <li class="list-inline-item">
-                        <a class="h6 text-dark text-decoration-none mr-3" href="#">Выделить</a>
+                        <a class="h6 text-dark text-decoration-none mr-3" id="select" href="#">Выделить</a>
                     </li>
                     <li class="list-inline-item">
-                        <a class="h6 text-dark text-decoration-none mr-3" href="#">Снять</a>
+                        <a class="h6 text-dark text-decoration-none mr-3" id="clear" href="#">Снять</a>
                     </li>
                     <li class="list-inline-item">
-                        <a class="h6 text-dark text-decoration-none mr-3" href="#">Удалить</a>
+                        <a class="h6 text-dark text-decoration-none mr-3" id="delete" href="#">Удалить</a>
                     </li>
                 </div>
             </div>
 
 
-            <div class="row">
+            <div class="row" id="row_2">
                 <div class="col-md-1 m-auto text-center">
                     <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
                 </div>
                 <div class="col-md-4 m-auto">
-                    <input type="hidden" form="form_work_basket" name="products" value="{{ product.id }}">
                     Красная роза
                 </div>
                 <div class="col-md-1 m-auto">
-                    300 р
+                    <span id="price_2">300</span> &#x20bd;
                 </div>
                 <div class="col-md-2 m-auto text-center">
                     <div class="">
@@ -62,17 +61,17 @@
                     </div>
                 </div>
                 <div class="col-md-1 m-auto">
-                    300 р
+                    <span id="sum_2">300</span> &#x20bd;
                 </div>
                 <div class="col-md-1 m-auto">
-                    <div align="right"><a class="text-decoration-none manag" href="#"> &#10006; </a></div>
+                    <div align="right"><a class="manag text-decoration-none" href="#" id="2"> &#10006; </a></div>
                     <div class="form-switch">
-                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                          <input class="form-check-input" type="checkbox" name="2" id="switch_2" checked>
                     </div>
                 </div>
             </div>
 
-            <div class="row" style="background-color: #dddddd">
+            <div class="row" id="row_3" style="background-color: #dddddd">
                 <div class="col-md-1 m-auto text-center">
                     <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
                 </div>
@@ -80,7 +79,7 @@
                     Красная роза
                 </div>
                 <div class="col-md-1 m-auto">
-                    300 р
+                    <span id="price_3">300</span> &#x20bd;
                 </div>
                 <div class="col-md-2 m-auto text-center">
                     <div class="">
@@ -96,17 +95,17 @@
                     </div>
                 </div>
                 <div class="col-md-1 m-auto">
-                    300 р
+                     <span id="sum_3">300</span> &#x20bd;
                 </div>
                 <div class="col-md-1 m-auto">
-                    <div align="right"><a class="text-decoration-none manag" href="#"> &#10006; </a></div>
+                    <div align="right"><a class="manag text-decoration-none" href="#" id="3"> &#10006; </a></div>
                     <div class="form-switch">
-                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                          <input class="form-check-input" type="checkbox" name="3" id="switch_3" checked>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="row_4">
                 <div class="col-md-1 m-auto text-center">
                     <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
                 </div>
@@ -114,7 +113,7 @@
                     Красная роза
                 </div>
                 <div class="col-md-1 m-auto">
-                    300 р
+                    <span id="price_4">300</span> &#x20bd;
                 </div>
                 <div class="col-md-2 m-auto text-center">
                     <div class="">
@@ -129,13 +128,13 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-1 m-auto">
+                <div class="col-md-1 m-auto" id="sum_4">
                     300 р
                 </div>
                 <div class="col-md-1 m-auto">
-                    <div align="right"><a class="text-decoration-none manag" href="#"> &#10006; </a></div>
+                    <div align="right"><a class="manag text-decoration-none" href="#" id="4"> &#10006; </a></div>
                     <div class="form-switch">
-                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked>
+                          <input class="form-check-input" type="checkbox" name="4" id="switch_4" checked>
                     </div>
                 </div>
             </div>
@@ -146,7 +145,7 @@
                         <span class="h3">Сумма:</span>
                     </li>
                     <li class="list-inline-item">
-                        <span class="h3">500 р</span>
+                        <span class="h3"><span id="total_sum">900</span> &#x20bd;</span>
                     </li>
                     <li class="list-inline-item">
                         <a class="btn btn-success" name="send">Оформить заказ</a>
