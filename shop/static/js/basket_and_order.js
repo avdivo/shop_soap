@@ -5,64 +5,64 @@ $(document).ready(function(){
     // Ajax оправление информации об обновлении корзины
     // с заданной задержкой в мс
     var timeOut;
-    function sendCanges(change, product, timer){
+    function sendCanges(data, change, product, timer){
         if(timeOut)
             clearTimeout(timeOut);
         timeOut = setTimeout(function() {
             var csrf_token = $('#form_work_basket [name="csrfmiddlewaretoken"]').val();
             var url = form.attr("action");
-            var data = {
-                'change': change,
-                'product': product,
-                'csrfmiddlewaretoken': csrf_token
-            }
-            $data = $("#filter_form").serialize();
+            data['csrfmiddlewaretoken'] = csrf_token
+            data['change'] = change
+            console.log(data);
             $.ajax({
                 url: url,
                 type: 'POST',
                 data: data,
                 cache: true,
                 success: function (data) {
+                    // Операция успешно выполнена
                     if (change == 'delete'){
-                        $('#row_' + product).remove();
+                        // Удаляем кандидатов на удаление (на сервере это уже сделано)
+                        $.each(product,function(del) {
+                            $('#row_' + del).remove();
+                        });
+                    }
+                    if (change == 'send'){
+                        // Переход на следующую страницу оформления товара
                     }
                     updatePage();
                 },
                 error: function(){
-                    console.log(change, product);
-                    $('#var-value_' + product).html($('#sum_' + product).html() / $('#price_' + product).html());
-                    alert('Ошибка передачи данных!');
+                    console.log('error');
+                    // Произошла ошибка связи с сервером или обновления данных
+                    if (change == 'change') {
+                        // Отменяем добавление или отнятие товаров в корзину
+                        $('#var-value_' + product).html($('#sum_' + product).html() / $('#price_' + product).html());
+                    }
+                    alert('Ошибка при передаче данных!');
                     updatePage();
                 }
-
             });
         }, timer);
 
     }
 
 
-    // Отправка формы на странице shop-single.html
-    form.on('submit', function(e){
-        e.preventDefault(); // Отмена стандартного поведения Submit
-
-        var product_id = $('#product_id').val();
-        var quantity = $('#var-value').text();
-
-        update_basket(product_id, quantity)
-
-    });
-
     // Обработка нажатия кнопок
     // Увеличить/уменьшить количество товаров, отправка формы
     $('.btn').click(function(){
         // Отправка формы
         if ($(this).attr('name') == 'send') {
-
+            if ($('#total_sum').html() != 0) {
+                var change = 'send';
+                change_and_send(change, [], 0);
+            }
+            return
         }
 
         // Уменьшить количество товаров
-        var var_value = "#var-value_" + $(this).attr('id')
-        var value = $(var_value).html()
+        var var_value = "#var-value_" + $(this).attr('id');
+        var value = $(var_value).html();
         if ($(this).attr('name') == 'btn-minus') {
             value = (value=='1')?value:value-1;
         }
@@ -71,12 +71,10 @@ $(document).ready(function(){
             value++;
         }
         $(var_value).html(value);
-        var change = 'cange'
-        var product = $(this).attr('id')
-        var timer = 500
-        sendCanges(change, product, timer)
-
-
+        var change = 'change';
+        var product = [$(this).attr('id')];
+        var timer = 500;
+        change_and_send(change, product, timer);
     });
 
 
@@ -84,9 +82,9 @@ $(document).ready(function(){
     $('.manag').on('click', function(e){
         e.preventDefault(); // Отмена стандартного поведения перехода по ссылке
         var change = 'delete';
-        var product = $(this).attr('id');
+        var product = [$(this).attr('id')];
         var timer = 0;
-        sendCanges(change, product, timer);
+        change_and_send(change, product, timer);
     });
 
 
@@ -132,15 +130,17 @@ $(document).ready(function(){
     // Удалить выбранные товары
     $('#delete').on('click', function(e){
         e.preventDefault(); // Отмена стандартного поведения перехода по ссылке
-        var all = $(".form-check-input") // Находим все товары по чекбоксам
+        var all = $(".form-check-input"); // Находим все товары по чекбоксам
+        var product = [];
         $.each(all,function(id, obj) {
             if (obj.checked) {
-                var change = 'delete';
-                var product = obj.name;
-                var timer = 0;
-                sendCanges(change, product, timer);
+                product.push(obj.name)
             }
         });
+        var change = 'delete';
+        var timer = 0;
+        change_and_send(change, product, timer);
+
     });
 
 
@@ -148,5 +148,30 @@ $(document).ready(function(){
     $(".form-check-input").on('change', function(){
         updatePage()
     });
+
+
+    // Подготовка содержимого корзины для отправки на сервер и отправка
+    // Функция готовит будущее корзины, запоминает ключевые показатели
+    // Применяет изменения после удачного согласования с сервером или отменяет их
+    // Аргумент change может быть: 'change' - изменение одного товара, 'delete' - удаление товаров
+    // 'send' - подготовка списка для отправки
+    // Аргумент product содержит список изменяемых товаров или ничего: 'change'
+    function change_and_send(change, product, timer){
+        var all = $(".form-check-input") // Находим все товары по чекбоксам
+        // console.log(change, product);
+        const data = {}; // Данные для отправки
+        $.each(all,function(id, obj) {
+            var sel_quanity = '#var-value_' + obj.name // id количества товара
+            if (!(product.includes(obj.name) && change == 'delete')) {
+                // Товар не отправляется если он кандидат на удаление
+                if (change != 'send' || (change == 'send' && obj.checked)) {
+                    // Товар отправляется всегда при обновлении
+                    // И только при установленном checked если это заказ (send)
+                    data[obj.name] = $(sel_quanity).html() // Создаем массив id: количество
+                }
+            }
+        });
+        sendCanges(data, change, product, timer);
+    };
 
 });
