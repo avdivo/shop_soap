@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 
 
+
 # Главная страница
 from users.models import UserBasket
 
@@ -86,6 +87,17 @@ def shop(request, filter=None):
     products = paginator.get_page(page_number)
 
     # Выбор главной фотографии для каждого товара
+    products = select_main_photo(products)
+
+    # sort и filter передаются в шаблон
+    return render(request, 'shop.html', locals())
+
+
+# ----------------------------------------------------------------------------------------
+# Встраивает главную фотографю (url) товара в объект продукта из предоставленного списка товаров
+# Возвращает список товаров
+def select_main_photo(products):
+    # Выбор главной фотографии для каждого товара
     for product in products:
         photo = ProductImage.objects.filter(product_id=product.id, active=True,
                                             main=True)  # Выбираем главную фотографию для товара
@@ -93,9 +105,7 @@ def shop(request, filter=None):
         product.photo = settings.NO_PHOTO
         if len(photo):
             product.photo = photo[0].image.url
-
-    # sort и filter передаются в шаблон
-    return render(request, 'shop.html', locals())
+    return products
 
 
 # Контакты --------------------------------------------------------------
@@ -116,7 +126,7 @@ def shop_single(request, product=None):
     images = product.productimage_set.filter(active=True)
     # Выбираем главную фотографию если она есть, если нет, назначаем первую или заглушку если их нет вообще
     if len(images):
-        main_image =images[0].image.url
+        main_image = images[0].image.url
     else:
         main_image = settings.NO_PHOTO
     for image in images:
@@ -129,6 +139,36 @@ def shop_single(request, product=None):
     return render(request, 'shop-single.html', locals())
 
 
+# Проверка корзины на существование, выбор, создание. Возращает корзину (словарь)
+def get_basket(default, request):
+    request.session.modified = True  # Без этого сессии с Ajax не сохраняются
+
+    # Заменить -----------------------------------------------------------------------------
+    user = settings.USER  # Пример номера зарегистрированного и авторизованного пользователя
+    # --------------------------------------------------------------------------------------
+
+    # Проверяем, зарегистрирован ли пользователь
+    try:
+        if user:  # Для проверки
+            # Пользователь зарегистрирован
+            user = User.objects.get(id=user)
+            basket = UserBasket.objects.get(user=user).basket
+        else:
+            # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
+            if 'basket' in request.session:
+                basket = request.session['basket']
+
+            else:
+                raise
+        if not isinstance(basket, dict):
+            basket = eval(basket)
+            # Правильный ли формат корзины, должен быть словарь
+    except:
+        # Если нет корзины или в ней не словарь, создадим ее
+        basket = default
+    return basket
+
+
 # Работа с Корзиной ------------------------------------------------
 def add_to_basket(request):
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
@@ -138,7 +178,9 @@ def add_to_basket(request):
     id = request.POST['id']
     quantity = int(request.POST['quantity'])
 
+    # Заменить -----------------------------------------------------------------------------
     user = settings.USER  # Пример номера зарегистрированного и авторизованного пользователя
+    # --------------------------------------------------------------------------------------
 
     # Проверяем, зарегистрирован ли пользователь
     try:
@@ -177,6 +219,38 @@ def add_to_basket(request):
 
 
 # Корзина --------------------------------------------------------------
-def basket(request):
+def basket(request, new_basket=None):
+    request.session.modified = True  # Без этого сессии с Ajax не сохраняются
+    default = dict()
+    basket = get_basket(default, request) # Получаем корзину в виде словаря
+
+    # Заменить -----------------------------------------------------------------------------
+    user = settings.USER  # Пример номера зарегистрированного и авторизованного пользователя
+    user = User.objects.get(id=user)
+    # --------------------------------------------------------------------------------------
+
+    # Ajax запрос на изменение корзины
+    if request.method == "POST":
+        try:
+            basket = dict(request.POST) # Пришла новая корзина
+            del(basket['csrfmiddlewaretoken']) # Удаляем из нее токен
+            basket = {id: int(value[0]) for id, value in basket.items()} # Переделываем в словарь
+            # Сохраняем корзину
+            if user:
+                UserBasket(user=user, basket=basket).save()
+            request.session['basket'] = basket
+
+
+            return JsonResponse({'basket': basket})
+        except:
+            return
+
+    products = [] # Список товаров в корзине
+    for id, quantity in basket.items():
+        products.append(Product.objects.get(id=id))
+        products[-1].quantity = quantity # Добавляем свойство с количеством товаров
+
+    # Выбор главной фотографии для каждого товара
+    products = select_main_photo(products)
 
     return render(request, 'basket.html', locals())

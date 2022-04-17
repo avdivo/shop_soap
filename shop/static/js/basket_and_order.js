@@ -1,6 +1,7 @@
 // Добавление товара в корзину
 $(document).ready(function(){
     var form = $('#form_work_basket');
+    updatePage();
 
     // Ajax оправление информации об обновлении корзины
     // с заданной задержкой в мс
@@ -12,7 +13,6 @@ $(document).ready(function(){
             var csrf_token = $('#form_work_basket [name="csrfmiddlewaretoken"]').val();
             var url = form.attr("action");
             data['csrfmiddlewaretoken'] = csrf_token
-            data['change'] = change
             console.log(data);
             $.ajax({
                 url: url,

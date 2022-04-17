@@ -85,4 +85,13 @@ function update_basket(product_id, quantity){
     });
     // End accordion
 
+    $('.btn-size').click(function(){
+      var this_val = $(this).html();
+      $("#product-size").val(this_val);
+      $(".btn-size").removeClass('btn-secondary');
+      $(".btn-size").addClass('btn-success');
+      $(this).removeClass('btn-success');
+      $(this).addClass('btn-secondary');
+      return false;
+    });
 });

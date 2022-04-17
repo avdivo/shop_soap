@@ -30,7 +30,6 @@ urlpatterns = [
     path('shop-single/<str:product>/', shop_single, name='shop-single'),
     path('add_to_basket/', add_to_basket, name='add_to_basket'),
     path('basket/', basket, name='basket'),
-    path('basket/<str:filter>', basket, name='basket'),
 
 ]
 # https://learntutorials.net/ru/django/topic/3299/%D0%BC%D0%B0%D1%80%D1%88%D1%80%D1%83%D1%82%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-url

@@ -37,16 +37,17 @@
                 </div>
             </div>
 
-
-            <div class="row" id="row_2">
+            {% if products %}
+            {% for product in products %}
+            <div class="row" id="row_{{ product.id }}">
                 <div class="col-md-1 m-auto text-center">
-                    <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
+                    <img class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
                 </div>
                 <div class="col-md-4 m-auto">
-                    Красная роза
+                    {{ product.name }}
                 </div>
                 <div class="col-md-1 m-auto">
-                    <span id="price_2">300</span> &#x20bd;
+                    <span id="price_{{ product.id }}">{{ product.price }}</span> &#x20bd;
                 </div>
                 <div class="col-md-2 m-auto text-center">
                     <div class="">
@@ -54,90 +55,23 @@
                             <li>
                                 <p>Количество</p>
                             </li>
-                            <li class="list-inline-item"><span class="btn btn-success" name="btn-minus" id="2">-</span></li>
-                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value_2">1</span></li>
-                            <li class="list-inline-item"><span class="btn btn-success" name="btn-plus" id="2">+</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" name="btn-minus" id="{{ product.id }}">-</span></li>
+                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value_{{ product.id }}">{{ product.quantity }}</span></li>
+                            <li class="list-inline-item"><span class="btn btn-success" name="btn-plus" id="{{ product.id }}">+</span></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-md-1 m-auto">
-                    <span id="sum_2">300</span> &#x20bd;
+                    <span id="sum_{{ product.id }}">0</span> &#x20bd;
                 </div>
                 <div class="col-md-1 m-auto">
-                    <div align="right"><a class="manag text-decoration-none" href="#" id="2"> &#10006; </a></div>
+                    <div align="right"><a class="manag text-decoration-none" href="#" id="{{ product.id }}"> &#10006; </a></div>
                     <div class="form-switch">
-                          <input class="form-check-input" type="checkbox" name="2" id="switch_2" checked>
+                          <input class="form-check-input" type="checkbox" name="{{ product.id }}" id="switch_{{ product.id }}" checked>
                     </div>
                 </div>
             </div>
-
-            <div class="row" id="row_3" style="background-color: #dddddd">
-                <div class="col-md-1 m-auto text-center">
-                    <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
-                </div>
-                <div class="col-md-4 m-auto">
-                    Красная роза
-                </div>
-                <div class="col-md-1 m-auto">
-                    <span id="price_3">300</span> &#x20bd;
-                </div>
-                <div class="col-md-2 m-auto text-center">
-                    <div class="">
-                        <ul class="list-inline pb-3">
-                            <li>
-                                <p>Количество</p>
-                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">
-                            </li>
-                            <li class="list-inline-item"><span class="btn btn-success" name="btn-minus" id="3">-</span></li>
-                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value_3">1</span></li>
-                            <li class="list-inline-item"><span class="btn btn-success" name="btn-plus" id="3">+</span></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-1 m-auto">
-                     <span id="sum_3">300</span> &#x20bd;
-                </div>
-                <div class="col-md-1 m-auto">
-                    <div align="right"><a class="manag text-decoration-none" href="#" id="3"> &#10006; </a></div>
-                    <div class="form-switch">
-                          <input class="form-check-input" type="checkbox" name="3" id="switch_3" checked>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row" id="row_4">
-                <div class="col-md-1 m-auto text-center">
-                    <img class="card-img rounded-0 img-fluid" src="/media/product_image/roza_red_01.jpg">
-                </div>
-                <div class="col-md-4 m-auto">
-                    Красная роза
-                </div>
-                <div class="col-md-1 m-auto">
-                    <span id="price_4">300</span> &#x20bd;
-                </div>
-                <div class="col-md-2 m-auto text-center">
-                    <div class="">
-                        <ul class="list-inline pb-3">
-                            <li>
-                                <p>Количество</p>
-                                <input type="hidden" name="product-quanity" id="product-quanity" value="1">
-                            </li>
-                            <li class="list-inline-item"><span class="btn btn-success" name="btn-minus" id="4">-</span></li>
-                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value_4">1</span></li>
-                            <li class="list-inline-item"><span class="btn btn-success" name="btn-plus" id="4">+</span></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-1 m-auto">
-                    <span id="sum_4">300</span> &#x20bd;
-                </div>
-                <div class="col-md-1 m-auto">
-                    <div align="right"><a class="manag text-decoration-none" href="#" id="4"> &#10006; </a></div>
-                    <div class="form-switch">
-                          <input class="form-check-input" type="checkbox" name="4" id="switch_4" checked>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
 
             <div class="row justify-content-end">
                 <div class="col-md-4 text-center" style="background-color: #dddddd">
@@ -145,7 +79,7 @@
                         <span class="h3">Сумма:</span>
                     </li>
                     <li class="list-inline-item">
-                        <span class="h3"><span id="total_sum">900</span> &#x20bd;</span>
+                        <span class="h3"><span id="total_sum">0</span> &#x20bd;</span>
                     </li>
                     <li class="list-inline-item">
                         <a class="btn btn-success" name="send">Оформить заказ</a>
@@ -153,9 +87,11 @@
                 </div>
             </div>
 
-            <form action="{% url 'add_to_basket' %}" method="post" id="form_work_basket">
+            <form action="{% url 'basket' %}" method="post" id="form_work_basket">
                 {% csrf_token %}
             </form>
+
+            {% endif %}
 
         </div>
     </div>
