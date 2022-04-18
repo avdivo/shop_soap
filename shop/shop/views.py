@@ -120,7 +120,7 @@ def shop_single(request, product=None):
         return redirect('shop')
     # Указанный товар отсутствует или он не активен происходит перенаправление на магазин
     try:
-        product = Product.objects.get(alias=product, active=True)
+        product = Product.objects.get(alias=product)
     except:
         return redirect('shop')
     images = product.productimage_set.filter(active=True)
@@ -240,8 +240,9 @@ def basket(request, new_basket=None):
                 UserBasket(user=user, basket=basket).save()
             request.session['basket'] = basket
 
+            products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
 
-            return JsonResponse({'basket': basket})
+            return JsonResponse({'products': products})
         except:
             return
 

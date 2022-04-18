@@ -74,6 +74,8 @@
                             {% else %}
                             <p class="h3 py-2">{{ product.price }} &#x20bd;</p>
                             {% endif %}
+                            <h6>Артикул:</h6>
+                            {{ product.article }}
                             <br>
                             <h6>Описание:</h6>
                             <p>{{ product.description|safe|linebreaks }}</p>

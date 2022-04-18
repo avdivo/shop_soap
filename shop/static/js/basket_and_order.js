@@ -23,13 +23,13 @@ $(document).ready(function(){
                     // Операция успешно выполнена
                     if (change == 'delete'){
                         // Удаляем кандидатов на удаление (на сервере это уже сделано)
-                        $.each(product,function(del) {
+                        $.each(product, function(i, del) {
                             $('#row_' + del).remove();
                         });
                     }
-                    if (change == 'send'){
-                        // Переход на следующую страницу оформления товара
-                    }
+                    // Изменяем отображаемое значение на корзине
+                    b = (data.products == 0) ? '' : data.products;
+                    $('#quantity_in_basket').text(b);
                     updatePage();
                 },
                 error: function(){

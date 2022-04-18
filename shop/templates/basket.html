@@ -41,10 +41,10 @@
             {% for product in products %}
             <div class="row" id="row_{{ product.id }}">
                 <div class="col-md-1 m-auto text-center">
-                    <img class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
+                    <img {% if not product.active %} style="filter: brightness(40%);" {% endif %} class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
                 </div>
                 <div class="col-md-4 m-auto">
-                    {{ product.name }}
+                    <a href="{% url 'shop-single' product.alias %}" class="h4 text-dark text-decoration-none">{{ product.name }}</a>
                 </div>
                 <div class="col-md-1 m-auto">
                     <span id="price_{{ product.id }}">{{ product.price }}</span> &#x20bd;

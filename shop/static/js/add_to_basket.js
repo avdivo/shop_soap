@@ -21,8 +21,9 @@ function update_basket(product_id, quantity){
              cache: true,
              success: function (data) {
                  console.log(data.products);
-                 $('#quantity_in_basket').text(data.products);
-                 console.log($('#quantity_in_basket').text());
+                 // Изменяем отображаемое значение на корзине
+                 b = (data.products == 0) ? '' : data.products;
+                 $('#quantity_in_basket').text(b);
              },
              error: function(){
                  console.log("error")
