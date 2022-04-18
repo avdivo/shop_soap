@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакты{% endblock title %}
+
+{% block head_plus %}
+    <!-- Load map styles -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+{% endblock head_plus %}
+
+{% block content %}
+    <div class="container-fluid bg-light py-5">
+        <div class="col-md-6 m-auto text-center">
+            <h1 class="h1">Регистрация</h1>
+            <p>
+                Пожалуйста, заполните форму чтобы зарегистрироваться. <br>Или <a href="{% url 'login' %}">войдите</a>, если вы уже зарегистрированы.
+            </p>
+        </div>
+    </div>
+
+
+    <form method="post">
+        {% csrf_token %}
+        Имя пользователя: <input type="text" name="username"><br>
+        Email: <input type="email" name="email"><br>
+        Пароль: <input type="password" name="password"><br>
+        Пароль еще раз: <input type="password" name="password2"><br>
+
+        <input type="submit" value="Регистрация">
+    </form>
+
+
+    <!-- End Contact -->
+{% endblock content %}

@@ -4,9 +4,9 @@ from .models import *
 
 # Настройка Админки для Потзователей
 class UserAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in User._meta.fields]  # Модель в виде таблицы
+    list_display = [field.name for field in UserMy._meta.fields]  # Модель в виде таблицы
 
-admin.site.register(User, UserAdmin)  # Регистрируем модель в админке
+admin.site.register(UserMy, UserAdmin)  # Регистрируем модель в админке
 
 # Настройка Админки для Категорий
 class UserBasketAdmin(admin.ModelAdmin):

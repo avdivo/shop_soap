@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакты{% endblock title %}
+
+{% block head_plus %}
+    <!-- Load map styles -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+{% endblock head_plus %}
+
+{% block content %}
+    <div class="container-fluid bg-light py-5">
+        <div class="col-md-6 m-auto text-center">
+            <h1 class="h1">Вход</h1>
+            <p>
+                Пожалуйста, авторизуйтесь, чтобы войти в кабинет пользователя. <br>Или <a href="{% url 'register' %}">зарегистрируйтесь</a>.
+            </p>
+        </div>
+    </div>
+
+    {% if error %}
+        <div style="color:red;">{{ error }}</div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Логин">
+        <input type="password" name="password" placeholder="Пароль">
+        <input type="submit" value="Войти">
+    </form>
+
+<!-- End Contact -->
+{% endblock content %}
+

@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.views import LoginView
 from django.urls import path
 from .views import *
 
@@ -31,13 +32,10 @@ urlpatterns = [
     path('add_to_basket/', add_to_basket, name='add_to_basket'),
     path('basket/', basket, name='basket'),
 
+    path('accounts/login/', LoginView.as_view(), name="login"),
+    path('accounts/profile/', ProfilePage.as_view(), name="profile"),
+    path('accounts/register/', RegisterView.as_view(), name="register"),
 ]
-# https://learntutorials.net/ru/django/topic/3299/%D0%BC%D0%B0%D1%80%D1%88%D1%80%D1%83%D1%82%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-url
-# urlpatterns = [
-#     url(r'^$', home, name='home'),
-#     url(r'^about/$', about, name='about'),
-#     url(r'^blog/(?P<id>\d+)/$', blog_detail, name='blog-detail'),
-# ]
 
 
 # ----------------------------------------------------------------------

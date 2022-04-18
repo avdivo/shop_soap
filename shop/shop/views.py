@@ -1,13 +1,18 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render
 from django.conf import settings
+from django.views.generic import TemplateView
+
 from users.models import *
 from order.models import Order
 from product.models import *
 from django.db.models import Q
-from django.shortcuts import redirect
-from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.http import JsonResponse, HttpResponse
 
+
+from django.contrib.auth import authenticate, login
+from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 # Главная страница
@@ -151,7 +156,7 @@ def get_basket(default, request):
     try:
         if user:  # Для проверки
             # Пользователь зарегистрирован
-            user = User.objects.get(id=user)
+            user = UserMy.objects.get(id=user)
             basket = UserBasket.objects.get(user=user).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
@@ -186,7 +191,7 @@ def add_to_basket(request):
     try:
         if user:  # Для проверки
             # Пользователь зарегистрирован
-            user = User.objects.get(id=user)
+            user = UserMy.objects.get(id=user)
             basket = UserBasket.objects.get(user=user).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
@@ -226,7 +231,7 @@ def basket(request, new_basket=None):
 
     # Заменить -----------------------------------------------------------------------------
     user = settings.USER  # Пример номера зарегистрированного и авторизованного пользователя
-    user = User.objects.get(id=user)
+
     # --------------------------------------------------------------------------------------
 
     # Ajax запрос на изменение корзины
@@ -237,6 +242,7 @@ def basket(request, new_basket=None):
             basket = {id: int(value[0]) for id, value in basket.items()} # Переделываем в словарь
             # Сохраняем корзину
             if user:
+                user = UserMy.objects.get(id=user)
                 UserBasket(user=user, basket=basket).save()
             request.session['basket'] = basket
 
@@ -244,7 +250,7 @@ def basket(request, new_basket=None):
 
             return JsonResponse({'products': products})
         except:
-            return
+            return HttpResponse(status=404)
 
     products = [] # Список товаров в корзине
     for id, quantity in basket.items():
@@ -255,3 +261,47 @@ def basket(request, new_basket=None):
     products = select_main_photo(products)
 
     return render(request, 'basket.html', locals())
+
+
+
+
+# Регистрация нового пользователя
+class RegisterView(TemplateView):
+    template_name = "registration/register.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            password2 = request.POST.get('password2')
+
+            if password == password2:
+                User.objects.create_user(username, email, password)
+                return redirect(reverse("login"))
+
+        return render(request, self.template_name)
+
+class LoginView(TemplateView):
+    template_name = "registration/login.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        context = {}
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("/")
+            else:
+                context['error'] = "Логин или пароль неправильные"
+        return render(request, self.template_name, context)
+
+
+# Личный кабинет
+class ProfilePage(TemplateView):
+    template_name = "registration/profile.html"
+
+
+# https://students.njay.ru/article/Registratsiia-v-Django
