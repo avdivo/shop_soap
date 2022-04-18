@@ -28,6 +28,7 @@ def basket_count(context):
         # Если нет корзины или есть проблемы с форматом возвращаем пустую строку
         return ''
     # Возвращаем количество товаров в корзине
-    return sum(x for x in basket.values())
+    q = sum(x for x in basket.values())
+    return q if q else ''
 
 # register.inclusion_tag('base.html', takes_context = True)(basket_count)
