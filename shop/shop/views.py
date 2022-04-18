@@ -12,7 +12,7 @@ from django.http import JsonResponse, HttpResponse
 
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
 
 # Главная страница
@@ -156,7 +156,7 @@ def get_basket(default, request):
     try:
         if user:  # Для проверки
             # Пользователь зарегистрирован
-            user = UserMy.objects.get(id=user)
+            user = User.objects.get(id=user)
             basket = UserBasket.objects.get(user=user).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
@@ -191,7 +191,7 @@ def add_to_basket(request):
     try:
         if user:  # Для проверки
             # Пользователь зарегистрирован
-            user = UserMy.objects.get(id=user)
+            user = User.objects.get(id=user)
             basket = UserBasket.objects.get(user=user).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
@@ -242,7 +242,7 @@ def basket(request, new_basket=None):
             basket = {id: int(value[0]) for id, value in basket.items()} # Переделываем в словарь
             # Сохраняем корзину
             if user:
-                user = UserMy.objects.get(id=user)
+                user = User.objects.get(id=user)
                 UserBasket(user=user, basket=basket).save()
             request.session['basket'] = basket
 
