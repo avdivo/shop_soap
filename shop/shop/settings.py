@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'order',
     'product',
     'shop',
-    'users',
+    'profile',
 ]
 
 MIDDLEWARE = [
@@ -154,4 +154,4 @@ PRODUCT_PREFIX = '0000000'
 NO_PHOTO = os.path.join(MEDIA_URL, 'product_image/no_photo.png')
 
 # Временно для тестов номер пользователя
-USER = 3
+USERR = 0

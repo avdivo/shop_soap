@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.views.generic import TemplateView
 
-from users.models import *
+from profile.models import *
 from order.models import Order
 from product.models import *
 from django.db.models import Q
@@ -12,11 +12,8 @@ from django.http import JsonResponse, HttpResponse
 
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
-
-# Главная страница
-from users.models import UserBasket
 
 
 def index(request):
@@ -115,6 +112,14 @@ def select_main_photo(products):
 
 # Контакты --------------------------------------------------------------
 def contact(request):
+    print(request.user.username)
+    if request.user.is_authenticated:
+        # Пользователь авторизован.
+        print('Все хорошо, пользователь:', request.user.username)
+    else:
+        # Анонимный пользователь.
+        print('Никто не вошел', request.user.username)
+
     return render(request, 'contact.html', locals())
 
 
@@ -149,15 +154,15 @@ def get_basket(default, request):
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
 
     # Заменить -----------------------------------------------------------------------------
-    user = settings.USER  # Пример номера зарегистрированного и авторизованного пользователя
+    userr = settings.USERR  # Пример номера зарегистрированного и авторизованного пользователя
     # --------------------------------------------------------------------------------------
 
     # Проверяем, зарегистрирован ли пользователь
     try:
-        if user:  # Для проверки
+        if userr:  # Для проверки
             # Пользователь зарегистрирован
-            user = User.objects.get(id=user)
-            basket = UserBasket.objects.get(user=user).basket
+            userr = Profile.objects.get(id=userr)
+            basket = UserBasket.objects.get(user_add=userr).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
             if 'basket' in request.session:
@@ -184,15 +189,15 @@ def add_to_basket(request):
     quantity = int(request.POST['quantity'])
 
     # Заменить -----------------------------------------------------------------------------
-    user = settings.USER  # Пример номера зарегистрированного и авторизованного пользователя
+    userr = settings.USERR  # Пример номера зарегистрированного и авторизованного пользователя
     # --------------------------------------------------------------------------------------
 
     # Проверяем, зарегистрирован ли пользователь
     try:
-        if user:  # Для проверки
+        if userr:  # Для проверки
             # Пользователь зарегистрирован
-            user = User.objects.get(id=user)
-            basket = UserBasket.objects.get(user=user).basket
+            userr = Profile.objects.get(id=userr)
+            basket = UserBasket.objects.get(user_add=userr).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
             if 'basket' in request.session:
@@ -214,8 +219,8 @@ def add_to_basket(request):
         basket = {id: quantity}
 
     # Сохраняем корзину
-    if user:
-        UserBasket(user=user, basket=basket).save()
+    if userr:
+        UserBasket(user_add=userr, basket=basket).save()
     request.session['basket'] = basket
 
     products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
@@ -230,7 +235,7 @@ def basket(request, new_basket=None):
     basket = get_basket(default, request) # Получаем корзину в виде словаря
 
     # Заменить -----------------------------------------------------------------------------
-    user = settings.USER  # Пример номера зарегистрированного и авторизованного пользователя
+    userr = settings.USERR  # Пример номера зарегистрированного и авторизованного пользователя
 
     # --------------------------------------------------------------------------------------
 
@@ -241,9 +246,9 @@ def basket(request, new_basket=None):
             del(basket['csrfmiddlewaretoken']) # Удаляем из нее токен
             basket = {id: int(value[0]) for id, value in basket.items()} # Переделываем в словарь
             # Сохраняем корзину
-            if user:
-                user = User.objects.get(id=user)
-                UserBasket(user=user, basket=basket).save()
+            if userr:
+                userr = Profile.objects.get(id=userr)
+                UserBasket(user_add=userr, basket=basket).save()
             request.session['basket'] = basket
 
             products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
@@ -271,13 +276,14 @@ class RegisterView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.method == 'POST':
-            username = request.POST.get('username')
+            username = request.POST.get('email')
             email = request.POST.get('email')
             password = request.POST.get('password')
             password2 = request.POST.get('password2')
 
             if password == password2:
-                User.objects.create_user(username, email, password)
+                u = User.objects.create_user(username, email, password)
+                Profile(user=u).save()
                 return redirect(reverse("login"))
 
         return render(request, self.template_name)
@@ -288,14 +294,14 @@ class LoginView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         context = {}
         if request.method == 'POST':
-            username = request.POST['username']
+            username = request.POST['email']
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("/")
+                return redirect(reverse("profile"))
             else:
-                context['error'] = "Логин или пароль неправильные"
+                context['error'] = "Email или пароль неправильные"
         return render(request, self.template_name, context)
 
 
@@ -303,5 +309,3 @@ class LoginView(TemplateView):
 class ProfilePage(TemplateView):
     template_name = "registration/profile.html"
 
-
-# https://students.njay.ru/article/Registratsiia-v-Django

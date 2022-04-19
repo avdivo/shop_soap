@@ -6,14 +6,14 @@ register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def basket_count(context):
-    user = settings.USER  # Тестовый пользователь заменяет реальную авторизацию
+    userr = settings.USERR  # Тестовый пользователь заменяет реальную авторизацию
     request = context['request']
 
     try:
-        if user:
+        if userr:
             # Пользователь зарегистрирован
-            user = User.objects.get(id=user)
-            basket = UserBasket.objects.get(user=user).basket
+            userr = UserAddition.objects.get(id=user)
+            basket = UserBasket.objects.get(user_add=userr).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
             if 'basket' in request.session:
