@@ -1,19 +1,16 @@
 from django import template
-from ..models import *
-from django.conf import settings
+from profile.models import *
 
 register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def basket_count(context):
-    userr = settings.USERR  # Тестовый пользователь заменяет реальную авторизацию
     request = context['request']
 
     try:
-        if userr:
+        if request.user.is_authenticated:
             # Пользователь зарегистрирован
-            userr = UserAddition.objects.get(id=user)
-            basket = UserBasket.objects.get(user_add=userr).basket
+            basket = Profile.objects.get(user=request.user).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
             if 'basket' in request.session:

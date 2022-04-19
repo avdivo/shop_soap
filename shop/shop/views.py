@@ -153,21 +153,15 @@ def shop_single(request, product=None):
 def get_basket(default, request):
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
 
-    # Заменить -----------------------------------------------------------------------------
-    userr = settings.USERR  # Пример номера зарегистрированного и авторизованного пользователя
-    # --------------------------------------------------------------------------------------
-
     # Проверяем, зарегистрирован ли пользователь
     try:
-        if userr:  # Для проверки
+        if request.user.is_authenticated:
             # Пользователь зарегистрирован
-            userr = Profile.objects.get(id=userr)
-            basket = UserBasket.objects.get(user_add=userr).basket
+            basket = Profile.objects.get(user=request.user).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
             if 'basket' in request.session:
                 basket = request.session['basket']
-
             else:
                 raise
         if not isinstance(basket, dict):
@@ -188,16 +182,11 @@ def add_to_basket(request):
     id = request.POST['id']
     quantity = int(request.POST['quantity'])
 
-    # Заменить -----------------------------------------------------------------------------
-    userr = settings.USERR  # Пример номера зарегистрированного и авторизованного пользователя
-    # --------------------------------------------------------------------------------------
-
     # Проверяем, зарегистрирован ли пользователь
     try:
-        if userr:  # Для проверки
+        if request.user.is_authenticated:
             # Пользователь зарегистрирован
-            userr = Profile.objects.get(id=userr)
-            basket = UserBasket.objects.get(user_add=userr).basket
+            basket = Profile.objects.get(user=request.user).basket
         else:
             # Пользователь не зарегистрирован запоминаем заказываемые товары в сессии
             if 'basket' in request.session:
@@ -219,8 +208,10 @@ def add_to_basket(request):
         basket = {id: quantity}
 
     # Сохраняем корзину
-    if userr:
-        UserBasket(user_add=userr, basket=basket).save()
+    if request.user.is_authenticated:
+        p = Profile.objects.get(user=request.user)
+        p.basket = basket
+        p.save()
     request.session['basket'] = basket
 
     products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
@@ -234,11 +225,6 @@ def basket(request, new_basket=None):
     default = dict()
     basket = get_basket(default, request) # Получаем корзину в виде словаря
 
-    # Заменить -----------------------------------------------------------------------------
-    userr = settings.USERR  # Пример номера зарегистрированного и авторизованного пользователя
-
-    # --------------------------------------------------------------------------------------
-
     # Ajax запрос на изменение корзины
     if request.method == "POST":
         try:
@@ -246,9 +232,11 @@ def basket(request, new_basket=None):
             del(basket['csrfmiddlewaretoken']) # Удаляем из нее токен
             basket = {id: int(value[0]) for id, value in basket.items()} # Переделываем в словарь
             # Сохраняем корзину
-            if userr:
-                userr = Profile.objects.get(id=userr)
-                UserBasket(user_add=userr, basket=basket).save()
+
+            if request.user.is_authenticated:
+                p = Profile.objects.get(user=request.user)
+                p.basket = basket
+                p.save()
             request.session['basket'] = basket
 
             products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
@@ -283,7 +271,7 @@ class RegisterView(TemplateView):
 
             if password == password2:
                 u = User.objects.create_user(username, email, password)
-                Profile(user=u).save()
+                Profile.objects.create(user=u)
                 return redirect(reverse("login"))
 
         return render(request, self.template_name)
