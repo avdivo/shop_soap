@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, ProductInOrder, StatusOrder, DeliveryMethod
+from .models import *
 
 
 # Класс для отображения Товаров на странице каждого Заказа
@@ -41,3 +41,14 @@ class DeliveryMethodAdmin(admin.ModelAdmin):
 
 
 admin.site.register(DeliveryMethod, DeliveryMethodAdmin)  # Регистрируем модель в админке
+
+
+
+# Регистрация таблици Альтернативных данных пользователя в админке
+class AlternateProfileAdmin(admin.ModelAdmin):
+    # inlines = [AlternateProfileInline]  # Отображать Товары на странице каждого Заказа
+    list_display = [field.name for field in AlternateProfile._meta.fields]  # Модель в виде таблицы
+
+
+admin.site.register(AlternateProfile, AlternateProfileAdmin)  # Регистрируем модель в админке
+
