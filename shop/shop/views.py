@@ -9,12 +9,10 @@ from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.http import JsonResponse, HttpResponse
 
-
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
 from django.contrib.auth.models import User
-
-
+import json
 
 def index(request):
     ord = {'orders': Order.objects.all()}
@@ -143,7 +141,7 @@ def shop_single(request, product=None):
         if image.main:
             main_image = image.image.url
             break
-    images = [images[i:i+3] for i in range(0,len(images),3)] # Разбиваем список картинок по 3
+    images = [images[i:i + 3] for i in range(0, len(images), 3)]  # Разбиваем список картинок по 3
     discount_price = product.price - product.discount if product.discount else 0
 
     return render(request, 'shop-single.html', locals())
@@ -223,14 +221,14 @@ def add_to_basket(request):
 def basket(request, new_basket=None):
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
     default = dict()
-    basket = get_basket(default, request) # Получаем корзину в виде словаря
+    basket = get_basket(default, request)  # Получаем корзину в виде словаря
 
     # Ajax запрос на изменение корзины
     if request.method == "POST":
         try:
-            basket = dict(request.POST) # Пришла новая корзина
-            del(basket['csrfmiddlewaretoken']) # Удаляем из нее токен
-            basket = {id: int(value[0]) for id, value in basket.items()} # Переделываем в словарь
+            basket = dict(request.POST)  # Пришла новая корзина
+            del (basket['csrfmiddlewaretoken'])  # Удаляем из нее токен
+            basket = {id: int(value[0]) for id, value in basket.items()}  # Переделываем в словарь
             # Сохраняем корзину
 
             if request.user.is_authenticated:
@@ -245,10 +243,11 @@ def basket(request, new_basket=None):
         except:
             return HttpResponse(status=404)
 
-    products = [] # Список товаров в корзине
+    products = []  # Список товаров в корзине
     for id, quantity in basket.items():
         products.append(Product.objects.get(id=id))
-        products[-1].quantity = quantity # Добавляем свойство с количеством товаров
+        products[-1].quantity = quantity  # Добавляем свойство с количеством товаров
+        products[-1].price = products[-1].price - products[-1].discount  # Исправляем цену товара с учетом скидки
 
     # Выбор главной фотографии для каждого товара
     products = select_main_photo(products)
@@ -256,6 +255,35 @@ def basket(request, new_basket=None):
     return render(request, 'basket.html', locals())
 
 
+# Оформление заказа --------------------------------------------------------------
+# При входе либо в post либо в сессии (order) должен быть заказ
+def order(request):
+    try:
+        if request.method == "POST":
+            order = json.loads(request.POST['order'])  # Пришел заказ
+            order = {id: int(value) for id, value in order.items()}  # Количество делаем int
+            request.session['order'] = order  # Записываем в сессию
+
+        # Читаем заказ из сессии, храним его там,
+        # поскольку на оформление можно попасть после регистрации или авторизации
+        order = request.session['order']
+        if not order:
+            raise  # Нет заказа, отправляемся в корзину
+    except:
+            return redirect('basket')  # Ошибки вызванные расшифровкой заказа отправляют в корзину
+
+    products = []  # Список товаров в заказе
+    total_sum = 0  # Стоимость всех товаров
+    for id, quantity in order.items():
+        product = Product.objects.get(id=id)
+        product.quantity = quantity  # Добавляем свойство с количеством товаров
+        product.price = product.price - product.discount  # Исправляем цену товара с учетом скидки
+        product.sum = quantity * product.price  # Добавляем свойство со стоимостью товара в данном количестве
+        total_sum += product.sum
+        products.append(product)
+
+
+    return render(request, 'order.html', locals())
 
 
 # Регистрация нового пользователя
@@ -275,6 +303,7 @@ class RegisterView(TemplateView):
                 return redirect(reverse("login"))
 
         return render(request, self.template_name)
+
 
 class LoginView(TemplateView):
     template_name = "registration/login.html"
@@ -296,4 +325,3 @@ class LoginView(TemplateView):
 # Личный кабинет
 class ProfilePage(TemplateView):
     template_name = "registration/profile.html"
-

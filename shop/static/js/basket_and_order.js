@@ -171,6 +171,12 @@ $(document).ready(function(){
                 }
             }
         });
+        // Оформление заказа
+        if (change == 'send'){
+            $('#order').val(JSON.stringify(data));
+            $('#order_send').submit();
+            return;
+        }
         sendCanges(data, change, product, timer);
     };
 
