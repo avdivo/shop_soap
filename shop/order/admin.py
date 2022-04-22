@@ -7,10 +7,14 @@ class ProductInOrderInline(admin.TabularInline):
     model = ProductInOrder
     extra = 0  # Количество пустых Категорий в списке готовых для заполнения
 
+# Класс для отображения Альтернативных данных о заказчике на странице Заказа
+class AlternateProfileInline(admin.TabularInline):
+    model = AlternateProfile
+    extra = 0  # Количество пустых Категорий в списке готовых для заполнения
 
 # Регистрация Заказов в админке
 class OrderAdmin(admin.ModelAdmin):
-    inlines = [ProductInOrderInline]  # Отображать Товары и Статусы на странице каждого Заказа
+    inlines = [ProductInOrderInline, AlternateProfileInline]  # Отображать Товары, Альтернативные данные и Статусы на странице каждого Заказа
     list_display = ['number', 'status', 'delivery_method', 'price_product', 'price_total']  # Модель в виде таблицы
     list_filter = ('status', 'delivery_method',)  # Фильтры
     search_fields = ('number',)  # Поиск

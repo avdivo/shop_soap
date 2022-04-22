@@ -31,27 +31,6 @@ class DeliveryMethod(models.Model):
         verbose_name = 'Метод доставки'
         verbose_name_plural = 'Методы доставки'
 
-# Альтернативный профиль для заказа
-# Данные профиля пользователя покупающего без регистрации или зарегистрированного,
-# но пожелавшего изменить данные для заказа
-class AlternateProfile(models.Model):
-    first_name = models.CharField(max_length=64, verbose_name=u'Имя')  # Имя
-    last_name = models.CharField(max_length=64, verbose_name=u'Фамилия')  # Фамилия
-    patronymic = models.CharField(max_length=64, blank=True, verbose_name=u'Отчество')  # Отчество
-    phoneNumberRegex = RegexValidator(regex=r"^\+?1?\d{8,15}$")
-    phoneNumber = models.CharField(validators=[phoneNumberRegex], max_length=16,
-                                   verbose_name=u'Телефон')  # Номер телефона
-    address = models.CharField(max_length=128, verbose_name=u'Адрес доставки')  # Адрес
-    email = models.EmailField(max_length=150)
-
-
-    def __str__(self):
-        return self.first_name + ' ' + self.last_name
-
-    # Как писать назнвние в единственном и множественном числе
-    class Meta:
-        verbose_name = 'Альтернативные данные'
-        verbose_name_plural = 'Альтернативные данные'
 
 
 # Заказы
@@ -77,7 +56,6 @@ class Order(models.Model):
     updated = models.DateTimeField(default=now,
                                    verbose_name=u'Дата изменения')  # Давта изменения заказа
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name=u'Заказчик')  # Ссылка на таблицу с User
-    alternate_profile = models.OneToOneField(AlternateProfile, on_delete=models.DO_NOTHING, unique=False, null=True, blank=True, verbose_name=u'Альтернативные данные')  # Ссылка на таблицу с Альтернативными данными
 
     def __str__(self):
         return str(self.id)
@@ -148,3 +126,25 @@ post_delete.connect(post_save_ProductInOrder, sender=ProductInOrder)  # Сигн
 
 
 
+# Альтернативный профиль для заказа
+# Данные профиля пользователя покупающего без регистрации или зарегистрированного,
+# но пожелавшего изменить данные для заказа
+class AlternateProfile(models.Model):
+    first_name = models.CharField(max_length=64, verbose_name=u'Имя')  # Имя
+    last_name = models.CharField(max_length=64, verbose_name=u'Фамилия')  # Фамилия
+    patronymic = models.CharField(max_length=64, blank=True, verbose_name=u'Отчество')  # Отчество
+    phoneNumberRegex = RegexValidator(regex=r"^\+?1?\d{8,15}$")
+    phoneNumber = models.CharField(validators=[phoneNumberRegex], max_length=16,
+                                   verbose_name=u'Телефон')  # Номер телефона
+    address = models.CharField(max_length=128, verbose_name=u'Адрес доставки')  # Адрес
+    email = models.EmailField(max_length=150)
+    order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, unique=False, null=True, blank=True, verbose_name=u'Заказе')  # Ссылка на таблицу с Альтернативными данными
+
+
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
+
+    # Как писать назнвние в единственном и множественном числе
+    class Meta:
+        verbose_name = 'Альтернативные данные'
+        verbose_name_plural = 'Альтернативные данные'
