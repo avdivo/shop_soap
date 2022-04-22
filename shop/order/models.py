@@ -43,7 +43,6 @@ class AlternateProfile(models.Model):
                                    verbose_name=u'Телефон')  # Номер телефона
     address = models.CharField(max_length=128, verbose_name=u'Адрес доставки')  # Адрес
     email = models.EmailField(max_length=150)
-    # order = models.OneToOneField(Order, on_delete=models.CASCADE, blank=True, null=True, verbose_name=u'Заказчик')   # Ссылка на таблицу с Заказом
 
 
     def __str__(self):

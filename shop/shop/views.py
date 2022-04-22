@@ -13,6 +13,9 @@ from django.contrib.auth import authenticate, login
 from django.urls import reverse
 from django.contrib.auth.models import User
 import json
+from django import forms
+from .forms import OrderForm
+
 
 def index(request):
     ord = {'orders': Order.objects.all()}
@@ -282,6 +285,7 @@ def order(request):
         total_sum += product.sum
         products.append(product)
 
+    form = OrderForm()
 
     return render(request, 'order.html', locals())
 
