@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Корзина{% endblock title %}
+{% block title %}Оформление заказа{% endblock title %}
 
 {% block head_plus %}
  <link rel="stylesheet" href="{% static '/css/custom.css' %}">
@@ -16,24 +16,21 @@
     <div class="container-fluid py-5">
         <div class="row">
             <div class="col-md-6 m-auto text-center">
-                <h1 class="h1">Корзина</h1>
+                <h1 class="h1">Оформление заказа</h1>
             </div>
         </div>
     </div>
 
     <div class="table">
         <div class="container">
-            <div class="row justify-content-end">
-                <div class="col-md-4 text-center" style="background-color: #dddddd">
-                    <li class="list-inline-item">
-                        <a class="h6 text-dark text-decoration-none mr-3" id="select" href="#">Выделить</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="h6 text-dark text-decoration-none mr-3" id="clear" href="#">Снять</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="h6 text-dark text-decoration-none mr-3" id="delete" href="#">Удалить</a>
-                    </li>
+            <div class="row">
+                <div class="col-md-8">
+                    <ol start="1">
+                    {% for product in products %}
+                        <li>{{ product.name }} ({{ product.price }} x {{ product.quantity }}) = {{ product.sum }} &#x20bd;</li>
+                    {% endfor %}
+                    </ol>
+                    <b>Сумма заказа: {{ total_sum }} &#x20bd;</b>
                 </div>
             </div>
 
@@ -87,13 +84,7 @@
                 </div>
             </div>
 
-<!-- Изменение корзины -->
             <form action="{% url 'basket' %}" method="post" id="form_work_basket">
-                {% csrf_token %}
-            </form>
-<!-- Оформление заказа -->
-            <form action="{% url 'order' %}" method="post" id="order_send">
-                <input type="hidden" id="order" name="order" value="">
                 {% csrf_token %}
             </form>
 
