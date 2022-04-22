@@ -14,7 +14,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 import json
 from django import forms
-from .forms import OrderForm
+from .forms import *
 
 
 def index(request):
@@ -285,7 +285,8 @@ def order(request):
         total_sum += product.sum
         products.append(product)
 
-    form = OrderForm()
+    form_1 = OrderForm()
+    form_2 = AlternateProfileForm()
 
     return render(request, 'order.html', locals())
 

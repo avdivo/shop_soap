@@ -1,10 +1,16 @@
 from django import forms
 
-from order.models import AlternateProfile
+from order.models import AlternateProfile, Order
+
+class AlternateProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = AlternateProfile
+        fields = '__all__'
+
 
 class OrderForm(forms.ModelForm):
 
     class Meta:
-        model = AlternateProfile
-        # description = TextField.forms.CharField(label='Your name', max_length=100)
+        model = Order
         fields = '__all__'
