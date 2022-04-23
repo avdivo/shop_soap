@@ -174,12 +174,12 @@ def get_basket(default, request):
     return basket
 
 
-# Работа с Корзиной ------------------------------------------------
+# Добавление 1 единицы товара в Корзину ------------------------------------------------
 def add_to_basket(request):
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
 
     if request.method != "POST":
-        return False
+        return HttpResponse(status=404)
     id = request.POST['id']
     quantity = int(request.POST['quantity'])
 
@@ -277,11 +277,14 @@ def order(request):
     products = []  # Список товаров в заказе
     total_sum = 0  # Стоимость всех товаров
     for id, quantity in order.items():
-        product = Product.objects.get(id=id, active=True)
-        product.quantity = quantity  # Добавляем свойство с количеством товаров
-        product.sum = quantity * product.actual_price  # Добавляем свойство со стоимостью товара в данном количестве
-        total_sum += product.sum
-        products.append(product)
+        try:
+            product = Product.objects.get(id=id, active=True)
+            product.quantity = quantity  # Добавляем свойство с количеством товаров
+            product.sum = quantity * product.actual_price  # Добавляем свойство со стоимостью товара в данном количестве
+            total_sum += product.sum
+            products.append(product)
+        except:
+            pass
 
     form_1 = OrderForm()
     form_2 = AlternateProfileForm()
