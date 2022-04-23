@@ -98,6 +98,13 @@ class Product(models.Model):
         if re.match(r"^[a-z0-9_-]{3,20}$", self.alias) == None:
             raise ValidationError('Псевдоним должен быть длиной от 3 до 20 символов, состоять из букв a-z, тире и символа подчеркивания')
 
+
+    # Цена товара с учетом скидки и если товар активен, иначе цена 0
+    @property
+    def actual_price(self):
+        return self.price - self.discount if self.active else 0
+
+
 # Обработка сигнала сохранения товара для формирования и записи Артикля
 # Срабатывает только если Артикль еще не заполнялся = None
 def post_save_Product(sender, instance, **kwargs):

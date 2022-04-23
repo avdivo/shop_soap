@@ -47,7 +47,7 @@
                     <a href="{% url 'shop-single' product.alias %}" class="h4 text-dark text-decoration-none">{{ product.name }}</a>
                 </div>
                 <div class="col-md-1 m-auto">
-                    <span id="price_{{ product.id }}">{{ product.price }}</span> &#x20bd;
+                    <span id="price_{{ product.id }}">{{ product.actual_price }}</span> &#x20bd;
                 </div>
                 <div class="col-md-2 m-auto text-center">
                     <div class="">

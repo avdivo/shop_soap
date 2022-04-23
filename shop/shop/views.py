@@ -250,7 +250,6 @@ def basket(request, new_basket=None):
     for id, quantity in basket.items():
         products.append(Product.objects.get(id=id))
         products[-1].quantity = quantity  # Добавляем свойство с количеством товаров
-        products[-1].price = products[-1].price - products[-1].discount  # Исправляем цену товара с учетом скидки
 
     # Выбор главной фотографии для каждого товара
     products = select_main_photo(products)
@@ -278,10 +277,9 @@ def order(request):
     products = []  # Список товаров в заказе
     total_sum = 0  # Стоимость всех товаров
     for id, quantity in order.items():
-        product = Product.objects.get(id=id)
+        product = Product.objects.get(id=id, active=True)
         product.quantity = quantity  # Добавляем свойство с количеством товаров
-        product.price = product.price - product.discount  # Исправляем цену товара с учетом скидки
-        product.sum = quantity * product.price  # Добавляем свойство со стоимостью товара в данном количестве
+        product.sum = quantity * product.actual_price  # Добавляем свойство со стоимостью товара в данном количестве
         total_sum += product.sum
         products.append(product)
 

@@ -69,9 +69,9 @@
                         <div class="card-body">
                             <h1 class="h2">{{ product.name }}</h1>
                             {% if product.active %}
-                            {% if discount_price %}
+                            {% if product.discount %}
                             <p class="h3 py-2"><s>{{ product.price }}</s> &#x20bd;</p>
-                            <p class="h3 py-2">{{ discount_price }} &#x20bd;</p>
+                            <p class="h3 py-2">{{ product.actual_price }} &#x20bd;</p>
                             {% else %}
                             <p class="h3 py-2">{{ product.price }} &#x20bd;</p>
                             {% endif %}

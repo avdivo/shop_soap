@@ -27,7 +27,7 @@
                 <div class="col-md-8">
                     <ol start="1">
                     {% for product in products %}
-                        <li>{{ product.name }} ({{ product.price }} x {{ product.quantity }}) = {{ product.sum }} &#x20bd;</li>
+                        <li>{{ product.name }} ({{ product.actual_price }} x {{ product.quantity }}) = {{ product.sum }} &#x20bd;</li>
                     {% endfor %}
                     </ol>
                     <b>Сумма заказа: {{ total_sum }} &#x20bd;</b>
