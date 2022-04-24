@@ -44,8 +44,6 @@ class Order(models.Model):
                                verbose_name=u'Статус')  # Связь с таблицей статусов
     delivery_method = models.ForeignKey(DeliveryMethod, on_delete=models.PROTECT, default=1,
                                         verbose_name=u'Метод доставки')  # Связь с таблицей методов доставки
-    address_delivery = models.CharField(max_length=256, blank=True, default=None, null=True,
-                                        verbose_name=u'Адрес доставки')  # Адрес доставки
     price_product = models.IntegerField(default=0,
                                         verbose_name=u'Цена товаров')  # Цена за товар, рассчитывается автоматически
     price_total = models.IntegerField(default=0,
@@ -138,7 +136,7 @@ class AlternateProfile(models.Model):
                                    verbose_name=u'Телефон')  # Номер телефона
     address = models.CharField(max_length=128, verbose_name=u'Адрес доставки')  # Адрес
     email = models.EmailField(max_length=150)
-    order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, unique=False, null=True, blank=True, verbose_name=u'Заказе')  # Ссылка на таблицу с Альтернативными данными
+    order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, unique=False, null=True, blank=True, verbose_name=u'Заказ')  # Ссылка на таблицу с Заказом
 
 
     def __str__(self):

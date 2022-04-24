@@ -262,17 +262,33 @@ def basket(request, new_basket=None):
 def order(request):
     try:
         if request.method == "POST":
-            order = json.loads(request.POST['order'])  # Пришел заказ
-            order = {id: int(value) for id, value in order.items()}  # Количество делаем int
-            request.session['order'] = order  # Записываем в сессию
+            if 'order' in request.POST:
+                order = json.loads(request.POST['order'])  # Пришел заказ
+                order = {id: int(value) for id, value in order.items()}  # Количество делаем int
+                request.session['order'] = order  # Записываем в сессию
+            else:
+                order = request.session['order']
 
-        # Читаем заказ из сессии, храним его там,
-        # поскольку на оформление можно попасть после регистрации или авторизации
-        order = request.session['order']
-        if not order:
-            raise  # Нет заказа, отправляемся в корзину
+                # Работа с формой
+                form_order = OrderForm(request.POST)
+                form_alternate_profile = AlternateProfileForm(request.POST)
+                if form_order.is_valid() & form_alternate_profile.is_valid():
+                    # report = reportform.save(commit=False)
+                    # report.reported_by = request.user
+                    # punchesform = PunchesFormSet(request.POST, request.FILES, instance=report)
+                    # if punchesform.is_valid():
+                    #     report.save()
+                    #     punchesform.save()
+                    pass
+                    # return redirect('service:update-report', pk=report.pk)
+        else:
+            # Читаем заказ из сессии, храним его там,
+            # поскольку на оформление можно попасть после регистрации или авторизации
+            order = request.session['order']
+            if not order:
+                raise  # Нет заказа, отправляемся в корзину
     except:
-            return redirect('basket')  # Ошибки вызванные расшифровкой заказа отправляют в корзину
+        return redirect('basket')  # Ошибки вызванные расшифровкой заказа отправляют в корзину
 
     products = []  # Список товаров в заказе
     total_sum = 0  # Стоимость всех товаров
@@ -286,8 +302,19 @@ def order(request):
         except:
             pass
 
-    form_1 = OrderForm()
-    form_2 = AlternateProfileForm()
+    form_order = OrderForm()
+    form_alternate_profile = AlternateProfileForm()
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user)
+        form_alternate_profile.initial = {
+            'last_name': request.user.last_name,
+            'first_name': request.user.first_name,
+            'patronymic': profile.patronymic,
+            'phoneNumber': profile.phoneNumber,
+            'address': profile.address,
+        }
+        for field in form_alternate_profile.fields:
+            form_alternate_profile.fields[field].widget.attrs['readonly'] = True
 
     return render(request, 'order.html', locals())
 

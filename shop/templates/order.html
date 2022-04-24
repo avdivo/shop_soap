@@ -33,65 +33,68 @@
                     <b>Сумма заказа: {{ total_sum }} &#x20bd;</b>
                 </div>
             </div>
-
-            {{ form_1 }}
-            {{ form_2 }}
-
-            {% if products %}
-            {% for product in products %}
-            <div class="row" id="row_{{ product.id }}">
-                <div class="col-md-1 m-auto text-center">
-                    <img {% if not product.active %} style="filter: brightness(40%);" {% endif %} class="card-img rounded-0 img-fluid" src="{{ product.photo }}">
-                </div>
-                <div class="col-md-4 m-auto">
-                    <a href="{% url 'shop-single' product.alias %}" class="h4 text-dark text-decoration-none">{{ product.name }}</a>
-                </div>
-                <div class="col-md-1 m-auto">
-                    <span id="price_{{ product.id }}">{{ product.price }}</span> &#x20bd;
-                </div>
-                <div class="col-md-2 m-auto text-center">
-                    <div class="">
-                        <ul class="list-inline pb-3">
-                            <li>
-                                <p>Количество</p>
-                            </li>
-                            <li class="list-inline-item"><span class="btn btn-success" name="btn-minus" id="{{ product.id }}">-</span></li>
-                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value_{{ product.id }}">{{ product.quantity }}</span></li>
-                            <li class="list-inline-item"><span class="btn btn-success" name="btn-plus" id="{{ product.id }}">+</span></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-1 m-auto">
-                    <span id="sum_{{ product.id }}">0</span> &#x20bd;
-                </div>
-                <div class="col-md-1 m-auto">
-                    <div align="right"><a class="manag text-decoration-none" href="#" id="{{ product.id }}"> &#10006; </a></div>
-                    <div class="form-switch">
-                          <input class="form-check-input" type="checkbox" name="{{ product.id }}" id="switch_{{ product.id }}" checked>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-
-            <div class="row justify-content-end">
-                <div class="col-md-4 text-center" style="background-color: #dddddd">
-                    <li class="list-inline-item">
-                        <span class="h3">Сумма:</span>
-                    </li>
-                    <li class="list-inline-item">
-                        <span class="h3"><span id="total_sum">0</span> &#x20bd;</span>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-success" name="send">Оформить заказ</a>
-                    </li>
-                </div>
-            </div>
-
-            <form action="{% url 'basket' %}" method="post" id="form_work_basket">
-                {% csrf_token %}
-            </form>
-
+            {% if not request.user.is_authenticated %}
+            <p>Чтобы использовать данные из профиля, <a class="h3 text-dark text-decoration-none" href="{% url 'login' %}">авторизуйтесь</a> или <a class="h3 text-dark text-decoration-none" href="{% url 'register' %}">зарегистрируйтесь</a></p>
             {% endif %}
+            <form action="{% url 'order' %}" method="post" id="new_order">
+                {% csrf_token %}
+                {{ form_order.non_field_errors }}
+                {{ form_alternate_profile.non_field_errors }}
+
+                <div class="row" id="">
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.last_name.errors }}
+                        {{ form_alternate_profile.last_name }}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.first_name.errors }}
+                        {{ form_alternate_profile.first_name }}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.patronymic.errors }}
+                        {{ form_alternate_profile.patronymic }}
+                    </div>
+                </div>
+                <div class="row" id="">
+                    <div class="col-md-3 m-auto">
+                        {% if not request.user.is_authenticated %}
+                            {{ form_alternate_profile.email.errors }}
+                            {{ form_alternate_profile.email }}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.phoneNumber.errors }}
+                        {{ form_alternate_profile.phoneNumber }}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.address.errors }}
+                        {{ form_alternate_profile.address }}
+                    </div>
+                </div>
+                <div class="row" id="">
+                    <div class="col-md-3 m-auto">
+                        {{ form_order.delivery_method.errors }}
+                        {{ form_order.delivery_method }}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {{ form_order.description.errors }}
+                        {{ form_order.description }}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {% if request.user.is_authenticated %}
+                        <div class="form-switch">
+                            <input class="form-check-input" type="checkbox" name="" id="" checked>
+                            <label>Использовать профиль</label>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row justify-content-end">
+                    <div class="col-md-3 text-center">
+                        <button type="submit" class="btn btn-success btn-lg" name="submit">Оформить заказ</button>
+                    </div>
+                </div>
+            </form>
 
         </div>
     </div>
@@ -103,5 +106,5 @@
 {% endblock content %}
 
 {% block script_plus %}
-    <script src="{% static '/js/basket_and_order.js' %}"></script>
+<!--    <script src="{% static '/js/basket_and_order.js' %}"></script>-->
 {% endblock script_plus %}
