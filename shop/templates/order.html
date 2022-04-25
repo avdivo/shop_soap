@@ -44,36 +44,56 @@
                 {% csrf_token %}
                 {{ form_order.non_field_errors }}
                 {{ form_alternate_profile.non_field_errors }}
-
-                <div class="row" id="">
+                <!--                Ошибки-->
+                <div class="row gy-1 text-danger" id="">
                     <div class="col-md-3 m-auto">
                         {{ form_alternate_profile.last_name.errors }}
-                        {{ form_alternate_profile.last_name }}
                     </div>
                     <div class="col-md-3 m-auto">
                         {{ form_alternate_profile.first_name.errors }}
-                        {{ form_alternate_profile.first_name }}
                     </div>
                     <div class="col-md-3 m-auto">
                         {{ form_alternate_profile.patronymic.errors }}
+                    </div>
+                </div>
+                <!--                Поля-->
+                <div class="row gy-4" id="">
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.last_name }}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.first_name }}
+                    </div>
+                    <div class="col-md-3 m-auto">
                         {{ form_alternate_profile.patronymic }}
                     </div>
                 </div>
-                <div class="row" id="">
+                <!--                Ошибки-->
+                <div class="row gy-0 text-danger" id="">
                     <div class="col-md-3 m-auto">
-                            {{ form_alternate_profile.email.errors }}
-                            {{ form_alternate_profile.email }}
+                        {{ form_alternate_profile.email.errors }}
                     </div>
                     <div class="col-md-3 m-auto">
                         {{ form_alternate_profile.phoneNumber.errors }}
-                        {{ form_alternate_profile.phoneNumber }}
                     </div>
                     <div class="col-md-3 m-auto">
                         {{ form_alternate_profile.address.errors }}
+                    </div>
+                </div>
+                <!--                Поля-->
+                <div class="row gy-4" id="">
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.email }}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {{ form_alternate_profile.phoneNumber }}
+                    </div>
+                    <div class="col-md-3 m-auto">
                         {{ form_alternate_profile.address }}
                     </div>
                 </div>
-                <div class="row" id="">
+                <!--                Поля-->
+                <div class="row gy-2" id="">
                     <div class="col-md-3 m-auto">
                         {{ form_order.delivery_method.errors }}
                         {{ form_order.delivery_method }}
@@ -85,7 +105,7 @@
                     <div class="col-md-3 m-auto">
                         {% if not edit %}
                         <div class="form-switch">
-                            <input class="form-check-input" type="checkbox" name="" id="" checked>
+                            <input class="form-check-input" type="checkbox" name='readonly' id="readonly" checked>
                             <label>Использовать профиль</label>
                         </div>
                         {% endif %}
@@ -108,5 +128,5 @@
 {% endblock content %}
 
 {% block script_plus %}
-<!--    <script src="{% static '/js/basket_and_order.js' %}"></script>-->
+    <script src="{% static '/js/order.js' %}"></script>
 {% endblock script_plus %}

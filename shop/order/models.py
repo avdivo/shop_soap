@@ -134,7 +134,7 @@ class AlternateProfile(models.Model):
     phoneNumberRegex = RegexValidator(regex=r"^\+?1?\d{8,15}$")
     phoneNumber = models.CharField(validators=[phoneNumberRegex], max_length=16,
                                    verbose_name=u'Телефон')  # Номер телефона
-    address = models.CharField(max_length=128, verbose_name=u'Адрес доставки')  # Адрес
+    address = models.CharField(max_length=128, blank=True, verbose_name=u'Адрес доставки')  # Адрес
     email = models.EmailField(max_length=150)
     order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, unique=False, null=True, blank=True, verbose_name=u'Заказ')  # Ссылка на таблицу с Заказом
 

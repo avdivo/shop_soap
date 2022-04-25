@@ -261,6 +261,7 @@ def basket(request, new_basket=None):
 # При входе либо в post либо в сессии (order) должен быть заказ
 def order(request):
     try:
+        form_order = form_alternate_profile = None
         if request.method == "POST":
             if 'order' in request.POST:
                 order = json.loads(request.POST['order'])  # Пришел заказ
@@ -270,16 +271,19 @@ def order(request):
                 order = request.session['order']
 
                 # Работа с формой
-                form_order = OrderForm(request.POST)
+                form_order = OrderForm(request.POST) # Получаем данные из формы
                 form_alternate_profile = AlternateProfileForm(request.POST)
-                if form_order.is_valid() & form_alternate_profile.is_valid():
+                # Метод доставки запоминаем как сфойство формы, для валидации адреса в этой форме
+                form_alternate_profile.delivery_method = (request.POST['delivery_method'])
+                if form_alternate_profile.is_valid():
+
                     # report = reportform.save(commit=False)
                     # report.reported_by = request.user
                     # punchesform = PunchesFormSet(request.POST, request.FILES, instance=report)
                     # if punchesform.is_valid():
                     #     report.save()
                     #     punchesform.save()
-                    pass
+                    print('Все хорошо --------------------------')
                     # return redirect('service:update-report', pk=report.pk)
         else:
             # Читаем заказ из сессии, храним его там,
@@ -305,8 +309,10 @@ def order(request):
     # Если пользователь не авторизован или не все поля профиля заполнены, нельзя переключиться на профиль,
     # нужно заполнить форму вручную, поэтому блокировка редактирования запрещается (переключатель не выводится)
     edit = True # Разрешить редактирования, не показывать переключатель блокировки.
-    form_order = OrderForm()
-    form_alternate_profile = AlternateProfileForm()
+    # Если формы уже заполнены, значит они не прошли валидацию, возращяем их на дозаполнение
+    form_order = form_order if form_order else OrderForm()
+    form_alternate_profile = form_alternate_profile if form_alternate_profile else AlternateProfileForm()
+
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)
         form_alternate_profile.initial = {

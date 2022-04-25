@@ -1,5 +1,5 @@
 from django import forms
-
+from django.core.exceptions import ValidationError
 from order.models import AlternateProfile, Order
 
 class AlternateProfileForm(forms.ModelForm):
@@ -24,7 +24,7 @@ class AlternateProfileForm(forms.ModelForm):
                 'placeholder': 'Отчество',
                 'title': 'Отчество'
             }),
-            'email': forms.TextInput(attrs={
+            'email': forms.TextInput( attrs={
                 'class': 'form-control',
                 'placeholder': 'Электронная почта',
                 'title': 'Электронная почта',
@@ -41,6 +41,31 @@ class AlternateProfileForm(forms.ModelForm):
             }),
 
         }
+        error_messages = {
+            'last_name': {
+                'required': 'Заполните Фамилию',
+            },
+            'first_name': {
+                'required': 'Заполните Имя',
+            },
+            'email': {
+                'invalid': 'Неправильный Email',
+            },
+            'phoneNumber': {
+                'invalid': 'Неправильный телефон',
+            },
+
+        }
+
+    # Валидатор поля адреса. Если метод доставки не самовывоз, а адрес не указан сообщаем об ошибке
+    # Метод доставки записываем как свойство формы при получении POST от формы
+    def clean_address(self):
+        cleaned_data = super().clean()
+        address = cleaned_data.get("address")
+        print(address)
+        if int(self.delivery_method) > 1 and not address:
+            raise ValidationError("Укажите адрес доставки")
+
 
 class OrderForm(forms.ModelForm):
 
@@ -59,3 +84,4 @@ class OrderForm(forms.ModelForm):
                 'title': 'Комментарии к заказу'
             }),
         }
+
