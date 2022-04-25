@@ -302,6 +302,9 @@ def order(request):
         except:
             pass
 
+    # Если пользователь не авторизован или не все поля профиля заполнены, нельзя переключиться на профиль,
+    # нужно заполнить форму вручную, поэтому блокировка редактирования запрещается (переключатель не выводится)
+    edit = True # Разрешить редактирования, не показывать переключатель блокировки.
     form_order = OrderForm()
     form_alternate_profile = AlternateProfileForm()
     if request.user.is_authenticated:
@@ -310,11 +313,17 @@ def order(request):
             'last_name': request.user.last_name,
             'first_name': request.user.first_name,
             'patronymic': profile.patronymic,
+            'email': request.user.email,
             'phoneNumber': profile.phoneNumber,
             'address': profile.address,
         }
-        for field in form_alternate_profile.fields:
-            form_alternate_profile.fields[field].widget.attrs['readonly'] = True
+
+        if profile.is_filled():
+            # Все поля профиля заполнены, поэтому можно блокировать редактирование и переключаться на профиль
+            edit = False
+            # Делаем поля формы только для чтения
+            for field in form_alternate_profile.fields:
+                form_alternate_profile.fields[field].widget.attrs['readonly'] = True
 
     return render(request, 'order.html', locals())
 

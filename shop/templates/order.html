@@ -34,7 +34,11 @@
                 </div>
             </div>
             {% if not request.user.is_authenticated %}
-            <p>Чтобы использовать данные из профиля, <a class="h3 text-dark text-decoration-none" href="{% url 'login' %}">авторизуйтесь</a> или <a class="h3 text-dark text-decoration-none" href="{% url 'register' %}">зарегистрируйтесь</a></p>
+                <p>Чтобы использовать данные из профиля, <a class="h3 text-dark text-decoration-none" href="{% url 'login' %}">авторизуйтесь</a> или <a class="h3 text-dark text-decoration-none" href="{% url 'register' %}">зарегистрируйтесь</a></p>
+            {% else %}
+                {% if edit %}
+                    <p>Для автоматического заполнения полей формы, пожалуйста, <a class="h3 text-dark text-decoration-none" href="{% url 'profile' %}">заполните</a> ваш профиль.</p>
+                {% endif %}
             {% endif %}
             <form action="{% url 'order' %}" method="post" id="new_order">
                 {% csrf_token %}
@@ -57,10 +61,8 @@
                 </div>
                 <div class="row" id="">
                     <div class="col-md-3 m-auto">
-                        {% if not request.user.is_authenticated %}
                             {{ form_alternate_profile.email.errors }}
                             {{ form_alternate_profile.email }}
-                        {% endif %}
                     </div>
                     <div class="col-md-3 m-auto">
                         {{ form_alternate_profile.phoneNumber.errors }}
@@ -81,7 +83,7 @@
                         {{ form_order.description }}
                     </div>
                     <div class="col-md-3 m-auto">
-                        {% if request.user.is_authenticated %}
+                        {% if not edit %}
                         <div class="form-switch">
                             <input class="form-check-input" type="checkbox" name="" id="" checked>
                             <label>Использовать профиль</label>

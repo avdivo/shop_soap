@@ -20,6 +20,12 @@ class Profile(models.Model):
         verbose_name_plural = 'Профили пользователей'
 
 
+    # Проверить, все ли данные пользователя в профиле заполнены.
+    # Вернет True или False
+    def is_filled(self):
+        user = self.user
+        return bool(user.last_name and user.first_name and self.patronymic and self.phoneNumber and self.address)
+
 
 # Обработка сигнала добавления пользователя, для создания записи о его корзине
     # def create_or_update_user_profile(sender, instance, created, **kwargs):
