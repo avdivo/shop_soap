@@ -11,17 +11,23 @@
 {% block content %}
     <div class="container-fluid bg-light py-5">
         <div class="col-md-6 m-auto text-center">
-            <h1 class="h1">Регистрация</h1>
+            <h1 class="h1">Выход</h1>
             <p>
-                Пожалуйста, заполните форму чтобы зарегистрироваться. <br>Или <a href="{% url 'login' %}">войдите</a>, если вы уже зарегистрированы. <a href="{% url 'exit' %}">Выйти</a>
+                <a href="{% url 'exit' %}">Выйти</a>
             </p>
         </div>
     </div>
 
+    {% if error %}
+        <div style="color:red;">{{ error }}</div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder="Email">
+        <input type="password" name="password" placeholder="Пароль">
+        <input type="submit" value="Войти">
+    </form>
 
-    Имя пользователя: {{ user.username }} <br>
-    Email: {{ user.email }}
-
-
-    <!-- End Contact -->
+<!-- End Contact -->
 {% endblock content %}
+

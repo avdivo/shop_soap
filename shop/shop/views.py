@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.http import JsonResponse, HttpResponse
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.models import User
 import json
@@ -323,7 +323,7 @@ def order(request):
             'phoneNumber': profile.phoneNumber,
             'address': profile.address,
         }
-
+        # Нужно чтоб после заполнения форма была валидна
         if profile.is_filled():
             # Все поля профиля заполнены, поэтому можно блокировать редактирование и переключаться на профиль
             edit = False
@@ -373,3 +373,8 @@ class LoginView(TemplateView):
 # Личный кабинет
 class ProfilePage(TemplateView):
     template_name = "registration/profile.html"
+
+# Выход из профиля
+def exit(request):
+    logout(request)
+    return redirect('index')

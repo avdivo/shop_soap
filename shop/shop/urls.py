@@ -36,6 +36,7 @@ urlpatterns = [
     path('accounts/login/', LoginView.as_view(), name="login"),
     path('accounts/profile/', ProfilePage.as_view(), name="profile"),
     path('accounts/register/', RegisterView.as_view(), name="register"),
+    path('accounts/logout/', exit, name='exit'),
 ]
 
 

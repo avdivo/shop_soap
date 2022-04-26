@@ -108,6 +108,10 @@
                             <input class="form-check-input" type="checkbox" name='readonly' id="readonly" checked>
                             <label>Использовать профиль</label>
                         </div>
+                        {% else %}
+                        <a href="{% url 'order' %}">
+                            <button type="button" class="btn btn-success btn-sm">Сброс</button>
+                        </a>
                         {% endif %}
                     </div>
                 </div>
