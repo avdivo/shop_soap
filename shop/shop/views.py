@@ -3,7 +3,7 @@ from django.conf import settings
 from django.views.generic import TemplateView
 
 from profile.models import *
-from order.models import Order
+from order.models import *
 from product.models import *
 from django.db.models import Q
 from django.shortcuts import redirect, render
@@ -260,39 +260,61 @@ def basket(request, new_basket=None):
 # Оформление заказа --------------------------------------------------------------
 # При входе либо в post либо в сессии (order) должен быть заказ
 def order(request):
-    try:
-        form_order = form_alternate_profile = None
-        if request.method == "POST":
-            if 'order' in request.POST:
-                order = json.loads(request.POST['order'])  # Пришел заказ
-                order = {id: int(value) for id, value in order.items()}  # Количество делаем int
-                request.session['order'] = order  # Записываем в сессию
-            else:
-                order = request.session['order']
-
-                # Работа с формой
-                form_order = OrderForm(request.POST) # Получаем данные из формы
-                form_alternate_profile = AlternateProfileForm(request.POST)
-                # Метод доставки запоминаем как сфойство формы, для валидации адреса в этой форме
-                form_alternate_profile.delivery_method = (request.POST['delivery_method'])
-                if form_alternate_profile.is_valid():
-
-                    # report = reportform.save(commit=False)
-                    # report.reported_by = request.user
-                    # punchesform = PunchesFormSet(request.POST, request.FILES, instance=report)
-                    # if punchesform.is_valid():
-                    #     report.save()
-                    #     punchesform.save()
-                    print('Все хорошо --------------------------')
-                    # return redirect('service:update-report', pk=report.pk)
+    # try:
+    form_order = form_alternate_profile = None
+    if request.method == "POST":
+        if 'order' in request.POST:
+            order = json.loads(request.POST['order'])  # Пришел заказ
+            order = {id: int(value) for id, value in order.items()}  # Количество делаем int
+            request.session['order'] = order  # Записываем в сессию
         else:
-            # Читаем заказ из сессии, храним его там,
-            # поскольку на оформление можно попасть после регистрации или авторизации
             order = request.session['order']
-            if not order:
-                raise  # Нет заказа, отправляемся в корзину
-    except:
-        return redirect('basket')  # Ошибки вызванные расшифровкой заказа отправляют в корзину
+
+            # Работа с формой
+            form_order = OrderForm(request.POST) # Получаем данные из формы
+            form_alternate_profile = AlternateProfileForm(request.POST)
+            # Метод доставки запоминаем как сфойство формы, для валидации адреса в этой форме
+            form_alternate_profile.delivery_method = (request.POST['delivery_method'])
+
+            if form_alternate_profile.is_valid():
+                user = request.user if request.user.is_authenticated else None
+                delivery_method = DeliveryMethod(id=request.POST['delivery_method'])
+                # Создаем заказ в БД -----------------------------------------------------
+                order_new = Order.objects.create(user=user,
+                                                 delivery_method=delivery_method,
+                                                 description=request.POST['description'])
+
+                # Альтернативный профиль сохраняем, только если пользователь не авторизован
+                # ил данные авторизованного пользователя были изменены
+                # Поэтому сравниваем данные о поьзователе из формы с его данными из профиля
+                summ = 0
+                if user:
+                    alternate_profile = form_alternate_profile.save(commit=False)
+                    profile = Profile.objects.get(user=request.user)
+                    # Считаем, сколько полей совпадают
+                    summ = sum(val == alternate_profile.__dict__[prop] for prop, val in profile.get_user_data().items())
+                if summ != 6:
+                    # Не все поля совпали или пользователь не авторизован, сохраняем альтернативный профиль
+                    alternate_profile.order_id = order_new.id # Привязываем альт. профиль к заказу
+                    alternate_profile.save()
+
+                # Сохраняем товары, список в виде словаря в переменной order
+                for num, quantity in order.items():
+                    product = Product.objects.get(id=num)  # Получаем товар
+                    ProductInOrder.objects.create(product=product,
+                                         order=order_new, quantity=quantity,
+                                            price_selling=product.price)
+
+                print('Все хорошо --------------------------')
+                # return redirect('service:update-report', pk=report.pk)
+    else:
+        # Читаем заказ из сессии, храним его там,
+        # поскольку на оформление можно попасть после регистрации или авторизации
+        order = request.session['order']
+        if not order:
+            raise  # Нет заказа, отправляемся в корзину
+    # except:
+    #     return redirect('basket')  # Ошибки вызванные расшифровкой заказа отправляют в корзину
 
     products = []  # Список товаров в заказе
     total_sum = 0  # Стоимость всех товаров
@@ -318,15 +340,7 @@ def order(request):
 
         if request.user.is_authenticated:
             profile = Profile.objects.get(user=request.user)
-            form_alternate_profile.initial = {
-                'last_name': request.user.last_name,
-                'first_name': request.user.first_name,
-                'patronymic': profile.patronymic,
-                'email': request.user.email,
-                'phoneNumber': profile.phoneNumber,
-                'address': profile.address,
-            }
-            # Нужно чтоб после заполнения форма была валидна
+            form_alternate_profile.initial = profile.get_user_data() # Данные о пользователе
             if profile.is_filled():
                 # Все поля профиля заполнены, поэтому можно блокировать редактирование и переключаться на профиль
                 edit = False

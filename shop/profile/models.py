@@ -27,6 +27,17 @@ class Profile(models.Model):
         return bool(user.last_name and user.first_name and self.patronymic and self.phoneNumber and self.address)
 
 
+    # Вернет словарь со всеми данными текущего пользователя из User и Profile
+    def get_user_data(self):
+        return {
+            'last_name': self.user.last_name,
+            'first_name': self.user.first_name,
+            'patronymic': self.patronymic,
+            'email': self.user.email,
+            'phoneNumber': self.phoneNumber,
+            'address': self.address,
+        }
+
 # Обработка сигнала добавления пользователя, для создания записи о его корзине
     # def create_or_update_user_profile(sender, instance, created, **kwargs):
     #     print(created, '-------------------')

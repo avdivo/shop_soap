@@ -50,9 +50,11 @@ class AlternateProfileForm(forms.ModelForm):
             },
             'email': {
                 'invalid': 'Неправильный Email',
+                'required': 'Заполните Email',
             },
             'phoneNumber': {
                 'invalid': 'Неправильный телефон',
+                'required': 'Заполните телефон',
             },
 
         }
@@ -62,9 +64,9 @@ class AlternateProfileForm(forms.ModelForm):
     def clean_address(self):
         cleaned_data = super().clean()
         address = cleaned_data.get("address")
-        print(address)
         if int(self.delivery_method) > 1 and not address:
             raise ValidationError("Укажите адрес доставки")
+        return address
 
 
 class OrderForm(forms.ModelForm):

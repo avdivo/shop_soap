@@ -35,10 +35,10 @@ class DeliveryMethod(models.Model):
 
 # Заказы
 class Order(models.Model):
-    number = models.CharField(max_length=8, blank=True, default=None, verbose_name=u'Номер заказа')  # Номер заказа
-    price_delivery = models.IntegerField(default=0,
+    number = models.CharField(max_length=8, blank=True, default=None, null=True, verbose_name=u'Номер заказа')  # Номер заказа
+    price_delivery = models.IntegerField(default=0, blank=True, null=True,
                                          verbose_name=u'Цена доставки')  # Цена доставки
-    price_individual = models.IntegerField(default=0,
+    price_individual = models.IntegerField(default=0, blank=True, null=True,
                                            verbose_name=u'Индивидуальная цена')  # Устанавливается продавцом и принимается за окончательную
     status = models.ForeignKey(StatusOrder, on_delete=models.PROTECT, default=1,
                                verbose_name=u'Статус')  # Связь с таблицей статусов
@@ -136,7 +136,7 @@ class AlternateProfile(models.Model):
                                    verbose_name=u'Телефон')  # Номер телефона
     address = models.CharField(max_length=128, blank=True, verbose_name=u'Адрес доставки')  # Адрес
     email = models.EmailField(max_length=150)
-    order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, unique=False, null=True, blank=True, verbose_name=u'Заказ')  # Ссылка на таблицу с Заказом
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, unique=False, null=True, blank=True, verbose_name=u'Заказ')  # Ссылка на таблицу с Заказом
 
 
     def __str__(self):
