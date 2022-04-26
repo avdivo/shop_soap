@@ -309,27 +309,30 @@ def order(request):
     # Если пользователь не авторизован или не все поля профиля заполнены, нельзя переключиться на профиль,
     # нужно заполнить форму вручную, поэтому блокировка редактирования запрещается (переключатель не выводится)
     edit = True # Разрешить редактирования, не показывать переключатель блокировки.
-    # Если формы уже заполнены, значит они не прошли валидацию, возращяем их на дозаполнение
-    form_order = form_order if form_order else OrderForm()
-    form_alternate_profile = form_alternate_profile if form_alternate_profile else AlternateProfileForm()
+    # Первый раз формы нет, выполняется первая инициализация, заполнение данными
+    # И блокирование полей, если заполнены все
+    if not form_alternate_profile:
+        # Первый раз
+        form_order = OrderForm()
+        form_alternate_profile = AlternateProfileForm()
 
-    if request.user.is_authenticated:
-        profile = Profile.objects.get(user=request.user)
-        form_alternate_profile.initial = {
-            'last_name': request.user.last_name,
-            'first_name': request.user.first_name,
-            'patronymic': profile.patronymic,
-            'email': request.user.email,
-            'phoneNumber': profile.phoneNumber,
-            'address': profile.address,
-        }
-        # Нужно чтоб после заполнения форма была валидна
-        if profile.is_filled():
-            # Все поля профиля заполнены, поэтому можно блокировать редактирование и переключаться на профиль
-            edit = False
-            # Делаем поля формы только для чтения
-            for field in form_alternate_profile.fields:
-                form_alternate_profile.fields[field].widget.attrs['readonly'] = True
+        if request.user.is_authenticated:
+            profile = Profile.objects.get(user=request.user)
+            form_alternate_profile.initial = {
+                'last_name': request.user.last_name,
+                'first_name': request.user.first_name,
+                'patronymic': profile.patronymic,
+                'email': request.user.email,
+                'phoneNumber': profile.phoneNumber,
+                'address': profile.address,
+            }
+            # Нужно чтоб после заполнения форма была валидна
+            if profile.is_filled():
+                # Все поля профиля заполнены, поэтому можно блокировать редактирование и переключаться на профиль
+                edit = False
+                # Делаем поля формы только для чтения
+                for field in form_alternate_profile.fields:
+                    form_alternate_profile.fields[field].widget.attrs['readonly'] = True
 
     return render(request, 'order.html', locals())
 
