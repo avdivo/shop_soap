@@ -149,9 +149,10 @@ def shop_single(request, product=None):
 
     return render(request, 'shop-single.html', locals())
 
-
+# --------------------------------------------------------------------------------
 # Проверка корзины на существование, выбор, создание. Возращает корзину (словарь)
-def get_basket(default, request):
+# Со значением default будет создана корзина если ее нет.
+def get_basket(request, default = dict()):
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
 
     # Проверяем, зарегистрирован ли пользователь
@@ -172,6 +173,15 @@ def get_basket(default, request):
         # Если нет корзины или в ней не словарь, создадим ее
         basket = default
     return basket
+# --------------------------------------------------------------------------------
+
+# Сохранение корзины
+def save_basket(request, basket=dict()):
+    if request.user.is_authenticated:
+        p = Profile.objects.get(user=request.user)
+        p.basket = basket
+        p.save()
+    request.session['basket'] = basket
 
 
 # Добавление 1 единицы товара в Корзину ------------------------------------------------
@@ -209,11 +219,7 @@ def add_to_basket(request):
         basket = {id: quantity}
 
     # Сохраняем корзину
-    if request.user.is_authenticated:
-        p = Profile.objects.get(user=request.user)
-        p.basket = basket
-        p.save()
-    request.session['basket'] = basket
+    save_basket(request, basket)
 
     products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
 
@@ -223,8 +229,7 @@ def add_to_basket(request):
 # Корзина --------------------------------------------------------------
 def basket(request, new_basket=None):
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
-    default = dict()
-    basket = get_basket(default, request)  # Получаем корзину в виде словаря
+    basket = get_basket(request)  # Получаем корзину в виде словаря
 
     # Ajax запрос на изменение корзины
     if request.method == "POST":
@@ -232,13 +237,8 @@ def basket(request, new_basket=None):
             basket = dict(request.POST)  # Пришла новая корзина
             del (basket['csrfmiddlewaretoken'])  # Удаляем из нее токен
             basket = {id: int(value[0]) for id, value in basket.items()}  # Переделываем в словарь
-            # Сохраняем корзину
 
-            if request.user.is_authenticated:
-                p = Profile.objects.get(user=request.user)
-                p.basket = basket
-                p.save()
-            request.session['basket'] = basket
+            save_basket(request, basket)  # Сохраняем корзину
 
             products = sum(x for x in basket.values())  # Считаем количество товаров в корзине
 
@@ -299,14 +299,21 @@ def order(request):
                     alternate_profile.save()
 
                 # Сохраняем товары, список в виде словаря в переменной order
+                # Внесение изменений в корзину. Отнимаем проданные товары
+                basket = get_basket(request)
                 for num, quantity in order.items():
                     product = Product.objects.get(id=num)  # Получаем товар
                     ProductInOrder.objects.create(product=product,
-                                         order=order_new, quantity=quantity,
-                                            price_selling=product.price)
+                                         order=order_new, quantity=quantity)
+                    # Цена рассчитывается при сохранении сама
 
-                print('Все хорошо --------------------------')
-                # return redirect('service:update-report', pk=report.pk)
+                    if num in basket:
+                        del(basket[num])
+
+                # Сохраняем корзину
+                save_basket(request, basket)
+
+
     else:
         # Читаем заказ из сессии, храним его там,
         # поскольку на оформление можно попасть после регистрации или авторизации
