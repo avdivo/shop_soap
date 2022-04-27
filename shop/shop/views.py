@@ -288,8 +288,8 @@ def order(request):
                 # ил данные авторизованного пользователя были изменены
                 # Поэтому сравниваем данные о поьзователе из формы с его данными из профиля
                 summ = 0
+                alternate_profile = form_alternate_profile.save(commit=False)  # Получаем альт. профиль из формы
                 if user:
-                    alternate_profile = form_alternate_profile.save(commit=False)
                     profile = Profile.objects.get(user=request.user)
                     # Считаем, сколько полей совпадают
                     summ = sum(val == alternate_profile.__dict__[prop] for prop, val in profile.get_user_data().items())
@@ -304,7 +304,7 @@ def order(request):
                 for num, quantity in order.items():
                     product = Product.objects.get(id=num)  # Получаем товар
                     ProductInOrder.objects.create(product=product,
-                                         order=order_new, quantity=quantity)
+                                                  order=order_new, quantity=quantity)
                     # Цена рассчитывается при сохранении сама
 
                     if num in basket:
