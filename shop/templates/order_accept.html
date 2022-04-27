@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Заказ принят{% endblock title %}
+
+{% block head_plus %}
+ <link rel="stylesheet" href="{% static '/css/custom.css' %}">
+{% endblock head_plus %}
+
+
+{% block content %}
+    <!-- Start Contact -->
+<div class="all bg-light">
+
+
+    <div class="container-fluid py-5">
+        <div class="row">
+            <div class="col-md-6 m-auto text-center">
+                <h1 class="h1">Благодарим за заказ</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row p-5">
+            <div class="col-lg-8 mb-0 d-flex align-items-center">
+                 <div class="text-align-left align-self-center">
+                    <h3 class="h2">Заказ №{{ order_number }} принят</h3>
+                    <p>
+                        Информация о заказе отправлена на ваш Email. Если Вы не получили письмо, проверьте папку Спам.
+                        {% if request.user.is_authenticated %}
+                            <br>Все свои заказы вы можете посмотреть в <a class="h3 text-dark text-decoration-none" href="{% url 'login' %}">личном кабинете.</a></br>
+                        {% else %}
+                            <br>Запомните или сфотографируйте номер заказа.</br>
+                        {% endif %}
+                        Менеджер свяжется с Вами после обработки заказа.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- End Contact -->
+{% endblock content %}
+
+{% block script_plus %}
+    <script src="{% static '/js/order.js' %}"></script>
+{% endblock script_plus %}

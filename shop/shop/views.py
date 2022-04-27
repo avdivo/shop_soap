@@ -15,6 +15,8 @@ from django.contrib.auth.models import User
 import json
 from django import forms
 from .forms import *
+from django.core.mail import send_mail
+from django.utils.timezone import localtime
 
 
 def index(request):
@@ -300,19 +302,41 @@ def order(request):
 
                 # Сохраняем товары, список в виде словаря в переменной order
                 # Внесение изменений в корзину. Отнимаем проданные товары
+                list_products = []  # Сохраняем покупки для перечисления в письме
                 basket = get_basket(request)
                 for num, quantity in order.items():
                     product = Product.objects.get(id=num)  # Получаем товар
-                    ProductInOrder.objects.create(product=product,
+                    obj = ProductInOrder.objects.create(product=product,
                                                   order=order_new, quantity=quantity)
                     # Цена рассчитывается при сохранении сама
-
+                    list_products.append(f'{product.name} ({product.actual_price} x {quantity}) = {obj.price_selling}')
                     if num in basket:
                         del(basket[num])
 
                 # Сохраняем корзину
                 save_basket(request, basket)
 
+                request.session['order'] = ''
+
+
+                message = f'Благодарим за оформление заказа.\n ' \
+                          f'Ваш заказа №{order_new.number} принят {order_new.created.strftime("%d-%m-%Y %H.%M")}.\n' \
+                          f'Подробности заказа:'
+                message += f'\n'.join(list_products)
+                message += f'\nНа сумму {order_new.price_product} рублей.\n' \
+                           f'После проверки заказа с Вами свяжется наш менеджер для уточнения деталей.\n' \
+
+
+                report = send_mail(
+                    'Оформление заказа в магазине BonBonSoap',
+                    message,
+                    'BonBonSoap',
+                    [alternate_profile.email],
+                    fail_silently=True,
+                )
+                print(report)
+                order_number = order_new.number  # Номер заказа для страницы подтверждения
+                return render(request, 'order_accept.html', locals())
 
     else:
         # Читаем заказ из сессии, храним его там,

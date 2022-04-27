@@ -153,5 +153,13 @@ PRODUCT_PREFIX = '0000000'
 # Фото для товара у которого нет своей фотографии или она не активна
 NO_PHOTO = os.path.join(MEDIA_URL, 'product_image/no_photo.png')
 
-# Временно для тестов номер пользователя
-USERR = 0
+
+# Электронная почта
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "6605099spb@gmail.com"
+EMAIL_HOST_PASSWORD = ""
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+
