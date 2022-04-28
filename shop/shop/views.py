@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.views.generic import TemplateView
@@ -16,6 +18,7 @@ import json
 from django import forms
 from .forms import *
 from django.core.mail import EmailMessage
+from django.template.loader import get_template
 from django.utils.timezone import localtime
 
 
@@ -23,14 +26,14 @@ from django.utils.timezone import localtime
 #   message - отрендереный html документ, to - кому письмо
 def send_email(message, to):
     '''Отправить письмо в HTML формате'''
-    subject = 'BonBonSoap'
+    subject = 'GreenSoap'
     from_email = settings.EMAIL_HOST_USER
-    msg = EmailMessage(subject, message, to=to, from_email=from_email)
+    msg = EmailMessage(subject, message, from_email=from_email, to=to )
     msg.content_subtype = 'html'
-    # try:
-    msg.send()
-    # except:
-    #     return False
+    try:
+        msg.send()
+    except:
+        return False
     return True
 
 # -------------------------------------------------------------------------------------
@@ -279,77 +282,80 @@ def basket(request, new_basket=None):
 # Оформление заказа --------------------------------------------------------------
 # При входе либо в post либо в сессии (order) должен быть заказ
 def order(request):
-    # try:
-    form_order = form_alternate_profile = None
-    if request.method == "POST":
-        if 'order' in request.POST:
-            order = json.loads(request.POST['order'])  # Пришел заказ
-            order = {id: int(value) for id, value in order.items()}  # Количество делаем int
-            request.session['order'] = order  # Записываем в сессию
+    try:
+        form_order = form_alternate_profile = None
+        if request.method == "POST":
+            if 'order' in request.POST:
+                order = json.loads(request.POST['order'])  # Пришел заказ
+                order = {id: int(value) for id, value in order.items()}  # Количество делаем int
+                request.session['order'] = order  # Записываем в сессию
+            else:
+                order = request.session['order']
+
+                # Работа с формой
+                form_order = OrderForm(request.POST) # Получаем данные из формы
+                form_alternate_profile = AlternateProfileForm(request.POST)
+                # Метод доставки запоминаем как сфойство формы, для валидации адреса в этой форме
+                form_alternate_profile.delivery_method = (request.POST['delivery_method'])
+
+                if form_alternate_profile.is_valid():
+                    user = request.user if request.user.is_authenticated else None
+                    delivery_method = DeliveryMethod(id=request.POST['delivery_method'])
+                    # Создаем заказ в БД -----------------------------------------------------
+                    order_new = Order.objects.create(user=user,
+                                                     delivery_method=delivery_method,
+                                                     description=request.POST['description'])
+
+                    # Альтернативный профиль сохраняем, только если пользователь не авторизован
+                    # ил данные авторизованного пользователя были изменены
+                    # Поэтому сравниваем данные о поьзователе из формы с его данными из профиля
+                    summ = 0
+                    alternate_profile = form_alternate_profile.save(commit=False)  # Получаем альт. профиль из формы
+                    if user:
+                        profile = Profile.objects.get(user=request.user)
+                        # Считаем, сколько полей совпадают
+                        summ = sum(val == alternate_profile.__dict__[prop] for prop, val in profile.get_user_data().items())
+                    if summ != 6:
+                        # Не все поля совпали или пользователь не авторизован, сохраняем альтернативный профиль
+                        alternate_profile.order_id = order_new.id # Привязываем альт. профиль к заказу
+                        alternate_profile.save()
+
+                    # Сохраняем товары, список в виде словаря в переменной order
+                    # Внесение изменений в корзину. Отнимаем проданные товары
+                    basket = get_basket(request)
+                    for num, quantity in order.items():
+                        product = Product.objects.get(id=num)  # Получаем товар
+                        obj = ProductInOrder.objects.create(product=product,
+                                                      order=order_new, quantity=quantity)
+                        # Цена рассчитывается при сохранении сама
+
+                        if num in basket:
+                            del(basket[num])
+
+                    # Сохраняем корзину
+                    save_basket(request, basket)
+
+                    # Подготовка данных и отправление письма
+                    order_mail = order_new  # Заказ
+                    products = ProductInOrder.objects.filter(order=order_mail)  # Товары, их количество и суммы
+                    offset = datetime.timedelta(hours=3)  # Исправляем время для правильного отображения
+                    order_mail.created += offset
+                    order_mail.created = order_mail.created.strftime("%d-%m-%Y %H.%M")
+                    message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
+                    is_email = send_email(message, [alternate_profile.email])  # Отправляем письмо и получаем успешность
+
+                    request.session['order'] = order_new.number  # Номер заказа передаем в сессии
+                    request.session['is_email'] = is_email
+                    return redirect('order_accept')
+
         else:
+            # Читаем заказ из сессии, храним его там,
+            # поскольку на оформление можно попасть после регистрации или авторизации
             order = request.session['order']
-
-            # Работа с формой
-            form_order = OrderForm(request.POST) # Получаем данные из формы
-            form_alternate_profile = AlternateProfileForm(request.POST)
-            # Метод доставки запоминаем как сфойство формы, для валидации адреса в этой форме
-            form_alternate_profile.delivery_method = (request.POST['delivery_method'])
-
-            if form_alternate_profile.is_valid():
-                user = request.user if request.user.is_authenticated else None
-                delivery_method = DeliveryMethod(id=request.POST['delivery_method'])
-                # Создаем заказ в БД -----------------------------------------------------
-                order_new = Order.objects.create(user=user,
-                                                 delivery_method=delivery_method,
-                                                 description=request.POST['description'])
-
-                # Альтернативный профиль сохраняем, только если пользователь не авторизован
-                # ил данные авторизованного пользователя были изменены
-                # Поэтому сравниваем данные о поьзователе из формы с его данными из профиля
-                summ = 0
-                alternate_profile = form_alternate_profile.save(commit=False)  # Получаем альт. профиль из формы
-                if user:
-                    profile = Profile.objects.get(user=request.user)
-                    # Считаем, сколько полей совпадают
-                    summ = sum(val == alternate_profile.__dict__[prop] for prop, val in profile.get_user_data().items())
-                if summ != 6:
-                    # Не все поля совпали или пользователь не авторизован, сохраняем альтернативный профиль
-                    alternate_profile.order_id = order_new.id # Привязываем альт. профиль к заказу
-                    alternate_profile.save()
-
-                # Сохраняем товары, список в виде словаря в переменной order
-                # Внесение изменений в корзину. Отнимаем проданные товары
-                basket = get_basket(request)
-                for num, quantity in order.items():
-                    product = Product.objects.get(id=num)  # Получаем товар
-                    obj = ProductInOrder.objects.create(product=product,
-                                                  order=order_new, quantity=quantity)
-                    # Цена рассчитывается при сохранении сама
-
-                    if num in basket:
-                        del(basket[num])
-
-                # Сохраняем корзину
-                save_basket(request, basket)
-
-                request.session['order'] = ''
-
-                order_mail = order_new
-                products = ProductInOrder.objects.filter(order=order_mail)
-
-                message = render(request, 'emails.html', locals())
-                is_email = send_email(message, [alternate_profile.email])
-
-                return render(request, 'order_accept.html', locals())
-
-    else:
-        # Читаем заказ из сессии, храним его там,
-        # поскольку на оформление можно попасть после регистрации или авторизации
-        order = request.session['order']
-        if not order:
-            raise  # Нет заказа, отправляемся в корзину
-    # except:
-    #     return redirect('basket')  # Ошибки вызванные расшифровкой заказа отправляют в корзину
+            if not order:
+                raise  # Нет заказа, отправляемся в корзину
+    except:
+        return redirect('basket')  # Ошибки вызванные расшифровкой заказа отправляют в корзину
 
     products = []  # Список товаров в заказе
     total_sum = 0  # Стоимость всех товаров
@@ -385,6 +391,15 @@ def order(request):
 
     return render(request, 'order.html', locals())
 
+
+# Сообщение о новом заказе -------------------------
+def order_accept(request, order=None):
+    if not request.session['order']:
+        return redirect('index')
+    order = request.session['order']
+    is_email = request.session['is_email']
+    print(is_email)
+    return render(request, 'order_accept.html', locals())
 
 # Регистрация нового пользователя ---------------------------------------------------
 class RegisterView(TemplateView):

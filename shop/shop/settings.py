@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+from .hide_pass import *
 from pathlib import Path
 import os
 
@@ -158,7 +158,7 @@ NO_PHOTO = os.path.join(MEDIA_URL, 'product_image/no_photo.png')
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "6605099spb@gmail.com"
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD_copy
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 

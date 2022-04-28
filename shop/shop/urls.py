@@ -32,6 +32,7 @@ urlpatterns = [
     path('add_to_basket/', add_to_basket, name='add_to_basket'),
     path('basket/', basket, name='basket'),
     path('order/', order, name='order'),
+    path('order_accept/', order_accept, name='order_accept'),
 
     path('accounts/login/', LoginView.as_view(), name="login"),
     path('accounts/profile/', ProfilePage.as_view(), name="profile"),
