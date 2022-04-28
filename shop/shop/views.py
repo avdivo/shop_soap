@@ -15,8 +15,25 @@ from django.contrib.auth.models import User
 import json
 from django import forms
 from .forms import *
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.utils.timezone import localtime
+
+
+# Отправление Email -------------------------------------------------------------------
+#   message - отрендереный html документ, to - кому письмо
+def send_email(message, to):
+    '''Отправить письмо в HTML формате'''
+    subject = 'BonBonSoap'
+    from_email = settings.EMAIL_HOST_USER
+    msg = EmailMessage(subject, message, to=to, from_email=from_email)
+    msg.content_subtype = 'html'
+    # try:
+    msg.send()
+    # except:
+    #     return False
+    return True
+
+# -------------------------------------------------------------------------------------
 
 
 def index(request):
@@ -321,7 +338,7 @@ def order(request):
                 products = ProductInOrder.objects.filter(order=order_mail)
 
                 message = render(request, 'emails.html', locals())
-                is_email = send_email(message, alternate_profile.email)
+                is_email = send_email(message, [alternate_profile.email])
 
                 return render(request, 'order_accept.html', locals())
 
@@ -368,24 +385,8 @@ def order(request):
 
     return render(request, 'order.html', locals())
 
-# Отправление Email -------------------------------------------------------------------
-#   message - отрендереный html документ, to - кому письмо
-    def send_email(message, to):
-        '''Отправить письмо в HTML формате'''
-        data = self.cleaned_data
-        subject = 'BonBonSoap'
-        from_email = settings.EMAIL_HOST_USER
-        msg = EmailMessage(subject, message, to=to, from_email=from_email)
-        msg.content_subtype = 'html'
-        try:
-            msg.send()
-        except:
-            return False
-        return True
 
-    # -------------------------------------------------------------------------------------
-
-# Регистрация нового пользователя
+# Регистрация нового пользователя ---------------------------------------------------
 class RegisterView(TemplateView):
     template_name = "registration/register.html"
 
