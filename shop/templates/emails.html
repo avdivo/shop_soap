@@ -1,0 +1,35 @@
+<html lang="ru">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Заказ №{{ order_mail.number }} {{ order_mail.status }}</title>
+
+</head>
+<body>
+
+<!--    Статус Новый-->
+    {% if order_mail.status.id == 1 %}
+    <h1>Благодарим за оформление заказа</h1>
+    <p>Ваш заказа №{{ order_mail.number }} принят {{ order_mail.created }} в магазине
+        <a href="{% url 'index' %}"> BonBonSoap</a></p>
+    <h2>Подробности заказа:</h2>
+    <ul>
+        {% for product in products %}
+        <li><a href="{% url 'shop-single' product.product.alias %}">{{ product.product.name }}</a>
+            ({{ product.product.actual_price }} x {{ product.quantity }})
+            = {{ product.price_selling }} &#x20bd;</li>
+        {% endfor %}
+    </ul>
+    <p><b>Сумма заказа: {{order_mail.price_product}} &#x20bd;</b></p>
+    {% endif %}
+    <p>После проверки заказа с Вами свяжется наш менеджер для уточнения деталей.</p>
+    <p>Связаться с нами можно по телефлоу <a href="tel:+7 (931) 349-25-89">+7 (931) 349-25-89</a></p>
+    {% if request.user.is_authenticated %}
+        <p>Все свои заказы вы можете посмотреть в <a class="h3 text-dark text-decoration-none" href="{% url 'profile' %}">личном кабинете.</a></p>
+    {% endif %}
+
+
+
+
+</body>
+</html>

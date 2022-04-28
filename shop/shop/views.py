@@ -302,14 +302,13 @@ def order(request):
 
                 # Сохраняем товары, список в виде словаря в переменной order
                 # Внесение изменений в корзину. Отнимаем проданные товары
-                list_products = []  # Сохраняем покупки для перечисления в письме
                 basket = get_basket(request)
                 for num, quantity in order.items():
                     product = Product.objects.get(id=num)  # Получаем товар
                     obj = ProductInOrder.objects.create(product=product,
                                                   order=order_new, quantity=quantity)
                     # Цена рассчитывается при сохранении сама
-                    list_products.append(f'{product.name} ({product.actual_price} x {quantity}) = {obj.price_selling}')
+
                     if num in basket:
                         del(basket[num])
 
@@ -318,24 +317,12 @@ def order(request):
 
                 request.session['order'] = ''
 
+                order_mail = order_new
+                products = ProductInOrder.objects.filter(order=order_mail)
 
-                message = f'Благодарим за оформление заказа.\n ' \
-                          f'Ваш заказа №{order_new.number} принят {order_new.created.strftime("%d-%m-%Y %H.%M")}.\n' \
-                          f'Подробности заказа:'
-                message += f'\n'.join(list_products)
-                message += f'\nНа сумму {order_new.price_product} рублей.\n' \
-                           f'После проверки заказа с Вами свяжется наш менеджер для уточнения деталей.\n' \
+                message = render(request, 'emails.html', locals())
+                is_email = send_email(message, alternate_profile.email)
 
-
-                report = send_mail(
-                    'Оформление заказа в магазине BonBonSoap',
-                    message,
-                    'BonBonSoap',
-                    [alternate_profile.email],
-                    fail_silently=True,
-                )
-                print(report)
-                order_number = order_new.number  # Номер заказа для страницы подтверждения
                 return render(request, 'order_accept.html', locals())
 
     else:
@@ -381,6 +368,22 @@ def order(request):
 
     return render(request, 'order.html', locals())
 
+# Отправление Email -------------------------------------------------------------------
+#   message - отрендереный html документ, to - кому письмо
+    def send_email(message, to):
+        '''Отправить письмо в HTML формате'''
+        data = self.cleaned_data
+        subject = 'BonBonSoap'
+        from_email = settings.EMAIL_HOST_USER
+        msg = EmailMessage(subject, message, to=to, from_email=from_email)
+        msg.content_subtype = 'html'
+        try:
+            msg.send()
+        except:
+            return False
+        return True
+
+    # -------------------------------------------------------------------------------------
 
 # Регистрация нового пользователя
 class RegisterView(TemplateView):

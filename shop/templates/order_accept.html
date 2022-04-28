@@ -25,9 +25,15 @@
         <div class="row p-5">
             <div class="col-lg-8 mb-0 d-flex align-items-center">
                  <div class="text-align-left align-self-center">
-                    <h3 class="h2">Заказ №{{ order_number }} принят</h3>
+                    <h3 class="h2">Заказ №{{ order_new.number }} принят</h3>
                     <p>
+                        {% if is_email %}
                         Информация о заказе отправлена на ваш Email. Если Вы не получили письмо, проверьте папку Спам.
+                        {% else %}
+                        Письмо с информацией о заказе по какой-то причине не удалось отправить на ваш Email.
+                        При возникновении вопросов свяжитесь с нами по телефону.
+                        {% endif %}
+
                         {% if request.user.is_authenticated %}
                             <br>Все свои заказы вы можете посмотреть в <a class="h3 text-dark text-decoration-none" href="{% url 'login' %}">личном кабинете.</a></br>
                         {% else %}
