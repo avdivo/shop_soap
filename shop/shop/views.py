@@ -9,7 +9,7 @@ from order.models import *
 from product.models import *
 from django.db.models import Q
 from django.shortcuts import redirect, render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpRequest
 
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
@@ -430,18 +430,39 @@ class RegisterView(TemplateView):
         return render(request, self.template_name)
 
 
+# Авторизация пользователя ----------------------------------------------
 class LoginView(TemplateView):
     template_name = "registration/login.html"
 
     def dispatch(self, request, *args, **kwargs):
+        # Запоминаем откуда пришли в сессию
+        ret = request.META.get('HTTP_REFERER')
+        if 'login' not in ret:
+            # Если вход повторный, с этой же страницы, то пропускаем
+            request.session['return'] = ret
+        if not request.session['return']:
+            request.session['return'] = 'index'
+
+        print(request.session.__dir__)
         context = {}
         if request.method == 'POST':
             username = request.POST['email']
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
+            # Запоминаем данные из сессии
+            copy_sess = request.session
             if user is not None:
                 login(request, user)
-                return redirect(reverse("profile"))
+                request.session = copy_sess
+                # Добавляем в корзину пользователя то, что было положено до входа
+                # if 'basket' in  request.session:
+
+                # basket = get_basket()
+                # Если профиль пользователя не заполнен, то переходим в профиль
+                profile = Profile.objects.get(user=request.user)
+                if not profile.is_filled():
+                    return redirect(reverse("profile"))
+                return redirect(request.session['return'])  # Иначе туда, откуда пришли
             else:
                 context['error'] = "Email или пароль неправильные"
         return render(request, self.template_name, context)
