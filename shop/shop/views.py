@@ -299,9 +299,18 @@ def order(request):
                 form_alternate_profile.delivery_method = (request.POST['delivery_method'])
 
                 if form_alternate_profile.is_valid():
+                    # При возвратах и обновлениях может возникнуть ситуация совершения повторного заказа
+                    # Чтобы этого избежать, проверяем существование нужных товаров в корзине
+                    # и если их там нет, вероятно что они уже куплены
+                    basket = get_basket(request)
+                    for num in order.keys():
+                        if num not in basket:
+                            raise  # Нет нужных товаров в корзине
+
+                    # Оформление заказа -----------------------------
                     user = request.user if request.user.is_authenticated else None
                     delivery_method = DeliveryMethod(id=request.POST['delivery_method'])
-                    # Создаем заказ в БД -----------------------------------------------------
+                    # Создаем заказ в БД ----------------------------
                     order_new = Order.objects.create(user=user,
                                                      delivery_method=delivery_method,
                                                      description=request.POST['description'])
@@ -354,6 +363,7 @@ def order(request):
             order = request.session['order']
             if not order:
                 raise  # Нет заказа, отправляемся в корзину
+
     except:
         return redirect('basket')  # Ошибки вызванные расшифровкой заказа отправляют в корзину
 
