@@ -416,6 +416,7 @@ class RegisterView(TemplateView):
     template_name = "registration/register.html"
 
     def dispatch(self, request, *args, **kwargs):
+        context = {}
         if request.method == 'POST':
             username = request.POST.get('email')
             email = request.POST.get('email')
@@ -426,8 +427,9 @@ class RegisterView(TemplateView):
                 u = User.objects.create_user(username, email, password)
                 Profile.objects.create(user=u)
                 return redirect(reverse("login"))
-
-        return render(request, self.template_name)
+            else:
+                context['error'] = "Ошибка регистрации"
+        return render(request, self.template_name, context)
 
 
 # Авторизация пользователя ----------------------------------------------
@@ -443,7 +445,6 @@ class LoginView(TemplateView):
         if not request.session['return']:
             request.session['return'] = 'index'
 
-        print(request.session.__dir__)
         context = {}
         if request.method == 'POST':
             username = request.POST['email']
@@ -455,9 +456,13 @@ class LoginView(TemplateView):
                 login(request, user)
                 request.session = copy_sess
                 # Добавляем в корзину пользователя то, что было положено до входа
-                # if 'basket' in  request.session:
+                if 'basket' in  request.session:
+                    basket = get_basket(request)
+                    sess = request.session['basket']
+                    for product, quantity in sess.items():
+                        basket[product] = quantity +  basket[product] if product in basket else quantity
+                    save_basket(request, basket)  # Сохраняем корзину
 
-                # basket = get_basket()
                 # Если профиль пользователя не заполнен, то переходим в профиль
                 profile = Profile.objects.get(user=request.user)
                 if not profile.is_filled():

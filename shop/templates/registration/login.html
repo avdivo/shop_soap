@@ -10,23 +10,31 @@
 
 {% block content %}
     <div class="container-fluid bg-light py-5">
-        <div class="col-md-6 m-auto text-center">
-            <h1 class="h1">Вход</h1>
-            <p>
-                Пожалуйста, авторизуйтесь, чтобы войти в кабинет пользователя. <br>Или <a href="{% url 'register' %}">зарегистрируйтесь</a>.
-            </p>
+        <div class="row">
+            <div class="col-md-6 m-auto text-center">
+                <h1 class="h1">Вход</h1>
+                <p>
+                    Пожалуйста, авторизуйтесь, чтобы войти в кабинет пользователя. <br>Или <a class="h3 text-dark text-decoration-none" href="{% url 'register' %}">зарегистрируйтесь</a>.
+                </p>
+            </div>
         </div>
-    </div>
 
-    {% if error %}
-        <div style="color:red;">{{ error }}</div>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <input type="email" name="email" placeholder="Email">
-        <input type="password" name="password" placeholder="Пароль">
-        <input type="submit" value="Войти">
-    </form>
+        <form method="post">
+
+            <div class="row">
+                <div class="col-md-4 m-auto text-center">
+                    {% csrf_token %}
+                    {% if error %}
+                    <div style="color:red;">{{ error }}</div>
+                    {% endif %}
+                    <p><input class="form-control" type="email" name="email" placeholder="Email">
+                    <input class="form-control" type="password" name="password" placeholder="Пароль"  autocomplete="current-password"></p>
+                    <p><button type="submit" class="btn btn-success btn-lg" name="submit">Войти</button></p>
+                </div>
+            </div>
+
+        </form>
+    </div>
 
 <!-- End Contact -->
 {% endblock content %}
