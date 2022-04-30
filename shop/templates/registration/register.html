@@ -28,12 +28,12 @@
                     <p><input class="form-control" type="email" name="email" placeholder="Email" required>
                     <input class="form-control" type="password" name="password"
                            placeholder="Пароль" autocomplete="new-password"
-                           pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$"
-                           title="В пароле объязательны Заглавная и строчная латинская буква и цыфра" required>
+                           pattern="[0-9a-zA-Z!@#$%^&*]{4,}"
+                           title="Пароль должен содержать не менее 4 символов. Латинские буквы, цифры и символы!@#$%^&*" required>
                     <input class="form-control" type="password" name="password2"
                            placeholder="Повторить пороль" autocomplete="new-password"
-                           pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$"
-                           title="В пароле объязательны Заглавная и строчная латинская буква и цыфра" required></p>
+                           pattern="[0-9a-zA-Z!@#$%^&*]{4,}"
+                           title="Пароль должен содержать не менее 4 символов. Латинские буквы, цифры и символы!@#$%^&*" required></p>
                     <p><button type="submit" class="btn btn-success btn-lg" name="submit">Зарегистрироваться</button></p>
                 </div>
             </div>

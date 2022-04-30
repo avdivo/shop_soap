@@ -93,9 +93,9 @@
                         <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
                         <span id='quantity_in_basket' class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">{% basket_count %}</span>
                     </a>
-                    <a class="nav-icon position-relative text-decoration-none" href="{% if request.user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}">
+                    <a class="nav-icon position-relative text-decoration-none" href="{% url 'profile' %}">
                         <i class="fa fa-fw fa-user text-dark mr-3"></i>
-                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"></span>
+                        <span class="position-absolute top-0 left-100 badge rounded-pill bg-light text-dark">{% if request.user.is_authenticated %}{{ request.user.first_name }}{% endif %}</span>
                     </a>
                 </div>
             </div>

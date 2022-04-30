@@ -416,19 +416,24 @@ class RegisterView(TemplateView):
     template_name = "registration/register.html"
 
     def dispatch(self, request, *args, **kwargs):
-        context = {}
-        if request.method == 'POST':
-            username = request.POST.get('email')
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            password2 = request.POST.get('password2')
+        try:
+            context = {}
+            if request.method == 'POST':
+                username = request.POST.get('email')
+                email = request.POST.get('email')
+                password = request.POST.get('password')
+                password2 = request.POST.get('password2')
 
-            if password == password2:
-                u = User.objects.create_user(username, email, password)
-                Profile.objects.create(user=u)
-                return redirect(reverse("login"))
-            else:
-                context['error'] = "Ошибка регистрации"
+                if password == password2:
+                    context['error'] = "Такой Email уже зарегистрирован"
+                    u = User.objects.create_user(username, email, password)
+
+                    Profile.objects.create(user=u)
+                    return redirect(reverse("login"))
+                else:
+                    context['error'] = "Пароль не совпадает с подтверждением"
+        except:
+            pass
         return render(request, self.template_name, context)
 
 
@@ -437,45 +442,60 @@ class LoginView(TemplateView):
     template_name = "registration/login.html"
 
     def dispatch(self, request, *args, **kwargs):
-        # Запоминаем откуда пришли в сессию
-        ret = request.META.get('HTTP_REFERER')
-        if 'login' not in ret:
-            # Если вход повторный, с этой же страницы, то пропускаем
-            request.session['return'] = ret
-        if not request.session['return']:
-            request.session['return'] = 'index'
+        try:
+            # Запоминаем откуда пришли в сессию
+            ret = request.META.get('HTTP_REFERER')
+            if 'login' not in ret:
+                # Если вход повторный, с этой же страницы, то пропускаем
+                request.session['return'] = ret
+            if not request.session['return']:
+                request.session['return'] = 'index'
 
-        context = {}
-        if request.method == 'POST':
-            username = request.POST['email']
-            password = request.POST['password']
-            user = authenticate(request, username=username, password=password)
-            # Запоминаем данные из сессии
-            copy_sess = request.session
-            if user is not None:
-                login(request, user)
-                request.session = copy_sess
-                # Добавляем в корзину пользователя то, что было положено до входа
-                if 'basket' in  request.session:
-                    basket = get_basket(request)
-                    sess = request.session['basket']
-                    for product, quantity in sess.items():
-                        basket[product] = quantity +  basket[product] if product in basket else quantity
-                    save_basket(request, basket)  # Сохраняем корзину
+            context = {}
+            if request.method == 'POST':
+                username = request.POST['email']
+                password = request.POST['password']
+                user = authenticate(request, username=username, password=password)
+                # Запоминаем данные из сессии
+                copy_sess = request.session
+                if user is not None:
+                    login(request, user)
+                    request.session = copy_sess
+                    # Добавляем в корзину пользователя то, что было положено до входа
+                    if 'basket' in  request.session:
+                        basket = get_basket(request)
+                        sess = request.session['basket']
+                        for product, quantity in sess.items():
+                            basket[product] = quantity +  basket[product] if product in basket else quantity
+                        save_basket(request, basket)  # Сохраняем корзину
 
-                # Если профиль пользователя не заполнен, то переходим в профиль
-                profile = Profile.objects.get(user=request.user)
-                if not profile.is_filled():
-                    return redirect(reverse("profile"))
-                return redirect(request.session['return'])  # Иначе туда, откуда пришли
-            else:
-                context['error'] = "Email или пароль неправильные"
+                    # Если профиль пользователя не заполнен, то переходим в профиль
+                    profile = Profile.objects.get(user=request.user)
+                    if not profile.is_filled():
+                        return redirect(reverse("profile"))
+                    return redirect(request.session['return'])  # Иначе туда, откуда пришли
+                else:
+                    context['error'] = "Email или пароль неправильные"
+        except:
+            return redirect(reverse("login"))
         return render(request, self.template_name, context)
 
 
-# Личный кабинет
+# Личный кабинет -----------------------------------------------------------
 class ProfilePage(TemplateView):
     template_name = "registration/profile.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            profile = Profile.objects.get(user=request.user)
+            profile_data = profile.get_user_data()
+            fio = f'{profile_data["last_name"]} {profile_data["first_name"]} {profile_data["patronymic"]}'
+
+        else:
+            return redirect(reverse("login"))
+
+        return render(request, self.template_name, locals())
+
 
 # Выход из профиля
 def exit(request):
