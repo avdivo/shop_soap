@@ -9,26 +9,56 @@
         <div class="row">
             <div class="col-md-6 m-auto text-center">
                 <h1 class="h1">Личный кабинет</h1>
-                    {{ fio }} <br>
+                    {{ profile.last_name }} {{ profile.first_name }} {{ profile.patronymic }}<br>
                     Email: {{ user.email }}
             </div>
         </div>
 
         <div class="row">
 
-            <div class="col-lg-3">
-                <h1 class="h2 pb-4">Опции</h1>
-                <h3><a class="h3 text-dark text-decoration-none" href="{% url 'shop' %}">Профиль</a></h3>
-                <h3><a class="h3 text-dark text-decoration-none" href="{% url 'shop' %}">Заказы</a></h3>
-                <h3><a class="h3 text-dark text-decoration-none" href="{% url 'shop' %}">Выход</a></h3>
+            <div class="col-lg-3 my-sm-3">
+                <h3><a class="h3 text-dark text-decoration-none" href="{% url 'profile' %}">Профиль</a></h3>
+                <h3><a class="h3 text-dark text-decoration-none" href="{% url 'profile' 'orders' %}">Заказы</a></h3>
+                <h3><a class="h3 text-dark text-decoration-none" href="{% url 'exit' %}">Выход</a></h3>
             </div>
 
             <div class="col-lg-9">
-
-                <div class="row">
-
-                </div>
-
+                {% if chapter == 'profile' %}
+                <form action="{% url 'profile' %}" method="post">
+                    {% csrf_token %}
+                    <!--                Поля-->
+                    <div class="row">
+                        <div class="col-md-3 my-sm-4 m-auto">
+                            <input type="text" name="last_name" value="{{ profile.last_name }}" class="form-control"
+                                   placeholder="Фамилия" title="Фамилия">
+                        </div>
+                        <div class="col-md-3 my-sm-4 m-auto">
+                           <input type="text" name="first_name" value="{{ profile.first_name }}" class="form-control"
+                                  placeholder="Имя" title="Имя" maxlength="64">
+                        </div>
+                        <div class="col-md-3 my-sm-4 m-auto">
+                            <input type="text" name="patronymic"  value="{{ profile.patronymic }}" class="form-control"
+                                   placeholder="Отчество" title="Отчество" maxlength="64">
+                        </div>
+                    </div>
+                    <!--                Поля-->
+                    <div class="row">
+                        <div class="col-md-3 m-auto">
+                            <input type="text" name="phoneNumber" value="{{ profile.phoneNumber }}" class="form-control"
+                                   placeholder="Телефон" title="Телефон" maxlength="16">
+                        </div>
+                        <div class="col-md-7 m-auto">
+                            <input type="text" name="address" value="{{ profile.address }}" class="form-control"
+                                   placeholder="Адрес доставки" title="Адрес доставки" maxlength="128">
+                        </div>
+                    </div>
+                    <div class="row my-4 justify-content-end">
+                        <div class="col-md-3 text-center">
+                            <button type="submit" class="btn btn-success btn-lg" name="submit">Сохранить</button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
             </div>
 
         </div>

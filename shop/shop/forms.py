@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from order.models import AlternateProfile, Order
 
+# Форма для альтернативного профиля при оформлении заказа
 class AlternateProfileForm(forms.ModelForm):
 
     class Meta:
@@ -68,7 +69,7 @@ class AlternateProfileForm(forms.ModelForm):
             raise ValidationError("Укажите адрес доставки")
         return address
 
-
+# Форма заказа при оформлении
 class OrderForm(forms.ModelForm):
 
     class Meta:
@@ -86,4 +87,5 @@ class OrderForm(forms.ModelForm):
                 'title': 'Комментарии к заказу'
             }),
         }
+
 

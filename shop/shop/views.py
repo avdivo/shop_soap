@@ -40,17 +40,19 @@ def send_email(message, to):
 
 
 def index(request):
-    ord = {'orders': Order.objects.all()}
+    request.session['return'] = 'index' # Запоминаем последнюю страницу
     return render(request, 'index.html', locals())
 
 
 # О магазине
 def about(request):
+    request.session['return'] = 'about'  # Запоминаем последнюю страницу
     return render(request, 'about.html', locals())
 
 
 # Магазин (выбор товара) ---------------------------------------------------------
 def shop(request, filter=None):
+    request.session['return'] = 'shop'  # Запоминаем последнюю страницу
     # Сортировка проверяется в сессии и применяется при каждом выводе товаров
     # По умолчанию производится сортировка по Популярности товаров
     # Смена сортировки приходит методом POST в параметре sort
@@ -135,6 +137,7 @@ def select_main_photo(products):
 
 # Контакты --------------------------------------------------------------
 def contact(request):
+    request.session['return'] = 'contact'  # Запоминаем последнюю страницу
     print(request.user.username)
     if request.user.is_authenticated:
         # Пользователь авторизован.
@@ -148,6 +151,7 @@ def contact(request):
 
 # Карточка товара ------------------------------------------------------
 def shop_single(request, product=None):
+    request.session['return'] = 'shop_single'  # Запоминаем последнюю страницу
     # Вход на страницу без параметра не возможен, происходит перенаправление на магазин
     if product == None:
         return redirect('shop')
@@ -250,6 +254,8 @@ def add_to_basket(request):
 
 # Корзина --------------------------------------------------------------
 def basket(request, new_basket=None):
+    request.session['return'] = 'basket'  # Запоминаем последнюю страницу
+
     request.session.modified = True  # Без этого сессии с Ajax не сохраняются
     basket = get_basket(request)  # Получаем корзину в виде словаря
 
@@ -282,6 +288,7 @@ def basket(request, new_basket=None):
 # Оформление заказа --------------------------------------------------------------
 # При входе либо в post либо в сессии (order) должен быть заказ
 def order(request):
+    request.session['return'] = 'order'  # Запоминаем последнюю страницу
     try:
         form_order = form_alternate_profile = None
         if request.method == "POST":
@@ -443,12 +450,8 @@ class LoginView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            # Запоминаем откуда пришли в сессию
-            ret = request.META.get('HTTP_REFERER')
-            if 'login' not in ret:
-                # Если вход повторный, с этой же страницы, то пропускаем
-                request.session['return'] = ret
-            if not request.session['return']:
+            # Проверяем, есьб ли куда вернуться, если нет, назначаем
+            if 'return' not in request.session:
                 request.session['return'] = 'index'
 
             context = {}
@@ -485,11 +488,32 @@ class LoginView(TemplateView):
 class ProfilePage(TemplateView):
     template_name = "registration/profile.html"
 
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, *args,  **kwargs):
+        # Определяем, какой раздел Личного кабинета открыть (он может прийти в строке url)
+        chapter = 'profile'
+        if 'data' in kwargs:
+            chapter = kwargs['data']
+
         if request.user.is_authenticated:
-            profile = Profile.objects.get(user=request.user)
-            profile_data = profile.get_user_data()
-            fio = f'{profile_data["last_name"]} {profile_data["first_name"]} {profile_data["patronymic"]}'
+            # Проверяем, есьб ли куда вернуться, если нет, назначаем
+            if 'return' not in request.session:
+                request.session['return'] = 'index'
+
+            profile_data = Profile.objects.get(user=request.user)
+            profile = profile_data.get_user_data()
+
+            if request.method == 'POST':
+                # Сохраняем данные пользователя не проверяя
+                profile = request.POST
+                profile_data.patronymic = request.POST.get("patronymic")
+                profile_data.phoneNumber = request.POST.get("phoneNumber")
+                profile_data.address = request.POST.get("address")
+                profile_data.save()
+                request.user.first_name = request.POST.get("first_name")
+                request.user.last_name = request.POST.get("last_name")
+                request.user.save()
+
+                return redirect(request.session['return'])
 
         else:
             return redirect(reverse("login"))
