@@ -62,13 +62,13 @@
                 {% else %}
                 <!-- Заказы пользователя -->
                     {% for order in orders %}
-                    <div class="row">
+                    <div class="row border border-success">
                         <div class="col-md-12 my-sm-4 m-auto">
                             <h5>Заказ №{{ order.number }} от {{ order.created }}</h5>
                             <h6>Состав заказа:</h6>
                             <ol start="1">
                             {% for product in order.products %}
-                                <li><a class="text-dark text-decoration-none"
+                                <li><a rel="sponsored" class="text-success"
                                        href="{% url 'shop-single' product.product.alias %}"><small>
                                         ({{ product.product.article }}) {{ product.product.name }}</small></a>
                                         <small>{{ product.quantity }} шт. по цене {{ product.price_selling }} &#x20bd;
@@ -76,10 +76,10 @@
                             {% endfor %}
                             </ol>
 
-                            <b>Цена товаров: </b>{{ order.price_product }}&nbsp;&nbsp;&nbsp;
+                            <b>Цена товаров: </b>{{ order.price_product }}&#x20bd;&nbsp;&nbsp;&nbsp;
                             <b>Способ доставки: </b>{{ order.delivery_method }}&nbsp;&nbsp;&nbsp;
-                            <b>Цена доставки: </b>{{ order.price_delivery }}&nbsp;&nbsp;&nbsp;
-                            <b>Стоимость заказа: </b>{{ order.price_total }}
+                            <b>Цена доставки: </b>{{ order.price_delivery }}&#x20bd;&nbsp;&nbsp;&nbsp;
+                            <p><b>Стоимость заказа: </b>{{ order.price_total }}&#x20bd;</p>
                             <p><b>Статус заказа: </b>{{ order.status }} &nbsp;&nbsp;&nbsp;{{ order.updated }}</p>
                         </div>
                     </div>

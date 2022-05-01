@@ -34,10 +34,10 @@
                 </div>
             </div>
             {% if not request.user.is_authenticated %}
-                <p>Чтобы использовать данные из профиля, <a class="h3 text-dark text-decoration-none" href="{% url 'login' %}">авторизуйтесь</a> или <a class="h3 text-dark text-decoration-none" href="{% url 'register' %}">зарегистрируйтесь</a></p>
+                <p>Чтобы использовать данные из профиля, <a rel="sponsored" class="text-success" href="{% url 'login' %}">авторизуйтесь</a> или <a rel="sponsored" class="text-success" href="{% url 'register' %}">зарегистрируйтесь</a></p>
             {% else %}
                 {% if edit %}
-                    <p>Для автоматического заполнения полей формы, пожалуйста, <a class="h3 text-dark text-decoration-none" href="{% url 'profile' %}">заполните</a> ваш профиль.</p>
+                    <p>Для автоматического заполнения полей формы, пожалуйста, <a rel="sponsored" class="text-success" href="{% url 'profile' %}">заполните</a> ваш профиль.</p>
                 {% endif %}
             {% endif %}
             <form action="{% url 'order' %}" method="post" id="new_order">
