@@ -23,6 +23,7 @@
             </div>
 
             <div class="col-lg-9">
+                <!-- Профиль пользователя -->
                 {% if chapter == 'profile' %}
                 <form action="{% url 'profile' %}" method="post">
                     {% csrf_token %}
@@ -58,7 +59,33 @@
                         </div>
                     </div>
                 </form>
+                {% else %}
+                <!-- Заказы пользователя -->
+                    {% for order in orders %}
+                    <div class="row">
+                        <div class="col-md-12 my-sm-4 m-auto">
+                            <h5>Заказ №{{ order.number }} от {{ order.created }}</h5>
+                            <h6>Состав заказа:</h6>
+                            <ol start="1">
+                            {% for product in order.products %}
+                                <li><a class="text-dark text-decoration-none"
+                                       href="{% url 'shop-single' product.product.alias %}"><small>
+                                        ({{ product.product.article }}) {{ product.product.name }}</small></a>
+                                        <small>{{ product.quantity }} шт. по цене {{ product.price_selling }} &#x20bd;
+                                        на сумму {{ order.price_total }} &#x20bd;</small></li>
+                            {% endfor %}
+                            </ol>
+
+                            <b>Цена товаров: </b>{{ order.price_product }}&nbsp;&nbsp;&nbsp;
+                            <b>Способ доставки: </b>{{ order.delivery_method }}&nbsp;&nbsp;&nbsp;
+                            <b>Цена доставки: </b>{{ order.price_delivery }}&nbsp;&nbsp;&nbsp;
+                            <b>Стоимость заказа: </b>{{ order.price_total }}
+                            <p><b>Статус заказа: </b>{{ order.status }} &nbsp;&nbsp;&nbsp;{{ order.updated }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
                 {% endif %}
+
             </div>
 
         </div>
