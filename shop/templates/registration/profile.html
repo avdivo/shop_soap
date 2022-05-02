@@ -61,29 +61,48 @@
                 </form>
                 {% else %}
                 <!-- Заказы пользователя -->
-                    {% for order in orders %}
-                    <div class="row border border-success">
-                        <div class="col-md-12 my-sm-4 m-auto">
-                            <h5>Заказ №{{ order.number }} от {{ order.created }}</h5>
-                            <h6>Состав заказа:</h6>
-                            <ol start="1">
-                            {% for product in order.products %}
-                                <li><a rel="sponsored" class="text-success"
-                                       href="{% url 'shop-single' product.product.alias %}"><small>
-                                        ({{ product.product.article }}) {{ product.product.name }}</small></a>
-                                        <small>{{ product.quantity }} шт. по цене {{ product.price_selling }} &#x20bd;
-                                        на сумму {{ order.price_total }} &#x20bd;</small></li>
-                            {% endfor %}
-                            </ol>
+                {% for order in orders %}
+                <div class="row border border-success mt-2">
+                    <div class="col-md-12">
+                        <p><h5>Заказ №{{ order.number }} от {{ order.created }}</h5>
+                        <h6>Состав заказа:</h6></p>
+                        <ol start="1">
+                        {% for product in order.products %}
+                            <li><a rel="sponsored" class="text-success"
+                                   href="{% url 'shop-single' product.product.alias %}"><small>
+                                    ({{ product.product.article }}) {{ product.product.name }}</small></a>
+                                    <small>{{ product.quantity }} шт. по цене {{ product.price_selling }} &#x20bd;
+                                    на сумму {{ order.price_total }} &#x20bd;</small></li>
+                        {% endfor %}
+                        </ol>
 
-                            <b>Цена товаров: </b>{{ order.price_product }}&#x20bd;&nbsp;&nbsp;&nbsp;
-                            <b>Способ доставки: </b>{{ order.delivery_method }}&nbsp;&nbsp;&nbsp;
-                            <b>Цена доставки: </b>{{ order.price_delivery }}&#x20bd;&nbsp;&nbsp;&nbsp;
-                            <p><b>Стоимость заказа: </b>{{ order.price_total }}&#x20bd;</p>
-                            <p><b>Статус заказа: </b>{{ order.status }} &nbsp;&nbsp;&nbsp;{{ order.updated }}</p>
-                        </div>
+                        <b>Цена товаров: </b>{{ order.price_product }}&#x20bd;&nbsp;&nbsp;&nbsp;
+                        <b>Способ доставки: </b>{{ order.delivery_method }}&nbsp;&nbsp;&nbsp;
+                        <b>Цена доставки: </b>{{ order.price_delivery }}&#x20bd;&nbsp;&nbsp;&nbsp;
+                        <p><b>Стоимость заказа: </b>{{ order.price_total }}&#x20bd;</p>
+                        <p><b>Статус заказа: </b>{{ order.status }} &nbsp;&nbsp;&nbsp;{{ order.updated }}</p>
                     </div>
-                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <div div="row">
+                    <ul class="pagination pagination-lg justify-content-end">
+                        {% for p in paginator.page_range %}
+
+                        {% if orders.number == p %}
+                        <li class="page-item disabled">
+                            <a class="page-link active rounded-0 mr-3 shadow-sm border-top-0 border-left-0" href="#">{{ p }}</a>
+                        </li>
+                        {% elif p >= orders.number|add:-2 and p <= orders.number|add:2  %}
+                        <li class="page-item">
+                            <a class="page-link rounded-0 shadow-sm border-top-0 border-left-0 text-dark" href="{% url 'profile' 'order' %}?page={{ p }}">{{ p }}</a>
+                        </li>
+                        {% endif %}
+
+                        {% endfor %}
+                    </ul>
+                </div>
+
                 {% endif %}
 
             </div>

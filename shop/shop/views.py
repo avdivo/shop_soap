@@ -502,58 +502,65 @@ class ProfilePage(TemplateView):
     template_name = "registration/profile.html"
 
     def dispatch(self, request, *args,  **kwargs):
-        try:
-            # Определяем, какой раздел Личного кабинета открыть (он может прийти в строке url)
-            chapter = 'profile'
-            if 'data' in kwargs:
-                chapter = kwargs['data']
+        # try:
+        # Определяем, какой раздел Личного кабинета открыть (он может прийти в строке url)
+        chapter = 'profile'
+        if 'data' in kwargs:
+            chapter = kwargs['data']
 
-            if request.user.is_authenticated:
-                # Проверяем, есть ли куда вернуться, если нет, назначаем
-                if 'return' not in request.session:
-                    request.session['return'] = 'index'
+        if request.user.is_authenticated:
+            # Проверяем, есть ли куда вернуться, если нет, назначаем
+            if 'return' not in request.session:
+                request.session['return'] = 'index'
 
-                # Подготовка и работа с Профилем пользователя
-                profile_data = Profile.objects.get(user=request.user)
-                profile = profile_data.get_user_data()
+            # Подготовка и работа с Профилем пользователя
+            profile_data = Profile.objects.get(user=request.user)
+            profile = profile_data.get_user_data()
 
-                if chapter == 'profile':
+            if chapter == 'profile':
 
-                    if request.method == 'POST':
-                        # Сохраняем данные пользователя не проверяя
-                        profile = request.POST
-                        profile_data.patronymic = request.POST.get("patronymic")
-                        profile_data.phoneNumber = request.POST.get("phoneNumber")
-                        profile_data.address = request.POST.get("address")
-                        profile_data.save()
-                        request.user.first_name = request.POST.get("first_name")
-                        request.user.last_name = request.POST.get("last_name")
-                        request.user.save()
+                if request.method == 'POST':
+                    # Сохраняем данные пользователя не проверяя
+                    profile = request.POST
+                    profile_data.patronymic = request.POST.get("patronymic")
+                    profile_data.phoneNumber = request.POST.get("phoneNumber")
+                    profile_data.address = request.POST.get("address")
+                    profile_data.save()
+                    request.user.first_name = request.POST.get("first_name")
+                    request.user.last_name = request.POST.get("last_name")
+                    request.user.save()
 
-                        # Функция возврата может быть с параметром или без,
-                        # если он был, то будет после разделения строки
-                        ret = request.session['return'].split()
-                        return redirect(*ret)  # Иначе туда, откуда пришли
-                else:
-                    # Подготовка страницы с Заказами пользователя
-                    orders = Order.objects.filter(user=request.user) # Заказы пользователя
-
-                    for order in orders:
-                        # Товары в заказах добавляем в свойство заказа
-                        order.products = ProductInOrder.objects.filter(order=order)
-                        # Исправляем даты и время на нужный формат
-                        offset = datetime.timedelta(hours=3)  # Исправляем время для правильного отображения
-                        order.created += offset
-                        order.created = order.created.strftime("%d.%m.%Y %H:%M")
-                        order.updated += offset
-                        order.updated = order.updated.strftime("%d.%m.%Y %H:%M")
-
+                    # Функция возврата может быть с параметром или без,
+                    # если он был, то будет после разделения строки
+                    ret = request.session['return'].split()
+                    return redirect(*ret)  # Иначе туда, откуда пришли
             else:
-                return redirect(reverse("login"))
+                # Подготовка страницы с Заказами пользователя
+                # Заказы пользователя
+                orders = Order.objects.filter(user=request.user).order_by('status', '-updated')
 
-            return render(request, self.template_name, locals())
-        except:
-            return redirect('index')
+                for order in orders:
+                    # Товары в заказах добавляем в свойство заказа
+                    order.products = ProductInOrder.objects.filter(order=order)
+                    # Исправляем даты и время на нужный формат
+                    offset = datetime.timedelta(hours=3)  # Исправляем время для правильного отображения
+                    order.created += offset
+                    order.created = order.created.strftime("%d.%m.%Y %H:%M")
+                    order.updated += offset
+                    order.updated = order.updated.strftime("%d.%m.%Y %H:%M")
+
+                # Пагинация
+                paginator = Paginator(orders, 10)
+                page_number = request.GET.get('page')
+                orders = paginator.get_page(page_number)
+                print(orders.number)
+
+        else:
+            return redirect(reverse("login"))
+
+        return render(request, self.template_name, locals())
+        # except:
+        #     return redirect('index')
 
 # Выход из профиля
 def exit(request):

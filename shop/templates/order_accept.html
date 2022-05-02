@@ -35,7 +35,7 @@
                         {% endif %}
 
                         {% if request.user.is_authenticated %}
-                            <br>Все свои заказы вы можете посмотреть в <a class="h3 text-dark text-decoration-none" href="{% url 'login' %}">личном кабинете.</a></br>
+                            <br>Все свои заказы вы можете посмотреть в <a rel="sponsored" class="text-success" href="{% url 'login' %}">личном кабинете.</a></br>
                         {% else %}
                             <br>Запомните или сфотографируйте номер заказа.</br>
                         {% endif %}
