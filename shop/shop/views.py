@@ -579,9 +579,9 @@ def edit_order(request):
     order_number = request.GET.get('order_number') # Получаем номер заказа
     if order_number:
         # Готовим данные для заказа
-        order = Order.objects.get(number=order_number)
+        order = Order.objects.get(number=order_number)  # Сам заказ
         # Товары в заказе добавляем в свойство заказа
-        order.products = ProductInOrder.objects.filter(order=order)
+        products = ProductInOrder.objects.filter(order=order)
         # Исправляем даты и время на нужный формат
         offset = datetime.timedelta(hours=3)  # Исправляем время для правильного отображения
         order.created += offset
@@ -589,16 +589,25 @@ def edit_order(request):
         order.updated += offset
         order.updated = order.updated.strftime("%d.%m.%Y %H:%M")
 
+        # Альтернативные данные для заказа, если есть
+        try:
+            order.alternate_profile = order.alternateprofile
+        except:
+            order.alternate_profile = None
+
+        # Подготовка данных письма
+        order_mail = order  # Заказ
+        message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
+
+
     else:
         # Выводим список не зыполненных и не отмененных заказов
         orders = Order.objects.filter(status__lt=5).order_by('status', '-updated')
-        # alt = AlternateProfile.
         for o in orders:
+            # Альтернативные данные для заказа, если есть
             try:
-                alt = o.alternateprofile
-                o.alternate_profile = alt
+                o.alternate_profile = o.alternateprofile
             except:
                 o.alternate_profile = None
-
 
     return render(request, 'edit_order.html', locals())
