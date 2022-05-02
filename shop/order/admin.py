@@ -56,3 +56,4 @@ class AlternateProfileAdmin(admin.ModelAdmin):
 
 admin.site.register(AlternateProfile, AlternateProfileAdmin)  # Регистрируем модель в админке
 
+

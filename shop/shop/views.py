@@ -569,3 +569,36 @@ def exit(request):
     ret = request.session['return'].split()
     logout(request)
     return redirect(*ret)  # Иначе туда, откуда пришли
+
+
+# Страница для администратора. Управление переключением статуса заказа и отправка сообщений пользователю
+def edit_order(request):
+    if not request.user.is_superuser:
+        return redirect('index')
+
+    order_number = request.GET.get('order_number') # Получаем номер заказа
+    if order_number:
+        # Готовим данные для заказа
+        order = Order.objects.get(number=order_number)
+        # Товары в заказе добавляем в свойство заказа
+        order.products = ProductInOrder.objects.filter(order=order)
+        # Исправляем даты и время на нужный формат
+        offset = datetime.timedelta(hours=3)  # Исправляем время для правильного отображения
+        order.created += offset
+        order.created = order.created.strftime("%d.%m.%Y %H:%M")
+        order.updated += offset
+        order.updated = order.updated.strftime("%d.%m.%Y %H:%M")
+
+    else:
+        # Выводим список не зыполненных и не отмененных заказов
+        orders = Order.objects.filter(status__lt=5).order_by('status', '-updated')
+        # alt = AlternateProfile.
+        for o in orders:
+            try:
+                alt = o.alternateprofile
+                o.alternate_profile = alt
+            except:
+                o.alternate_profile = None
+
+
+    return render(request, 'edit_order.html', locals())

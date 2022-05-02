@@ -19,8 +19,9 @@ from django.contrib import admin
 from django.contrib.auth.views import LoginView
 from django.urls import path
 from .views import *
-
 urlpatterns = [
+    path('admin/edit_order/', edit_order, name='edit_order'),
+    path('admin/edit_order/<int:filter>', edit_order, name='edit_order'),
     path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('about/', about, name='about'),
@@ -40,6 +41,7 @@ urlpatterns = [
     path('accounts/register/', RegisterView.as_view(), name="register"),
     path('accounts/logout/', exit, name='exit'),
 ]
+
 
 
 # ----------------------------------------------------------------------
