@@ -40,7 +40,20 @@ def send_email(message, to):
 
 
 def index(request):
-    request.session['return'] = 'index' # Запоминаем последнюю страницу
+    request.session['return'] = 'index'  # Запоминаем последнюю страницу
+    products_favorite = Product.objects.all().order_by('popular')[:3]  # Самые популярные товары
+    products_favorite = select_main_photo(products_favorite)  # В свойстве photo теперь главная фотография
+    products_new = Product.objects.all().order_by('-id')[:3]  # Самые новые товары
+    products_new = select_main_photo(products_new)  # В свойстве photo теперь главная фотография
+    for p in products_new:
+        # От описания берем только первый абзац
+        p.description = p.description.split('\n')[0]
+
+    # Ищем праздники в ближайший месяц
+    startdate = datetime.datetime.today()
+    enddate = startdate + datetime.timedelta(days=30)
+    holidays = Holiday.objects.filter(date__range=[startdate, enddate]).order_by('date')
+
     return render(request, 'index.html', locals())
 
 

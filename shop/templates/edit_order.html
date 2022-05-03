@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{% load user_tags %}
+{% load static %}
+<html lang="ru">
+
+<head>
+    <title>GreenSoap - Статусы</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="{% static 'img/apple-icon.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static '/img/favicon.ico' %}">
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '/css/templatemo.css' %}">
+    <link rel="stylesheet" href="{% static '/css/custom.css' %}">
+
+    <!-- Load fonts style after rendering the layout styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="{% static '/css/fontawesome.min.css' %}">
+
+</head>
+
+<body>
+    <!-- Start Top Nav -->
+    <nav class="navbar navbar-expand-lg bg-dark navbar-light d-none d-lg-block" id="templatemo_nav_top">
+        <div class="container text-light">
+            <div class="w-100 d-flex justify-content-between">
+                <div>
+                    <a class="navbar-sm-brand text-light text-decoration-none" href="{% url 'index' %}">GreenSoap</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- End Top Nav -->
+
+<div class="container-fluid bg-light">
+    <div class="row">
+        <div class="col-md-8 m-auto text-center">
+            <h1 class="h1">{% if order_number %}Редактирование заказа №{{ order_number }}{% else %}Выбор заказа{% endif %}</h1>
+        </div>
+    </div>
+    {% if order_number %}
+    <div class="row">
+            <div class="col-md-4">
+                <h5>Заказ:</h5>
+                <div class="border border-success mt-2 p-2">
+                    <ol start="1">
+                    {% for product in products %}
+                        <li><a rel="sponsored" class="text-success"
+                               href="{% url 'shop-single' product.product.alias %}"><small>
+                                {{ product.product.name }}</small></a>
+                                <small>({{ product.price_selling }} x {{ product.quantity }}&#x20bd;)
+                                = {{ order.price_total }} &#x20bd;</small></li>
+                    {% endfor %}
+                    </ol>
+
+                    <b>Цена товаров: </b>{{ order.price_product }}&#x20bd;<br>
+                    <b>Способ доставки: </b>{{ order.delivery_method }}<br>
+                    <b>Цена доставки: </b>{{ order.price_delivery }}&#x20bd;<br>
+                    <b>Стоимость заказа: </b>{{ order.price_total }}&#x20bd;<br>
+                    <b>Статус заказа: </b>{{ order.status }} &nbsp;&nbsp;&nbsp;{{ order.updated }}<br>
+                    {% if order.description %}
+                    <b>Комментарий: </b><br><div class="border border-success mt-1 p-1">
+                    <small>{{ order.description }}</small></div>
+                    {% endif %}
+                </div>
+
+                {% if order.user %}
+                <div class="border border-success mt-2 p-2">
+                    <b>Заказчик зарегистрирован: </b><br>
+                    {{ order.user }}<br>
+                    {{ order.user.last_name }} {{ order.user.first_name }} {{ order.user.profile.patronymic }}<br>
+                    <a href="tel:{{ order.user.profile.phoneNumber }}">{{ order.user.profile.phoneNumber }}</a><br>
+                    {{ order.user.profile.address }}<br>
+                </div>
+                {% endif %}
+                {% if order.alternate_profile %}
+                <div class="border border-success mt-2 p-2">
+                        <b>Альтернативный профиль: </b><br>
+                        {{ order.alternate_profile.email }}<br>
+                        {{ order.alternate_profile.last_name }} {{ order.alternate_profile.first_name }}
+                        {{ order.alternate_profile.patronymic }}<br>
+                        <a href="tel:{{ order.alternate_profile.phoneNumber }}">{{ order.alternate_profile.phoneNumber }}</a><br>
+                        {{ order.alternate_profile.address }}<br>
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="col-md-5">
+                <h5>Письмо:</h5>
+                <div class="border border-success mt-2 p-2">
+                    {{ message }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                1
+            </div>
+
+
+    </div>
+    {% else %}
+        {% for order in orders %}
+            <div class="col-md-11 m-auto">
+                <a href="{% url 'edit_order' %}?order_number={{ order.number }}" class="text-dark text-decoration-none">
+                <div class="row border border-success mt-2">
+                    <div class="col-md-1 m-auto">
+                        №{{ order.number }}
+                    </div>
+                    <div class="col-md-2 m-auto">
+                        {{ order.status }}
+                    </div>
+                    <div class="col-md-3 m-auto">
+                        {{ order.user }}<br>
+                        {% if order.alternate_profile %}{{ order.alternate_profile.email }}{% endif %}
+                    </div>
+                    <div class="col-md-2 m-auto">
+                        {{ order.user.profile.phoneNumber }}<br>
+                        {% if order.alternate_profile %}{{ order.alternate_profile.phoneNumber }}{% endif %}
+                    </div>
+
+                    <div class="col-md-4 m-auto">
+                        {{ order.user.last_name }} {{ order.user.first_name }} {{ order.user.profile.patronymic }}<br>
+                        {% if order.alternate_profile %}{{ order.alternate_profile.last_name }}
+                        {{ order.alternate_profile.first_name }} {{ order.alternate_profile.profile.patronymic }}{% endif %}
+                    </div>
+                </div>
+                </a>
+
+            </div>
+        {% endfor %}
+
+    {% endif %}
+
+
+
+
+</div>
+
+
+
+</body>
+
+</html>
