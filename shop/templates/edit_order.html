@@ -36,8 +36,21 @@
 
 <div class="container-fluid bg-light">
     <div class="row">
-        <div class="col-md-8 m-auto text-center">
+        <div class="col-md-9 m-auto text-center">
             <h1 class="h1">{% if order_number %}Редактирование заказа №{{ order_number }}{% else %}Выбор заказа{% endif %}</h1>
+        </div>
+        <div class="col-md-3 m-auto">
+            <form method="post" id="select_status" action="{% if filter %} {% url 'shop' filter %} {% else %}{% url 'shop' %}{% endif %}">
+                {% csrf_token %}
+                <select class="form-control" name="sort">
+                    <option {% if sort == "-popular" %} selected {% endif %}
+                    value="-popular">По популярности</option>
+                    <option {% if sort == "price" %} selected {% endif %}
+                    value="price">По цене (по возрастанию)</option>
+                    <option {% if sort == "-discount" %} selected {% endif %}
+                    value="-discount">По скидкам</option>
+                </select>
+            </form>
         </div>
     </div>
     {% if order_number %}
@@ -94,7 +107,39 @@
                 </div>
             </div>
             <div class="col-md-3">
-                1
+                <h5>Редактирование:</h5>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button class="btn btn-success" id="clear" name="clear">Очистить письмо</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <textarea class="form-control mt-1" id="message" name="message" placeholder="Вставка в письмо"
+                                  rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="row justify-content-end">
+                    <div class="col-md-5">
+                        <button class="btn btn-success" id="add" name="add">Добавить</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Шаблоны:</h5>
+
+                            <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">
+                                Тут должен быть какой то текст шаблона при щелчке на который
+                            </div>
+                            <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">
+                                Тут должен быть какой то текст шаблона при щелчке на который
+                            </div>
+                            <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">
+                                Тут должен быть какой то текст шаблона при щелчке на который
+                            </div>
+
+                    </div>
+                </div>
             </div>
 
 
@@ -138,7 +183,7 @@
 </div>
 
 
+<script src="{% static '/js/edit_order.js' %}"></script>
 
 </body>
-
 </html>
