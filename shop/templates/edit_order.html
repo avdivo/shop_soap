@@ -40,6 +40,7 @@
             <h1 class="h1">{% if order_number %}Редактирование заказа №{{ order_number }}{% else %}Выбор заказа{% endif %}</h1>
         </div>
         <div class="col-md-3 m-auto">
+            {% if order_number %}
             <form method="post" id="change_mail" action="{% url 'edit_order' %}?order_number={{ order.number }}">
                 {% csrf_token %}
                 <select class="form-control" id="select_status" name="select_status">
@@ -48,6 +49,7 @@
                     value="{{ status.id }}">{{ status.name }}</option>
                     {% endfor %}
                 </select>
+                {% endif %}
             </form>
         </div>
     </div>
@@ -103,6 +105,12 @@
                 <div class="border border-success mt-2 p-2">
                     {{ message }}
                 </div>
+                <div class="row mt-2 justify-content-end">
+                    <div class="col-md-3">
+                        <button class="btn btn-success" id="send" name="add">Отправить</button>
+                    </div>
+                </div>
+
             </div>
             <div class="col-md-3">
                 <h5>Редактирование:</h5>
@@ -117,7 +125,7 @@
                                   rows="4"></textarea>
                     </div>
                 </div>
-                <div class="row justify-content-end">
+                <div class="row mt-2 justify-content-end">
                     <div class="col-md-5">
                         <button class="btn btn-success" id="add" name="add">Добавить</button>
                     </div>
@@ -125,15 +133,10 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h5>Шаблоны:</h5>
-
-                            <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">
-                                Тут должен быть какой то текст шаблона при щелчке на который
-                            </div>
-                            <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">
-                                Тут должен быть какой то текст шаблона при щелчке на который
-                            </div>
-                            <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">Тут должен быть какой то текст шаблона при щелчке на который</div>
-
+                            {% for sample in samples %}
+                            <div class="sam border border-success mt-2 p-1 fs-6"
+                                 id="{{ sample.id }}" style="cursor: pointer;">{{ sample }}}</div>
+                            {% endfor %}
                     </div>
                 </div>
             </div>

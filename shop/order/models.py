@@ -150,8 +150,8 @@ class AlternateProfile(models.Model):
 
 
 # Шаблоны для вставки в письма о статусе заказов
-class SampleInsertMail(models.Model):
-    name = models.CharField(max_length=256, blank=True, null=True)  # Название статуса
+class SampleForInsertMail(models.Model):
+    name = models.TextField(max_length=256, blank=True, null=True, verbose_name=u'Текст шаблона')  # Название статуса
 
     def __str__(self):
         return self.name
@@ -159,4 +159,4 @@ class SampleInsertMail(models.Model):
     # Как писать назнвние в единственном и множественном числе
     class Meta:
         verbose_name = 'Шаблон для вставки в письма'
-        verbose_name_plural = 'аблоны для вставки в письма'
+        verbose_name_plural = 'Шаблоны для вставки в письма'

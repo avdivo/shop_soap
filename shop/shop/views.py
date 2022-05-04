@@ -615,9 +615,13 @@ def edit_order(request):
         order_mail.status = StatusOrder.objects.get(id=new_status) if new_status else order_mail.status
         message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
 
-        # Выбор статуса
+        # Подготовка списка статусов для Выбора статуса
         selected = order.status.id
         select_status = StatusOrder.objects.all().order_by('id')
+
+        # Список текстов для шаблонов
+        samples = SampleForInsertMail.objects.all()
+
 
     else:
         # Выводим список не зыполненных и не отмененных заказов

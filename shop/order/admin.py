@@ -57,3 +57,9 @@ class AlternateProfileAdmin(admin.ModelAdmin):
 admin.site.register(AlternateProfile, AlternateProfileAdmin)  # Регистрируем модель в админке
 
 
+# Регистрация таблици шаблонов для вставки в письма в админке
+class SampleForInsertMailAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in SampleForInsertMail._meta.fields]  # Модель в виде таблицы
+
+
+admin.site.register(SampleForInsertMail, SampleForInsertMailAdmin)  # Регистрируем модель в админке
