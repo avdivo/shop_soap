@@ -589,6 +589,8 @@ def edit_order(request):
     if not request.user.is_superuser:
         return redirect('index')
 
+    new_status = request.POST.get('select_status')
+
     order_number = request.GET.get('order_number') # Получаем номер заказа
     if order_number:
         # Готовим данные для заказа
@@ -607,11 +609,15 @@ def edit_order(request):
             order.alternate_profile = order.alternateprofile
         except:
             order.alternate_profile = None
-
+        print(new_status, '--------------------------')
         # Подготовка данных письма
         order_mail = order  # Заказ
+        order_mail.status = StatusOrder.objects.get(id=new_status) if new_status else order_mail.status
         message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
 
+        # Выбор статуса
+        selected = order.status.id
+        select_status = StatusOrder.objects.all().order_by('id')
 
     else:
         # Выводим список не зыполненных и не отмененных заказов

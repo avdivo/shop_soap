@@ -2,24 +2,20 @@
 $(document).ready(function(){
 
 
-// Запоминаем поля формы при загрузке страницы
-$.each(fields, function(sel, i) {
-    fields[sel] = $('#' + sel).val();
+// Отправка формы при выборе select
+$('#select_status').on('change', function() {
+  $(this.form).submit();
 });
 
+// Выбор шаблона
+$('.sam').on('click', function() {
+//console.log($(this).text())
 
-// Включить или выключить редактирование полей формы переключателем
-$(".form-check-input").on('change', function(){
-     if ($(this).prop('checked')){
-         $.each(fields, function(sel, i) {
-            $('#' + sel).prop('readonly', true);
-            $('#' + sel).val(fields[sel]);
-         });
-     } else {
-         $.each(fields, function(sel, i) {
-            $('#' + sel).prop('readonly', false);
-         });
-     }
+    var $txt = jQuery("#message");
+    var caretPos = $txt[0].selectionStart;
+    var textAreaTxt = $txt.val();
+    var txtToAdd = $(this).text();
+    $txt.val(textAreaTxt.substring(0, caretPos) + txtToAdd + textAreaTxt.substring(caretPos) );
 
 });
 

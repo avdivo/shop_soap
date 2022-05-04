@@ -146,3 +146,17 @@ class AlternateProfile(models.Model):
     class Meta:
         verbose_name = 'Альтернативные данные'
         verbose_name_plural = 'Альтернативные данные'
+
+
+
+# Шаблоны для вставки в письма о статусе заказов
+class SampleInsertMail(models.Model):
+    name = models.CharField(max_length=256, blank=True, null=True)  # Название статуса
+
+    def __str__(self):
+        return self.name
+
+    # Как писать назнвние в единственном и множественном числе
+    class Meta:
+        verbose_name = 'Шаблон для вставки в письма'
+        verbose_name_plural = 'аблоны для вставки в письма'

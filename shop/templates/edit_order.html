@@ -40,15 +40,13 @@
             <h1 class="h1">{% if order_number %}Редактирование заказа №{{ order_number }}{% else %}Выбор заказа{% endif %}</h1>
         </div>
         <div class="col-md-3 m-auto">
-            <form method="post" id="select_status" action="{% if filter %} {% url 'shop' filter %} {% else %}{% url 'shop' %}{% endif %}">
+            <form method="post" id="change_mail" action="{% url 'edit_order' %}?order_number={{ order.number }}">
                 {% csrf_token %}
-                <select class="form-control" name="sort">
-                    <option {% if sort == "-popular" %} selected {% endif %}
-                    value="-popular">По популярности</option>
-                    <option {% if sort == "price" %} selected {% endif %}
-                    value="price">По цене (по возрастанию)</option>
-                    <option {% if sort == "-discount" %} selected {% endif %}
-                    value="-discount">По скидкам</option>
+                <select class="form-control" id="select_status" name="select_status">
+                    {% for status in select_status %}
+                    <option {% if selected == status.id %} selected {% endif %}
+                    value="{{ status.id }}">{{ status.name }}</option>
+                    {% endfor %}
                 </select>
             </form>
         </div>
@@ -134,9 +132,7 @@
                             <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">
                                 Тут должен быть какой то текст шаблона при щелчке на который
                             </div>
-                            <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">
-                                Тут должен быть какой то текст шаблона при щелчке на который
-                            </div>
+                            <div class="sam border border-success mt-2 p-1 fs-6" id="1" style="cursor: pointer;">Тут должен быть какой то текст шаблона при щелчке на который</div>
 
                     </div>
                 </div>
@@ -181,9 +177,8 @@
 
 
 </div>
-
-
-<script src="{% static '/js/edit_order.js' %}"></script>
+    <script src="{% static '/js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static '/js/edit_order.js' %}"></script>
 
 </body>
 </html>
