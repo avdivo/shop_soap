@@ -589,10 +589,14 @@ def edit_order(request):
     if not request.user.is_superuser:
         return redirect('index')
 
-    new_status = request.POST.get('select_status')
+    new_status = request.POST.get('select_status')  # Получаем новый статус заказа при изменении
+    message_in_mail = request.POST.get('message_mail')  # Получаем сообщение для добавления в письмо
+    if not message_in_mail:
+        message_in_mail = ''
+    order_number = request.GET.get('order_number')  # Получаем номер заказа
 
-    order_number = request.GET.get('order_number') # Получаем номер заказа
     if order_number:
+        error_send_mail = ''
         # Готовим данные для заказа
         order = Order.objects.get(number=order_number)  # Сам заказ
         # Товары в заказе добавляем в свойство заказа
@@ -609,11 +613,34 @@ def edit_order(request):
             order.alternate_profile = order.alternateprofile
         except:
             order.alternate_profile = None
-        print(new_status, '--------------------------')
+
         # Подготовка данных письма
+        # Встраиваемое в письмо сообщение в message_in_mail, если оно есть, то отправляем письмо
+        # Но если в нем содержится empty_message, значит сообщение пустое, удаляем это перед отправкой
         order_mail = order  # Заказ
-        order_mail.status = StatusOrder.objects.get(id=new_status) if new_status else order_mail.status
+        if new_status:
+            # Сохраняем новый статус
+            order_mail.status = StatusOrder.objects.get(id=new_status)
+            order_for_save = Order.objects.get(number=order_number)  # Сам заказ
+            order_for_save.status = order_mail.status
+            order_for_save.save()  # Сохраняем новый статус
+
         message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
+
+        if message_in_mail:
+
+            if message_in_mail == 'empty_message':
+                empty_message = ''
+
+            # Выбираем адрес для отправки письма, альтернативный, если он есть
+            email = order.alternate_profile.email if order.alternate_profile else order.user.email
+            is_email = send_email(message, [email])  # Отправляем письмо и получаем успешность
+            if is_email:
+                # Если письмо отправлено успешно, то переходим к списку заказов
+                # Если нет, записываем сообщение об ошибке в переменную error_send_mail и выводим ту же страницу
+                return redirect('edit_order')
+            else:
+                error_send_mail = 'Ошибка отправления письма'
 
         # Подготовка списка статусов для Выбора статуса
         selected = order.status.id

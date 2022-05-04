@@ -30,7 +30,7 @@
         <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
             GreenSoap</a> ожидает оплаты.</p>
 
-        <p><div id="insert"></div></p>
+        <p><div id="insert">{{ message_in_mail|safe }}</div></p>
 
         {% endif %}
 
@@ -41,7 +41,7 @@
         <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
             GreenSoap</a> готовится к выдаче.</p>
 
-        <p><div id="insert"></div></p>
+        <p><div id="insert">{{ message_in_mail|safe }}</div></p>
 
         {% endif %}
 
@@ -52,7 +52,7 @@
         <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
             GreenSoap</a> готов к выдаче.</p>
 
-        <p><div id="insert"></div></p>
+        <p><div id="insert">{{ message_in_mail|safe }}</div></p>
 
         {% endif %}
 
@@ -63,7 +63,7 @@
         <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск из магазина<a href="{% url 'index' %}">
             GreenSoap</a> передан для доставки.</p>
 
-        <p><div id="insert"></div></p>
+        <p><div id="insert">{{ message_in_mail|safe }}</div></p>
 
         {% endif %}
 
@@ -76,7 +76,7 @@
         <p>Благодарим Вас за выбор нашего магазина. Мы были рады работать с Вами!</p>
         <p>Обращяйтесь к нам снова, рекомендуйте нас если Вам понравилось то, что мы делаем.</p>
 
-        <p><div id="insert"></div></p>
+        <p><div id="insert">{{ message_in_mail|safe }}</div></p>
 
         {% endif %}
 
@@ -87,7 +87,7 @@
         <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
             GreenSoap</a> отменен.</p>
 
-        <p><div id="insert"></div></p>
+        <p><div id="insert">{{ message_in_mail|safe }}</div></p>
 
         {% endif %}
 

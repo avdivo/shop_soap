@@ -1,14 +1,22 @@
 // Оформление заказа
-$(document).ready(function(){
+$(document).ready(function () {
 
 
     // Отправка формы при выборе select
-    $('#select_status').on('change', function() {
-      $(this.form).submit();
+    $('#select_status').on('change', function () {
+        $(this.form).submit();
+    });
+
+    // Отправка формы со вставкой в письмо
+    $('#send_message').on('click', function () {
+        // Если сообщение для отправки пустое, отправляем empty_message
+        var mes = ($("#insert").html()) ? $("#insert").html() : 'empty_message';
+        $("#message_mail").val(mes);
+        $(this.form).submit();
     });
 
     // Выбор шаблона. Отправляем форму с новым статусом
-    $('.sam').on('click', function() {
+    $('.sam').on('click', function () {
 
         var $txt = jQuery("#message");
         var caretPos = $txt[0].selectionStart;
@@ -19,17 +27,17 @@ $(document).ready(function(){
     });
 
     // Очистка письма и поля для ввода
-    $('#clear').on('click', function() {
+    $('#clear').on('click', function () {
         $("#message").val('')
         $("#insert").html('')
     });
 
     // Вставка текста из поля в письмо
-    $('#add').on('click', function() {
+    $('#add').on('click', function () {
         // console.log($("#message").val())
         var arr = $("#message").val().split('\n'); // Разбивка содержимого по переносу строки
         var str = '';
-        $.each(arr,function(index,value){
+        $.each(arr, function (index, value) {
             // Оборачиваем каждую подстроку в тег <p></p>
             str += '<p>' + value + '</p>';
         });

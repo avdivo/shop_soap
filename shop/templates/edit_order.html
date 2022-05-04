@@ -29,6 +29,10 @@
                 <div>
                     <a class="navbar-sm-brand text-light text-decoration-none" href="{% url 'index' %}">GreenSoap</a>
                 </div>
+                <div>
+                    <a class="navbar-sm-brand text-light text-decoration-none" href="{% url 'edit_order' %}">Выбрать заказ</a>
+                </div>
+
             </div>
         </div>
     </nav>
@@ -101,21 +105,25 @@
 
             </div>
             <div class="col-md-5">
-                <h5>Письмо:</h5>
+                <h5>Письмо:</h5> {% if error_send_mail %} <div style="color:red;">({{ error_send_mail }})</div>{% endif %}
                 <div class="border border-success mt-2 p-2">
                     {{ message }}
                 </div>
-                <div class="row mt-2 justify-content-end">
-                    <div class="col-md-3">
-                        <button class="btn btn-success" id="send" name="add">Отправить</button>
-                    </div>
-                </div>
 
+                <form method="post" id="message_mail_form" action="{% url 'edit_order' %}?order_number={{ order.number }}">
+                {% csrf_token %}
+                    <input type="hidden" name="message_mail" id="message_mail" value="">
+                    <div class="row mt-2 justify-content-end">
+                        <div class="col-md-3">
+                            <button class="btn btn-success" id="send_message">Отправить</button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="col-md-3">
                 <h5>Редактирование:</h5>
                 <div class="row">
-                    <div class="col-md-12 text-center">
+                    <div class="col-md-12">
                         <button class="btn btn-success" id="clear" name="clear">Очистить письмо</button>
                     </div>
                 </div>
