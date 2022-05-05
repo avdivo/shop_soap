@@ -20,7 +20,7 @@ from .forms import *
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils.timezone import localtime
-
+from django.db.models import F
 
 # Отправление Email -------------------------------------------------------------------
 #   message - отрендереный html документ, to - кому письмо
@@ -181,6 +181,9 @@ def shop_single(request, product=None):
     # Указанный товар отсутствует или он не активен происходит перенаправление на магазин
     try:
         product = Product.objects.get(alias=product)
+        # Увеличиваем рейтинг тована на 1 за просмотр
+        product.popular = F('popular') + 1
+        product.save()
     except:
         return redirect('shop')
     images = product.productimage_set.filter(active=True)
@@ -242,6 +245,7 @@ def add_to_basket(request):
     id = request.POST['id']
     quantity = int(request.POST['quantity'])
 
+    # Получаем корзину пользователя
     # Проверяем, зарегистрирован ли пользователь
     try:
         if request.user.is_authenticated:
@@ -367,6 +371,9 @@ def order(request):
                         obj = ProductInOrder.objects.create(product=product,
                                                       order=order_new, quantity=quantity)
                         # Цена рассчитывается при сохранении сама
+                        # Увеличиваем рейтинг товара за покупку: 1 рейтинга за 50 рублей
+                        product.popular = F('popular') + int(obj.price_selling / 50)
+                        product.save()
 
                         if num in basket:
                             del(basket[num])
