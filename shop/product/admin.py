@@ -57,5 +57,18 @@ admin.site.register(ProductImage, ProductImageAdmin)  # Регистрируем
 class HolidayAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Holiday._meta.fields]  # Модель в виде таблицы
 
-
 admin.site.register(Holiday, HolidayAdmin)  # Регистрируем модель в админке
+
+
+# Класс для отображения Счетчика просмотра товаров
+class ProductViewCounterAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in ProductViewCounter._meta.fields]  # Модель в виде таблицы
+
+admin.site.register(ProductViewCounter, ProductViewCounterAdmin)  # Регистрируем модель в админке
+
+
+# Класс для отображения Счетчика просмотра Категорий
+class CategoryViewCounterAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in CategoryViewCounter._meta.fields]  # Модель в виде таблицы
+
+admin.site.register(CategoryViewCounter, CategoryViewCounterAdmin)  # Регистрируем модель в админке

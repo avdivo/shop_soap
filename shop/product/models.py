@@ -130,3 +130,26 @@ class ProductImage(models.Model):
     class Meta:
         verbose_name = 'Фотография'
         verbose_name_plural = 'Фотографии'
+
+
+# Популярность товаров (только просмотры)
+class ProductViewCounter(models.Model):
+    product = models.ForeignKey(Product, blank=True, null=True, default=None,
+                                on_delete=models.SET_DEFAULT)  # Связь с товаром
+    counter = models.IntegerField(default=0, verbose_name=u'Счетчик')  # Счетчик открытия товара
+
+    # Как писать назнвние в единственном и множественном числе
+    class Meta:
+        verbose_name = 'Счетчик просмотра товаров'
+        verbose_name_plural = 'Счетчики просмотра товаров'
+
+
+# Популярность отдела или категории (только просмотры)
+class CategoryViewCounter(models.Model):
+    alias_obj = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name=u'Псевдоним')  # Псевдоним поля
+    counter = models.IntegerField(default=0, verbose_name=u'Счетчик')  # Счетчик открытия отдела или категории
+
+    # Как писать назнвние в единственном и множественном числе
+    class Meta:
+        verbose_name = 'Счетчик просмотра Категорий'
+        verbose_name_plural = 'Счетчики просмотра Категорий'

@@ -123,6 +123,16 @@ def shop(request, filter=None):
             if len(products) == 0:
                 # Фильтрация по Подаркам
                 products = Product.objects.filter(holiday__alias=filter, active=True).order_by(sort)
+
+            print(type(filter))
+            # Учитываем просмотр Отдела или категории в таблице
+            try:
+                counter = CategoryViewCounter.objects.get(alias_obj=filter)
+                counter.counter = F('counter') + 1
+                counter.save()
+            except:
+                CategoryViewCounter.objects.create(alias_obj=filter, counter=1)
+
         else:
             products = Product.objects.filter(active=True).order_by(sort)
 
@@ -186,6 +196,14 @@ def shop_single(request, product=None):
         product.save()
     except:
         return redirect('shop')
+    # Учитываем просмотр товара в отдельной таблице
+    try:
+        counter = ProductViewCounter.objects.get(product=product)
+        counter.counter = F('counter') + 1
+        counter.save()
+    except:
+        ProductViewCounter.objects.create(product=product, counter=1)
+
     images = product.productimage_set.filter(active=True)
     # Выбираем главную фотографию если она есть, если нет, назначаем первую или заглушку если их нет вообще
     if len(images):
