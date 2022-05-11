@@ -1,3 +1,4 @@
 /shop/shop/hide_pass.py
 /shop_soap_nginx.conf
 /shop_soap_uwsgi.ini
+/shop/shop/settings_local.py
