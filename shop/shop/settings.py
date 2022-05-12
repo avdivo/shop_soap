@@ -13,13 +13,13 @@ from pathlib import Path
 import environ
 import os
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
-
-# reading .env file
-environ.Env.read_env()
+# env = environ.Env(
+#     # set casting, default value
+#     DEBUG=(bool, False)
+# )
+#
+# # reading .env file
+# environ.Env.read_env()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,15 +30,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-em0_tpxfru1&v!r_xkkyqlgu!c!-=b6-o-0fnuq5xjbn4)6at+'
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = 'django-insecure-em0_tpxfru1&v!r_xkkyqlgu!c!-=b6-o-0fnuq5xjbn4)6at+'
+# SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = env('DEBUG')
+DEBUG = True
+# DEBUG = env('DEBUG')
 
-# ALLOWED_HOSTS = [] if DEBUG else ['green-soap.ru']
-ALLOWED_HOSTS = [env('ALLOWED_HOSTS')]
+ALLOWED_HOSTS = ['green-soap.ru']
+# ALLOWED_HOSTS = [env('ALLOWED_HOSTS')]
 
 # Application definition
 
@@ -98,7 +98,7 @@ DATABASES = {
     }
 }
 
-DATABASES = env('DATABASES')
+# DATABASES = env('DATABASES')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -135,9 +135,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 
-# STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
 
-STATIC_ROOT = env('DATABASES')
+# STATIC_ROOT = env('DATABASES')
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
