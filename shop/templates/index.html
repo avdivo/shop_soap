@@ -16,11 +16,11 @@
                 <div class="container">
                     <div class="row p-5">
                         <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
-                            <img class="w-100 img-fluid" src="{% static '/img/banner_img_01.jpg' %}" alt="">
+                            <img class="w-100 img-fluid" src="{% static '/img/suvenirnoe.jpg' %}" alt="">
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left align-self-center">
-                                <h1 class="h1 text-success"><b>Подарок к празднику!</b></h1>
+                                <h1 class="h1 text-success">Подарок к празднику!</h1>
                                 <h3 class="h2">Порадуйте своих близких или себя любимого <b>необычным подарком</b></h3>
                                 <p>
                                     {% if holidays %}
@@ -43,15 +43,17 @@
                 <div class="container">
                     <div class="row p-5">
                         <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
-                            <img class="img-fluid img-circle" src="{% static '/img/banner_img_02.jpg' %}" alt="">
+                            <img class="img-fluid img-circle" src="{% static '/img/snulya.jpg' %}" alt="">
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left">
-                                <h1 class="h1">Мыло</h1>
-                                <h3 class="h2">Aliquip ex ea commodo consequat</h3>
+                                <h1 class="h1 text-success">Мыло</h1>
+                                <h3 class="h2">Самое полезное и натуральное мыло называют мылом "с нуля".</h3>
                                 <p>
-                                    You are permitted to use this Zay CSS template for your commercial websites.
-                                    You are <strong>not permitted</strong> to re-distribute the template ZIP file in any kind of template collection websites.
+                                    <a rel="sponsored" class="text-success" href="{% url 'shop' 'mylo_s_nulya' %}">
+                                        Мыло с нуля</a> сварено  из <strong>натуральных ингредиентов</strong>, то есть
+                                    из масел высшего качества и щелочи. В зависимости от состава такое мыло не просто
+                                    бережно очищает, но питает и ухаживает за кожей.
                                 </p>
                             </div>
                         </div>
@@ -66,12 +68,14 @@
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left">
-                                <h1 class="h1">Спа</h1>
-                                <h3 class="h2">Ullamco laboris nisi ut </h3>
+                                <h1 class="h1 text-success">SPA-продукты</h1>
+                                <h3 class="h2">Это продукты из натуральных масел для здоровья вашей кожи.</h3>
                                 <p>
-                                    We bring you 100% free CSS templates for your websites.
-                                    If you wish to support TemplateMo, please make a small contribution via PayPal or tell your friends about our website. Thank you.
-                                </p>
+                                <a rel="sponsored" class="text-success" href="{% url 'shop' 'spa-produkty' %}">
+                                    Spa-продукты</a> для того, чтобы побаловать вашу кожу: напитать ее полезными маслами,
+                                    вернуть тонус, вывести токсины, ускорить обмен веществ, улучшить микроциркуляцию
+                                    крови, снять стресс, убрать целлюлит. <strong>Нежный уход</strong>
+                                    и наслаждение от принятия ванны.</p>                               </p>
                             </div>
                         </div>
                     </div>
