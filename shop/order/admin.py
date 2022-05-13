@@ -33,7 +33,7 @@ admin.site.register(ProductInOrder, ProductInOrderAdmin)  # Регистриру
 
 # Регистрация Статусов заказа в админке
 class StatusOrderAdmin(admin.ModelAdmin):
-    list_display = ['name']  # Модель в виде таблицы
+    list_display = ['name', 'id']  # Модель в виде таблицы
 
 
 admin.site.register(StatusOrder, StatusOrderAdmin)  # Регистрируем модель в админке
@@ -41,7 +41,7 @@ admin.site.register(StatusOrder, StatusOrderAdmin)  # Регистрируем �
 
 # Регистрация Методов доставки в админке
 class DeliveryMethodAdmin(admin.ModelAdmin):
-    list_display = ['name']  # Модель в виде таблицы
+    list_display = ['name', 'id']  # Модель в виде таблицы
 
 
 admin.site.register(DeliveryMethod, DeliveryMethodAdmin)  # Регистрируем модель в админке
