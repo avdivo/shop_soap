@@ -1,5 +1,0 @@
-/shop_soap_nginx.conf
-/shop_soap_uwsgi.ini
-/shop/shop/local_settings.py
-/shop/shop/local_settings_server.py
-/shop_soap/.gitignore
