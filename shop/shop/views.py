@@ -90,7 +90,7 @@ def shop(request, filter=None):
     select_holiday = dict()  # Словарь с ключом 'Праздники' и данными - объектами праздников
     for department in Department.objects.all():
         select_category.update({department: Category.objects.filter(department_id=department.id)})
-    select_holiday.update({'Праздники': Holiday.objects.order_by("date")})
+    select_holiday.update({'Праздники': Holiday.objects.order_by("name")})
 
     # Сортировка
     # Если сортировка не установлена, то устанавливаем ее по умолчанию
