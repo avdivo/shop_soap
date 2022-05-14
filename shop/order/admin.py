@@ -63,5 +63,3 @@ class SampleForInsertMailAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SampleForInsertMail, SampleForInsertMailAdmin)  # Регистрируем модель в админке
-
-# Регистрируем модель в админке
