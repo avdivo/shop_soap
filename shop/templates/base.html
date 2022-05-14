@@ -34,7 +34,7 @@
                     <a class="navbar-sm-brand text-light text-decoration-none" href="tel:+79313492589">+7 (931) 349-25-89</a>
                 </div>
                 <div>
-                    <a class="text-light" href="https://fb.com/" target="_blank" rel="sponsored"><i class="fab fa-facebook-f fa-sm fa-fw me-2"></i></a>
+                    <a class="text-light" href="https://www.facebook.com/groups/276564540855562/" target="_blank" rel="sponsored"><i class="fab fa-facebook-f fa-sm fa-fw me-2"></i></a>
                     <a class="text-light" href="https://www.instagram.com/greensoap.ru" target="_blank"><i class="fab fa-instagram fa-sm fa-fw me-2"></i></a>
                     <a class="text-light" href="https://vk.com/green_soap/" target="_blank"><i class="fab fa-vk fa-sm fa-fw me-2"></i></a>
                     <a class="text-light" href="https://t.me/soapgift/" target="_blank"><i class="fab fa-telegram fa-sm fa-fw"></i></a>
@@ -80,10 +80,13 @@
                 <div class="navbar align-self-center d-flex">
                     <div class="d-lg-none flex-sm-fill mt-3 mb-4 col-7 col-sm-auto pr-3">
                         <div class="input-group">
-                            <input type="text" class="form-control" id="inputMobileSearch" placeholder="Найти ...">
-                            <div class="input-group-text">
-                                <i class="fa fa-fw fa-search"></i>
-                            </div>
+                            <form action="{% url 'shop' %}" id="form_search" method="post" class="modal-content modal-body border-0 p-0">
+                                {% csrf_token %}
+                            </form>
+                                <input type="text" class="form-control" form="form_search" name="search" id="inputMobileSearch" placeholder="Найти ...">
+                                <div class="input-group-text">
+                                    <i id="search_submit" class="fa fa-fw fa-search"></i>
+                                </div>
                         </div>
                     </div>
                     <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
@@ -182,7 +185,7 @@
                 <div class="col-auto me-auto">
                     <ul class="list-inline text-left footer-icons">
                         <li class="list-inline-item border border-light rounded-circle text-center">
-                            <a class="text-light text-decoration-none" target="_blank" href="http://facebook.com/"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
+                            <a class="text-light text-decoration-none" target="_blank" href="https://www.facebook.com/groups/276564540855562/"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
                         </li>
                         <li class="list-inline-item border border-light rounded-circle text-center">
                             <a class="text-light text-decoration-none" target="_blank" href="https://www.instagram.com/greensoap.ru"><i class="fab fa-instagram fa-lg fa-fw"></i></a>
@@ -221,6 +224,7 @@
 
     <!-- Start Script -->
     <script src="{% static '/js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static '/js/custom.js' %}"></script>
     <script src="{% static '/js/jquery-migrate-1.2.1.min.js' %}"></script>
     <script src="{% static '/js/bootstrap.bundle.min.js' %}"></script> <!-- карусель -->
 <!--    <script src="{% static '/js/custom.js' %}"></script>-->

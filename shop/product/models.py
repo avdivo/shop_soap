@@ -16,7 +16,7 @@ class Holiday(models.Model):
 
     # Как писать назнвние в единственном и множественном числе
     class Meta:
-        verbose_name = 'Праздеик'
+        verbose_name = 'Праздник'
         verbose_name_plural = 'Праздники'
 
     # Проверка поля на валидность
