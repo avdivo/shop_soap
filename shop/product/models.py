@@ -23,6 +23,12 @@ class Holiday(models.Model):
     def clean(self):
         if re.match(r"^[a-z0-9_-]{3,20}$", self.alias) == None:
             raise ValidationError('Псевдоним должен быть длиной от 3 до 20 символов, состоять из букв a-z, тире и символа подчеркивания')
+        if obj := Department.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Отделах: ' + obj[0].name)
+        if obj := Category.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Категориях: ' + obj[0].name)
+        if obj := Product.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Товарах: ' + obj[0].name)
 
 
 # Отдел магазина содержит категории товаров
@@ -42,6 +48,12 @@ class Department(models.Model):
     def clean(self):
         if re.match(r"^[a-z0-9_-]{3,20}$", self.alias) == None:
             raise ValidationError('Псевдоним должен быть длиной от 3 до 20 символов, состоять из букв a-z, тире и символа подчеркивания')
+        if obj := Holiday.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Праздниках: ' + obj[0].name)
+        if obj := Category.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Категориях: ' + obj[0].name)
+        if obj := Product.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Товарах: ' + obj[0].name)
 
 # Категория товара является внутренней для Отдела
 class Category(models.Model):
@@ -61,6 +73,13 @@ class Category(models.Model):
     def clean(self):
         if re.match(r"^[a-z0-9_-]{3,20}$", self.alias) == None:
             raise ValidationError('Псевдоним должен быть длиной от 3 до 20 символов, состоять из букв a-z, тире и символа подчеркивания')
+        if obj := Holiday.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Праздниках: ' + obj[0].name)
+        if obj := Department.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Отделах: ' + obj[0].name)
+        if obj := Product.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Товарах: ' + obj[0].name)
+
 
 # Товары
 class Product(models.Model):
@@ -97,6 +116,12 @@ class Product(models.Model):
     def clean(self):
         if re.match(r"^[a-z0-9_-]{3,20}$", self.alias) == None:
             raise ValidationError('Псевдоним должен быть длиной от 3 до 20 символов, состоять из букв a-z, тире и символа подчеркивания')
+        if obj := Holiday.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Праздниках: ' + obj[0].name)
+        if obj := Department.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Отделах: ' + obj[0].name)
+        if obj := Category.objects.filter(alias=self.alias):
+            raise ValidationError('Такой псевдоним есть в Категориях: ' + obj[0].name)
 
 
     # Цена товара с учетом скидки и если товар активен, иначе цена 0
