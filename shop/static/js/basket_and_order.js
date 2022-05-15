@@ -27,10 +27,16 @@ $(document).ready(function(){
                             $('#row_' + del).remove();
                         });
                     }
-                    // Изменяем отображаемое значение на корзине
-                    b = (data.products == 0) ? '' : data.products;
-                    $('#quantity_in_basket').text(b);
-                    updatePage();
+                        $('#exampleModal').modal('show'); // Показать сообщение о добавлении товара в корзину
+                        // Сурываем сообщение о добавлении товара в корзину
+                        setTimeout(function(){
+                            $('#exampleModal').modal('hide');
+                        }, 1100);
+
+                        // Изменяем отображаемое значение на корзине
+                        b = (data.products == 0) ? '' : data.products;
+                        $('#quantity_in_basket').text(b);
+                        updatePage();
                 },
                 error: function(){
                     console.log('error');
@@ -64,7 +70,9 @@ $(document).ready(function(){
         var var_value = "#var-value_" + $(this).attr('id');
         var value = $(var_value).html();
         if ($(this).attr('name') == 'btn-minus') {
-            value = (value=='1')?value:value-1;
+            if (value=='1') {
+                return;
+            } else value--;
         }
         // Увеличить количество товаров
         if ($(this).attr('name') == 'btn-plus') {
@@ -73,7 +81,7 @@ $(document).ready(function(){
         $(var_value).html(value);
         var change = 'change';
         var product = [$(this).attr('id')];
-        var timer = 500;
+        var timer = 800;
         change_and_send(change, product, timer);
     });
 

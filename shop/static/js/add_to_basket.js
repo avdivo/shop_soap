@@ -13,17 +13,23 @@ function update_basket(product_id, quantity){
 
         var url = form.attr("action");
 
-        console.log(data)
          $.ajax({
              url: url,
              type: 'POST',
              data: data,
              cache: true,
              success: function (data) {
-                 console.log(data.products);
-                 // Изменяем отображаемое значение на корзине
-                 b = (data.products == 0) ? '' : data.products;
-                 $('#quantity_in_basket').text(b);
+                 // console.log(data.products);
+                $('#exampleModal').modal('show'); // Показать сообщение о добавлении товара в корзину
+                 // Сурываем сообщение о добавлении товара в корзину
+                setTimeout(function(){
+                    $('#exampleModal').modal('hide');
+                }, 1100);
+
+                // Изменяем отображаемое значение на корзине
+                b = (data.products == 0) ? '' : data.products;
+                $('#quantity_in_basket').text(b);
+
              },
              error: function(){
                  console.log("error")
@@ -95,4 +101,13 @@ function update_basket(product_id, quantity){
       $(this).addClass('btn-secondary');
       return false;
     });
+
+    // Показать сообщение о добавлении товара в корзину
+    $('#show_message_add_product').on('click', function () {
+        console.log("Показать окно")
+        $('#exampleModal').modal('show'); // Показать сообщение о добавлении товара в корзину
+    });
+
+
+
 });
