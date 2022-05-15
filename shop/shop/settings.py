@@ -166,6 +166,6 @@ NO_PHOTO = os.path.join(MEDIA_URL, 'product_image/no_photo.png')
 
  # Подключаем локальные файлы
 try:
-    from .local_settings import *
+    from local_settings import *
 except ImportError:
     pass
