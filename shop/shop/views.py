@@ -28,7 +28,7 @@ def send_email(message, to):
     '''Отправить письмо в HTML формате'''
     subject = 'GreenSoap'
     from_email = settings.EMAIL_HOST_USER
-    msg = EmailMessage(subject, message, from_email=from_email, to=to )
+    msg = EmailMessage(subject, message, from_email=from_email, to=to)
     msg.content_subtype = 'html'
     try:
         msg.send()
@@ -399,14 +399,14 @@ def order(request):
                     # Сохраняем корзину
                     save_basket(request, basket)
 
-                    # Подготовка данных и отправление письма
+                    # Подготовка данных и отправление письма заказчику и дублирование себе
                     order_mail = order_new  # Заказ
                     products = ProductInOrder.objects.filter(order=order_mail)  # Товары, их количество и суммы
                     offset = datetime.timedelta(hours=3)  # Исправляем время для правильного отображения
                     order_mail.created += offset
                     order_mail.created = order_mail.created.strftime("%d-%m-%Y %H.%M")
                     message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
-                    is_email = send_email(message, [alternate_profile.email])  # Отправляем письмо и получаем успешность
+                    is_email = send_email(message, [alternate_profile.email, settings.EMAIL_HOST_USER])  # Отправляем письмо и получаем успешность
 
                     request.session['order'] = order_new.number  # Номер заказа передаем в сессии
                     request.session['is_email'] = is_email
