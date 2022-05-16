@@ -650,12 +650,11 @@ def edit_order(request):
             order_for_save.status = order_mail.status
             order_for_save.save()  # Сохраняем новый статус
 
-        message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
-
         if message_in_mail:
 
             if message_in_mail == 'empty_message':
-                empty_message = ''
+                message_in_mail = ''
+            message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
 
             # Выбираем адрес для отправки письма, альтернативный, если он есть
             email = order.alternate_profile.email if order.alternate_profile else order.user.email
@@ -668,6 +667,7 @@ def edit_order(request):
                 error_send_mail = 'Ошибка отправления письма'
 
         # Подготовка списка статусов для Выбора статуса
+        message = get_template('emails.html').render(locals())  # Создаем html сообщение из шаблона
         selected = order.status.id
         select_status = StatusOrder.objects.all().order_by('id')
 
