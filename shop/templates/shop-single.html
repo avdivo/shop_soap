@@ -69,12 +69,16 @@
                         <div class="card-body">
                             <h1 class="h2">{{ product.name }}</h1>
                             {% if product.active %}
-                            {% if product.discount %}
-                            <p class="h3 py-2"><s>{{ product.price }}</s> &#x20bd;</p>
-                            <p class="h3 py-2">{{ product.actual_price }} &#x20bd;</p>
-                            {% else %}
-                            <p class="h3 py-2">{{ product.price }} &#x20bd;</p>
-                            {% endif %}
+                                <div class="pt-2">
+                                     {% if product.discount %}
+                                        <span class="h3"><s>{{ product.price }}</s> &#x20bd; &nbsp;</span>
+                                        <span class="h2 text-success logo">
+                                            <i class='fas fa-tags' style='font-size:24px'></i>
+                                            {{ product.actual_price }} &#x20bd;</span>
+                                    {% else %}
+                                        <span class="h2 text-success logo">{{ product.price }} &#x20bd;</span>
+                                    {% endif %}
+                                </div>
                             {% else %}
                             <p class="h3 py-2">Нет в наличии</p>
                             {% endif %}

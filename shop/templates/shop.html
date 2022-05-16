@@ -92,7 +92,16 @@
                             </div>
                             <div class="card-body">
                                 <a href="{% url 'shop-single' product.alias %}" class="h3 text-decoration-none">{{ product.name }}</a>
-                                <p class="text-center mb-0">{{ product.actual_price }}&#x20bd;</p>
+                                <div class="text-center pt-2">
+                                     {% if product.discount %}
+                                        <span class="h3"><s>{{ product.price }}</s> &#x20bd; &nbsp;</span>
+                                        <span class="h2 text-success logo">
+                                            <i class='fas fa-tags' style='font-size:24px'></i>
+                                            {{ product.actual_price }} &#x20bd;</span>
+                                    {% else %}
+                                        <span class="h2 text-success logo">{{ product.price }} &#x20bd;</span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
