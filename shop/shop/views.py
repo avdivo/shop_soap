@@ -470,6 +470,10 @@ class RegisterView(TemplateView):
     template_name = "registration/register.html"
 
     def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            # Если пользователь авторизован переходим в профиль
+            return redirect('profile')
+
         try:
             context = {}
             if request.method == 'POST':
@@ -496,8 +500,12 @@ class LoginView(TemplateView):
     template_name = "registration/login.html"
 
     def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            # Если пользователь авторизован переходим в профиль
+            return redirect('profile')
+
         try:
-            # Проверяем, есьб ли куда вернуться, если нет, назначаем
+            # Проверяем, есть ли куда вернуться, если нет, назначаем
             if 'return' not in request.session:
                 request.session['return'] = 'index'
 
@@ -597,8 +605,6 @@ class ProfilePage(TemplateView):
             return redirect(reverse("login"))
 
         return render(request, self.template_name, locals())
-        # except:
-        #     return redirect('index')
 
 # Выход из профиля
 def exit(request):
