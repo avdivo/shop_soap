@@ -10,11 +10,11 @@
         <!-- Сообщение при создании заказа Статус Новый -->
         <h2>Благодарим за оформление заказа</h2>
         <p>Ваш заказа №{{ order_mail.number }} принят {{ order_mail.created }} мск в магазине
-            <a href="{% url 'index' %}"> GreenSoap</a></p>
+            <a href="{{ request.META.HTTP_HOST }}{% url 'index' %}"> GreenSoap</a></p>
         <h3>Подробности заказа:</h3>
         <ul>
             {% for product in products %}
-            <li><a href="{% url 'shop-single' product.product.alias %}">{{ product.product.name }}</a>
+            <li><a href="{{ request.META.HTTP_HOST }}{% url 'shop-single' product.product.alias %}">{{ product.product.name }}</a>
                 ({{ product.product.actual_price }} x {{ product.quantity }})
                 = {{ product.price_selling }} &#x20bd;</li>
             {% endfor %}
@@ -27,7 +27,8 @@
         {% if order_mail.status.id == 2 %}
         <!-- Сообщение при изменении статуса на Ожидание оплаты -->
         <h2>Изменение статуса заказа на Ожидание оплаты</h2>
-        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
+        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине
+            <a href="{{ request.META.HTTP_HOST }}{% url 'index' %}">
             GreenSoap</a> ожидает оплаты.</p>
 
         <p><div id="insert">{{ message_in_mail|safe }}</div></p>
@@ -38,7 +39,8 @@
         {% if order_mail.status.id == 3 %}
         <!-- Сообщение при изменении статуса на Ожидание оплаты -->
         <h2>Изменение статуса заказа на Сборка</h2>
-        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
+        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине
+            <a href="{{ request.META.HTTP_HOST }}{% url 'index' %}">
             GreenSoap</a> готовится к выдаче.</p>
 
         <p><div id="insert">{{ message_in_mail|safe }}</div></p>
@@ -49,7 +51,8 @@
         {% if order_mail.status.id == 4 %}
         <!-- Сообщение при изменении статуса на Ожидание оплаты -->
         <h2>Изменение статуса заказа на Готов к выдаче</h2>
-        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
+        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине
+            <a href="{{ request.META.HTTP_HOST }}{% url 'index' %}">
             GreenSoap</a> готов к выдаче.</p>
 
         <p><div id="insert">{{ message_in_mail|safe }}</div></p>
@@ -60,7 +63,8 @@
         {% if order_mail.status.id == 5 %}
         <!-- Сообщение при изменении статуса на Ожидание оплаты -->
         <h2>Изменение статуса заказа на Доставка</h2>
-        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск из магазина<a href="{% url 'index' %}">
+        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск из магазина
+            <a href="{{ request.META.HTTP_HOST }}{% url 'index' %}">
             GreenSoap</a> передан для доставки.</p>
 
         <p><div id="insert">{{ message_in_mail|safe }}</div></p>
@@ -71,7 +75,8 @@
         {% if order_mail.status.id == 6 %}
         <!-- Сообщение при изменении статуса на Ожидание оплаты -->
         <h2>Изменение статуса заказа на Выполнен</h2>
-        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
+        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине
+            <a href="{{ request.META.HTTP_HOST }}{% url 'index' %}">
             GreenSoap</a> выполнен.</p>
         <p>Благодарим Вас за выбор нашего магазина. Мы были рады работать с Вами!</p>
         <p>Обращяйтесь к нам снова, рекомендуйте нас если Вам понравилось то, что мы делаем.</p>
@@ -84,7 +89,8 @@
         {% if order_mail.status.id == 7 %}
         <!-- Сообщение при изменении статуса на Ожидание оплаты -->
         <h2>Изменение статуса заказа на Отменен</h2>
-        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине<a href="{% url 'index' %}">
+        <p>Ваш заказа №{{ order_mail.number }} от {{ order_mail.created }} мск в магазине
+            <a href="{{ request.META.HTTP_HOST }}{% url 'index' %}">
             GreenSoap</a> отменен.</p>
 
         <p><div id="insert">{{ message_in_mail|safe }}</div></p>
@@ -93,7 +99,8 @@
 
 
         {% if request.user.is_authenticated %}
-        <p>Все свои заказы вы можете посмотреть в <a href="{% url 'profile' %}">личном кабинете.</a></p>
+        <p>Все свои заказы вы можете посмотреть в
+            <a href="{{ request.META.HTTP_HOST }}{% url 'profile' %}">личном кабинете.</a></p>
         {% endif %}
         <p>С уважением GreenSoap.</p>
         <p>Контактный телефон:  <a href="tel:+7 (931) 349-25-89">+7 (931) 349-25-89</a></p>
