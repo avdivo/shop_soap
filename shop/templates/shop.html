@@ -91,7 +91,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div style="height: 3em;"><a href="{% url 'shop-single' product.alias %}" class="h3 text-decoration-none">{{ product.name }}</a></div>
+                                <a href="{% url 'shop-single' product.alias %}" class="h3 text-decoration-none"><div style="height: 3em;">{{ product.name }}</div>
                                 <div class="text-center pt-2">
                                      {% if product.discount %}
                                         <span class="h3"><s>{{ product.price }}</s> &#x20bd; &nbsp;</span>
@@ -101,7 +101,7 @@
                                     {% else %}
                                         <span class="h2 text-success logo">{{ product.price }} &#x20bd;</span>
                                     {% endif %}
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                     </div>
