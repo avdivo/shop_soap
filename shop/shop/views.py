@@ -21,6 +21,9 @@ from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils.timezone import localtime
 from django.db.models import F
+from .utils import *
+from django.conf import settings
+
 
 # Отправление Email -------------------------------------------------------------------
 #   message - отрендереный html документ, to - кому письмо
@@ -410,6 +413,11 @@ def order(request):
 
                     request.session['order'] = order_new.number  # Номер заказа передаем в сессии
                     request.session['is_email'] = is_email
+
+                    # Сообщение в Telegram канал
+                    message_to_telegram('Новый заказ! ' + request.build_absolute_uri(reverse('edit_order')) + '?order_number=' + order_mail.number)
+
+
                     return redirect('order_accept')
 
         else:
