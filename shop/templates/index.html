@@ -107,7 +107,7 @@
             {% for product in products_favorite %}
             <div class="col-12 col-md-4 p-5 mt-3">
                 <a href="{% url 'shop-single' product.alias %}"><img src="{{ product.photo }}" class="rounded-circle img-fluid border"></a>
-                <h5 class="text-center mt-3 mb-3">{{ product.name }}</h5>
+                <div style="height: 3em;" class="text-center mt-3 mb-3"><h5>{{ product.name }}</h5></div>
                 <p class="text-center"><a class="btn btn-success" href="{% url 'shop-single' product.alias %}">
                 Посмотреть товар</a></p>
             </div>
