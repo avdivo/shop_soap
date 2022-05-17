@@ -140,7 +140,7 @@
                             <ul class="list-unstyled d-flex justify-content-between">
                                 <li class="text-muted text-right">{{ product.actual_price }}&#x20bd;</li>
                             </ul>
-                            <a href="shop-single.html" class="h2 text-decoration-none text-dark">{{ product.name }}</a>
+                            <a href="{% url 'shop-single' product.alias %}" class="h2 text-decoration-none text-dark">{{ product.name }}</a>
                             <p class="card-text">
                                 {{ product.description }}
                             </p>
