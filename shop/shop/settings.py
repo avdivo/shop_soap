@@ -12,15 +12,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 
-# env = environ.Env(
-#     # set casting, default value
-#     DEBUG=(bool, False)
-# )
-#
-# # reading .env file
-# environ.Env.read_env()
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -169,3 +160,4 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+# test
