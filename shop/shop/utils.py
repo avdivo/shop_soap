@@ -11,7 +11,9 @@ def message_to_telegram(message):
     params = {
         'chat_id': channel_id,
         'text': message,
+        'parse_mode': 'HTML',
     }
+    print(message)
     print(requests.get(url, params=params).json())
 
 

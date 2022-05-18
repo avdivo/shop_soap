@@ -21,7 +21,7 @@ from django.urls import path
 from .views import *
 urlpatterns = [
     path('admin/edit_order/', edit_order, name='edit_order'),
-    path('admin/edit_order/<int:filter>', edit_order, name='edit_order'),
+    path('admin/edit_order/<str:order_number>/', edit_order, name='edit_order'),
     path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('about/', about, name='about'),
