@@ -13,7 +13,7 @@ $(document).ready(function(){
             var csrf_token = $('#form_work_basket [name="csrfmiddlewaretoken"]').val();
             var url = form.attr("action");
             data['csrfmiddlewaretoken'] = csrf_token
-            console.log(data);
+//            console.log(data);
             $.ajax({
                 url: url,
                 type: 'POST',
